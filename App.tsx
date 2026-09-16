@@ -390,6 +390,11 @@ const pathThemes: Record<string, { card: string; title: string; bar: string }> =
     title: 'text-amber-400',
     bar: 'from-amber-500 to-yellow-400',
   },
+  cert_csirt: {
+    card: 'from-teal-900/50 to-slate-900/50 ring-teal-700 hover:ring-teal-500 hover:shadow-teal-500/30',
+    title: 'text-teal-400',
+    bar: 'from-teal-500 to-cyan-400',
+  },
   default: {
     card: 'bg-black/30 ring-slate-700 hover:ring-blue-500 hover:shadow-blue-500/30',
     title: 'text-blue-400',
