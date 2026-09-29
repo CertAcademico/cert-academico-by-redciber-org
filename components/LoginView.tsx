@@ -84,7 +84,7 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLogin }) => {
           <h1 className="text-3xl font-bold text-white tracking-tight">CERT Académico</h1>
           <p className="text-blue-400 font-medium text-sm mt-1">by RedCiber.org</p>
           <p className="text-slate-500 text-xs mt-2 max-w-xs mx-auto">
-            Plataforma de Certificación Profesional en Ciberseguridad e IA
+            Plataforma de Aprendizaje y Apoyo Docente en Ciberseguridad e IA
           </p>
         </div>
 

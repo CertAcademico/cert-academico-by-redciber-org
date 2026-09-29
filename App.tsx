@@ -477,7 +477,7 @@ const LearningPathSelector: React.FC<LearningPathSelectorProps> = ({
           <p className="text-slate-400 mt-2 text-base">
             {stats.totalModulesCompleted > 0
               ? `Has completado ${stats.totalModulesCompleted} módulo${stats.totalModulesCompleted !== 1 ? 's' : ''} en total · ${stats.totalXP} XP acumulados.`
-              : 'Elige una ruta de aprendizaje para comenzar tu certificación en ciberseguridad.'}
+              : 'Elige una ruta de aprendizaje para comenzar tu formación en ciberseguridad.'}
           </p>
         </div>
 

@@ -173,7 +173,7 @@ Por favor, entrega la respuesta final exactamente en: ${canvasFormat}`;
       default:
         return {
           pista: 'Usa la barra de navegación superior o las pestañas asistentes para resolver cualquier duda conceptual durante tu proceso de estudio.',
-          fallas: 'Recuerda que para obtener el certificado CERT es fundamental consolidar todo el temario interactivo de las tres fases del curso.',
+          fallas: 'Recuerda que para dominar el temario es fundamental consolidar todo el contenido interactivo de las tres fases del curso.',
           ayuda: 'Completa la fase activa y presiona "Siguiente Módulo" para continuar con la escala de aprendizaje.'
         };
     }

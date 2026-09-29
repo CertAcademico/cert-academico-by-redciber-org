@@ -520,11 +520,11 @@ const LEARNING_PATHS_DATA: LearningPaths = {
       },
       {
         id: 'ai_final_quiz',
-        title: "9. [Fase III - Avanzado] Hito Final de Certificación",
+        title: "9. [Fase III - Avanzado] Evaluación Final Integradora",
         content: [
           {
             type: 'h5p_check',
-            title: 'Examen Integral de Certificación RedCiber',
+            title: 'Examen Integral de Cierre — RedCiber',
             description: 'Valida tu preparación en las tres fases del programa de Inteligencia Artificial para el manejo de LLMs.',
             questions: [
               {
