@@ -1,61 +1,72 @@
-import type { UserProfile } from './types';
+import { supabase } from './supabaseClient';
+import type { UserRole } from './types';
 
-const USERS_KEY = 'rc_users';
-const SESSION_KEY = 'rc_session';
-
-export type SessionUser = Pick<UserProfile, 'id' | 'name' | 'email'>;
-
-async function hashPassword(password: string): Promise<string> {
-  const enc = new TextEncoder();
-  const buf = await crypto.subtle.digest('SHA-256', enc.encode(password + 'rc_cert_2026'));
-  return Array.from(new Uint8Array(buf))
-    .map(b => b.toString(16).padStart(2, '0'))
-    .join('');
+export interface SessionUser {
+  id: string;
+  name: string;
+  email: string;
+  role: UserRole;
 }
 
-function getUsers(): UserProfile[] {
-  try { return JSON.parse(localStorage.getItem(USERS_KEY) || '[]'); }
-  catch { return []; }
+async function fetchProfile(userId: string): Promise<{ name: string; email: string; role: UserRole }> {
+  const { data, error } = await supabase
+    .from('profiles')
+    .select('name, email, role')
+    .eq('id', userId)
+    .single();
+  if (error || !data) throw new Error('No se pudo cargar el perfil del usuario.');
+  return data as { name: string; email: string; role: UserRole };
 }
 
 export async function registerUser(name: string, email: string, password: string): Promise<SessionUser> {
-  const users = getUsers();
-  const normalized = email.toLowerCase().trim();
-  if (users.some(u => u.email === normalized)) {
-    throw new Error('Este correo ya está registrado en el sistema.');
+  const { data, error } = await supabase.auth.signUp({
+    email: email.toLowerCase().trim(),
+    password,
+    options: { data: { name: name.trim() } },
+  });
+  if (error) {
+    if (error.message.toLowerCase().includes('already registered')) {
+      throw new Error('Este correo ya está registrado en el sistema.');
+    }
+    throw new Error(error.message);
   }
-  const user: UserProfile = {
-    id: crypto.randomUUID(),
-    name: name.trim(),
-    email: normalized,
-    passwordHash: await hashPassword(password),
-    createdAt: new Date().toISOString(),
-  };
-  localStorage.setItem(USERS_KEY, JSON.stringify([...users, user]));
-  const session: SessionUser = { id: user.id, name: user.name, email: user.email };
-  localStorage.setItem(SESSION_KEY, JSON.stringify(session));
-  return session;
+  if (!data.user) throw new Error('No se pudo crear la cuenta. Intenta de nuevo.');
+
+  // El trigger de la base de datos crea la fila en `profiles`; puede tardar un instante.
+  for (let attempt = 0; attempt < 5; attempt++) {
+    try {
+      const profile = await fetchProfile(data.user.id);
+      return { id: data.user.id, ...profile };
+    } catch {
+      await new Promise(resolve => setTimeout(resolve, 300));
+    }
+  }
+  return { id: data.user.id, name: name.trim(), email: email.toLowerCase().trim(), role: 'student' };
 }
 
 export async function loginUser(email: string, password: string): Promise<SessionUser> {
-  const users = getUsers();
-  const user = users.find(u => u.email === email.toLowerCase().trim());
-  if (!user) throw new Error('No existe una cuenta con ese correo electrónico.');
-  if (user.passwordHash !== await hashPassword(password)) {
-    throw new Error('La contraseña es incorrecta. Inténtalo de nuevo.');
-  }
-  const session: SessionUser = { id: user.id, name: user.name, email: user.email };
-  localStorage.setItem(SESSION_KEY, JSON.stringify(session));
-  return session;
+  const { data, error } = await supabase.auth.signInWithPassword({
+    email: email.toLowerCase().trim(),
+    password,
+  });
+  if (error) throw new Error('No existe una cuenta con ese correo o la contraseña es incorrecta.');
+  if (!data.user) throw new Error('No se pudo iniciar sesión. Intenta de nuevo.');
+  const profile = await fetchProfile(data.user.id);
+  return { id: data.user.id, ...profile };
 }
 
-export function getSession(): SessionUser | null {
+export async function getSession(): Promise<SessionUser | null> {
+  const { data } = await supabase.auth.getSession();
+  const user = data.session?.user;
+  if (!user) return null;
   try {
-    const raw = localStorage.getItem(SESSION_KEY);
-    return raw ? JSON.parse(raw) : null;
-  } catch { return null; }
+    const profile = await fetchProfile(user.id);
+    return { id: user.id, ...profile };
+  } catch {
+    return null;
+  }
 }
 
-export function logoutUser(): void {
-  localStorage.removeItem(SESSION_KEY);
+export async function logoutUser(): Promise<void> {
+  await supabase.auth.signOut();
 }

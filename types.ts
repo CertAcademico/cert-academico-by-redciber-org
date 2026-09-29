@@ -106,11 +106,13 @@ export type LearningPaths = Record<string, LearningPath>;
 
 // --- Auth & Progress ---
 
+export type UserRole = 'student' | 'teacher';
+
 export interface UserProfile {
   id: string;
   name: string;
   email: string;
-  passwordHash: string;
+  role: UserRole;
   createdAt: string;
 }
 

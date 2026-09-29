@@ -13,6 +13,8 @@ import {
   resetCourseProgress,
   touchCourse,
 } from './progressService';
+import type { UserStats } from './progressService';
+import type { UserProgressMap, ModuleScore } from './types';
 import QuizView from './components/QuizView';
 import VideoPlayer from './components/VideoPlayer';
 import InteractiveCard from './components/InteractiveCard';
@@ -22,6 +24,7 @@ import MemoryPuzzleView from './components/MemoryPuzzleView';
 import H5PCheckView from './components/H5PCheckView';
 import AICourseCompanion from './components/AICourseCompanion';
 import LoginView from './components/LoginView';
+import TeacherDashboard from './components/TeacherDashboard';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   PlayCircleIcon,
@@ -32,23 +35,11 @@ import {
   DocumentTextIcon,
   QuestionMarkCircleIcon,
 } from './components/icons';
+import { formatRelativeTime } from './utils';
 
 // ---------------------------------------------------------------------------
 // Helpers
 // ---------------------------------------------------------------------------
-
-function formatRelativeTime(isoDate: string): string {
-  const diff = Date.now() - new Date(isoDate).getTime();
-  const mins = Math.floor(diff / 60000);
-  if (mins < 1) return 'Ahora mismo';
-  if (mins < 60) return `Hace ${mins} min`;
-  const hours = Math.floor(mins / 60);
-  if (hours < 24) return `Hace ${hours}h`;
-  const days = Math.floor(hours / 24);
-  if (days === 1) return 'Ayer';
-  if (days < 30) return `Hace ${days} días`;
-  return new Date(isoDate).toLocaleDateString('es-ES', { day: 'numeric', month: 'short' });
-}
 
 // ---------------------------------------------------------------------------
 // Content renderer
@@ -103,20 +94,23 @@ interface LearningPathViewProps {
 
 const LearningPathView: React.FC<LearningPathViewProps> = ({ path, pathId, onExit, userId }) => {
   const [currentModuleIndex, setCurrentModuleIndex] = useState(0);
-  const [completedModules, setCompletedModules] = useState<number[]>(() => {
-    return getCourseProgress(userId, pathId)?.completedModules ?? [];
-  });
+  const [completedModules, setCompletedModules] = useState<number[]>([]);
+  const [isProgressLoading, setIsProgressLoading] = useState(true);
   const moduleContentRef = useRef<HTMLDivElement>(null);
 
-  // Track last-accessed timestamp when entering a course
+  // Load progress (and mark the course as touched) whenever the path changes
   useEffect(() => {
-    touchCourse(userId, pathId);
-  }, [userId, pathId]);
-
-  // Reset when switching to a different path
-  useEffect(() => {
+    let cancelled = false;
+    setIsProgressLoading(true);
     setCurrentModuleIndex(0);
-    setCompletedModules(getCourseProgress(userId, pathId)?.completedModules ?? []);
+    (async () => {
+      await touchCourse(userId, pathId).catch(console.error);
+      const cp = await getCourseProgress(userId, pathId).catch(() => null);
+      if (cancelled) return;
+      setCompletedModules(cp?.completedModules ?? []);
+      setIsProgressLoading(false);
+    })();
+    return () => { cancelled = true; };
   }, [path, userId, pathId]);
 
   useEffect(() => {
@@ -133,7 +127,7 @@ const LearningPathView: React.FC<LearningPathViewProps> = ({ path, pathId, onExi
     if (!hasInteractive) {
       setCompletedModules(prev => {
         if (prev.includes(currentModuleIndex)) return prev;
-        markModuleComplete(userId, pathId, currentModuleIndex, path.modules.length);
+        markModuleComplete(userId, pathId, currentModuleIndex, path.modules.length).catch(console.error);
         return [...new Set([...prev, currentModuleIndex])];
       });
     }
@@ -161,14 +155,14 @@ const LearningPathView: React.FC<LearningPathViewProps> = ({ path, pathId, onExi
   const handleQuizComplete = () => {
     setCompletedModules(prev => {
       if (prev.includes(currentModuleIndex)) return prev;
-      markModuleComplete(userId, pathId, currentModuleIndex, path.modules.length);
+      markModuleComplete(userId, pathId, currentModuleIndex, path.modules.length).catch(console.error);
       return [...new Set([...prev, currentModuleIndex])];
     });
   };
 
   const handleH5PComplete = (score: number, maxScore: number) => {
     const moduleId = path.modules[currentModuleIndex].id;
-    saveModuleScore(userId, pathId, moduleId, score, maxScore);
+    saveModuleScore(userId, pathId, moduleId, score, maxScore).catch(console.error);
     handleQuizComplete();
   };
 
@@ -182,7 +176,7 @@ const LearningPathView: React.FC<LearningPathViewProps> = ({ path, pathId, onExi
   const handleReset = () => {
     setCurrentModuleIndex(0);
     setCompletedModules([]);
-    resetCourseProgress(userId, pathId);
+    resetCourseProgress(userId, pathId).catch(console.error);
   };
 
   const getModuleIcon = (module: Module, index: number) => {
@@ -208,6 +202,8 @@ const LearningPathView: React.FC<LearningPathViewProps> = ({ path, pathId, onExi
     (!isCurrentInteractive || isCurrentCompleted) &&
     !isModuleLocked(currentModuleIndex + 1);
   const isLastModule = currentModuleIndex === path.modules.length - 1;
+
+  if (isProgressLoading) return <LoadingSpinner message="Cargando tu progreso..." />;
 
   return (
     <main className="bg-gradient-to-br from-slate-900 to-gray-800 min-h-screen text-white font-sans flex flex-col p-4 overflow-hidden">
@@ -333,7 +329,7 @@ const LearningPathView: React.FC<LearningPathViewProps> = ({ path, pathId, onExi
 // LoadingSpinner
 // ---------------------------------------------------------------------------
 
-const LoadingSpinner: React.FC = () => (
+const LoadingSpinner: React.FC<{ message?: string }> = ({ message = 'Cargando rutas...' }) => (
   <div
     role="status"
     className="bg-gradient-to-br from-slate-900 to-gray-800 min-h-screen flex items-center justify-center"
@@ -351,7 +347,7 @@ const LoadingSpinner: React.FC = () => (
         d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
       />
     </svg>
-    <span className="text-xl text-slate-300">Cargando rutas...</span>
+    <span className="text-xl text-slate-300">{message}</span>
   </div>
 );
 
@@ -412,7 +408,11 @@ interface LearningPathSelectorProps {
   onLogout: () => void;
   userId: string;
   userName: string;
+  isTeacher: boolean;
+  onOpenTeacherDashboard: () => void;
 }
+
+const emptyStats: UserStats = { totalXP: 0, coursesCompleted: 0, totalModulesCompleted: 0 };
 
 const LearningPathSelector: React.FC<LearningPathSelectorProps> = ({
   paths,
@@ -420,11 +420,27 @@ const LearningPathSelector: React.FC<LearningPathSelectorProps> = ({
   onLogout,
   userId,
   userName,
+  isTeacher,
+  onOpenTeacherDashboard,
 }) => {
-  const stats = getUserStats(userId);
-  const userProgress = getUserProgress(userId);
+  const [stats, setStats] = useState<UserStats>(emptyStats);
+  const [userProgress, setUserProgress] = useState<UserProgressMap>({});
+  const [isStatsLoading, setIsStatsLoading] = useState(true);
   const firstName = userName.split(' ')[0];
   const initial = userName.charAt(0).toUpperCase();
+
+  useEffect(() => {
+    let cancelled = false;
+    Promise.all([getUserStats(userId), getUserProgress(userId)]).then(([s, p]) => {
+      if (cancelled) return;
+      setStats(s);
+      setUserProgress(p);
+      setIsStatsLoading(false);
+    });
+    return () => { cancelled = true; };
+  }, [userId]);
+
+  if (isStatsLoading) return <LoadingSpinner message="Cargando tu panel..." />;
 
   return (
     <div className="bg-gradient-to-br from-slate-900 to-gray-800 min-h-screen text-white font-sans flex flex-col">
@@ -456,6 +472,14 @@ const LearningPathSelector: React.FC<LearningPathSelectorProps> = ({
                 </div>
                 <span className="text-sm font-medium text-slate-200 hidden md:block">{userName}</span>
               </div>
+              {isTeacher && (
+                <button
+                  onClick={onOpenTeacherDashboard}
+                  className="text-xs text-teal-300 hover:text-white border border-teal-700/60 hover:border-teal-500 bg-teal-500/10 rounded-lg px-3 py-1.5 transition-all"
+                >
+                  📊 Panel Docente
+                </button>
+              )}
               <button
                 onClick={onLogout}
                 className="text-xs text-slate-400 hover:text-white border border-slate-700 hover:border-slate-500 rounded-lg px-3 py-1.5 transition-all"
@@ -495,7 +519,7 @@ const LearningPathSelector: React.FC<LearningPathSelectorProps> = ({
             const lastAccessed = cp ? formatRelativeTime(cp.lastAccessedAt) : null;
 
             let courseXP = completedCount * 10 + (isDone ? 50 : 0);
-            if (cp) for (const s of Object.values(cp.scores)) courseXP += s.score;
+            if (cp) for (const s of Object.values<ModuleScore>(cp.scores)) courseXP += s.score;
 
             return (
               <motion.button
@@ -575,10 +599,19 @@ const LearningPathSelector: React.FC<LearningPathSelectorProps> = ({
 // ---------------------------------------------------------------------------
 
 const App: React.FC = () => {
-  const [currentUser, setCurrentUser] = useState<SessionUser | null>(() => getSession());
+  const [currentUser, setCurrentUser] = useState<SessionUser | null>(null);
+  const [isAuthChecked, setIsAuthChecked] = useState(false);
   const [selectedPathId, setSelectedPathId] = useState<string | null>(null);
+  const [showTeacherDashboard, setShowTeacherDashboard] = useState(false);
   const [learningPaths, setLearningPaths] = useState<LearningPaths | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    getSession()
+      .then(setCurrentUser)
+      .catch(err => console.error('Failed to restore session:', err))
+      .finally(() => setIsAuthChecked(true));
+  }, []);
 
   useEffect(() => {
     fetchLearningPaths()
@@ -595,10 +628,13 @@ const App: React.FC = () => {
   const handleLogin = (user: SessionUser) => setCurrentUser(user);
 
   const handleLogout = () => {
-    logoutUser();
+    logoutUser().catch(err => console.error('Failed to log out:', err));
     setCurrentUser(null);
     setSelectedPathId(null);
+    setShowTeacherDashboard(false);
   };
+
+  if (!isAuthChecked) return <LoadingSpinner message="Verificando sesión..." />;
 
   if (!currentUser) return <LoginView onLogin={handleLogin} />;
 
@@ -612,6 +648,10 @@ const App: React.FC = () => {
     );
   }
 
+  if (showTeacherDashboard) {
+    return <TeacherDashboard paths={learningPaths} onExit={() => setShowTeacherDashboard(false)} />;
+  }
+
   if (!selectedPathId) {
     return (
       <LearningPathSelector
@@ -620,6 +660,8 @@ const App: React.FC = () => {
         onLogout={handleLogout}
         userId={currentUser.id}
         userName={currentUser.name}
+        isTeacher={currentUser.role === 'teacher'}
+        onOpenTeacherDashboard={() => setShowTeacherDashboard(true)}
       />
     );
   }
