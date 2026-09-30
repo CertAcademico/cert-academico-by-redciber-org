@@ -15,6 +15,28 @@ const copyLanding = () => ({
   },
 });
 
+// Copia materiales descargables (pptx/docx de cursos) a la raíz del sitio: /materiales/...
+function copyDirRecursive(src: string, dest: string) {
+  fs.mkdirSync(dest, { recursive: true });
+  for (const entry of fs.readdirSync(src, { withFileTypes: true })) {
+    const s = path.join(src, entry.name);
+    const d = path.join(dest, entry.name);
+    if (entry.isDirectory()) copyDirRecursive(s, d);
+    else fs.copyFileSync(s, d);
+  }
+}
+
+const copyMateriales = () => ({
+  name: 'copy-materiales',
+  apply: 'build' as const,
+  closeBundle() {
+    const src = path.resolve(__dirname, 'materiales');
+    if (fs.existsSync(src)) {
+      copyDirRecursive(src, path.resolve(__dirname, 'dist/materiales'));
+    }
+  },
+});
+
 export default defineConfig(({ command }) => {
     return {
       base: command === 'build' ? '/app/' : '/',
@@ -27,7 +49,7 @@ export default defineConfig(({ command }) => {
         // Permite servir a través de túneles (Cloudflare / ngrok) sin que Vite bloquee el Host
         allowedHosts: ['.trycloudflare.com', '.ngrok-free.app', '.ngrok.app'],
       },
-      plugins: [react(), copyLanding()],
+      plugins: [react(), copyLanding(), copyMateriales()],
       resolve: {
         alias: {
           '@': path.resolve(__dirname, '.'),
