@@ -940,6 +940,276 @@ const LEARNING_PATHS_DATA: LearningPaths = {
         ]
       }
     ]
+  },
+  ia_ofensiva_insider: {
+    title: "IA Ofensiva: El Nuevo Paradigma del Insider en Gobierno",
+    description: "Briefing de 45 minutos —desarrollado por RedCiber.org y CERT Académico— sobre cómo la IA generativa y agéntica redefine la amenaza interna en Ministerios de Hacienda y Finanzas Públicas.",
+    lastUpdated: "Septiembre 2026",
+    modules: [
+      {
+        id: 'ia_ins_s1',
+        title: "1. Encuadre: IA Ofensiva y el Nuevo Insider",
+        content: [
+          { type: 'text', icon: 'AlarmIcon', text: "Objetivo: entender por qué este tema ya está en la agenda de los Ministerios de Hacienda, y qué significa 'IA ofensiva' sin atarse a ningún proveedor comercial." },
+          { type: 'text', icon: 'ServerIcon', text: "IA ofensiva: el uso de inteligencia artificial generativa o agéntica para ejecutar, escalar o automatizar fases de un ataque — ingeniería social, suplantación de identidad, generación de contenido fraudulento o manipulación de sistemas." },
+          { type: 'text', icon: 'ServerIcon', text: "En julio de 2025, la OCDE y la Autoridad de Conducta del Sector Financiero de Sudáfrica copresidieron una Mesa Redonda del G20 sobre 'Inteligencia Artificial en las Finanzas', durante la reunión de Ministros de Finanzas y Bancos Centrales del G20: el tema ya se discute al más alto nivel." },
+          {
+            type: 'interactive',
+            title: 'Glosario: primeros conceptos',
+            items: [
+              { term: 'IA ofensiva', definition: 'Uso de IA generativa o agéntica para ejecutar, escalar o automatizar ataques. No es un producto ni un proveedor: es un conjunto de capacidades cada vez más accesibles.' },
+              { term: 'Insider Threat (amenaza interna)', definition: 'Persona de confianza, con acceso legítimo a sistemas, cuya acción intencional, negligente o accidental causa daño a la organización.' },
+              { term: 'Deepfake', definition: 'Contenido de audio o video sintético, generado con IA, indistinguible a simple vista de una grabación real.' },
+              { term: 'Agente de IA', definition: 'Sistema de IA con credenciales propias y capacidad de ejecutar acciones sobre otros sistemas, con distinto grado de autonomía.' },
+            ]
+          },
+          { type: 'text', icon: 'CalendarIcon', text: "Nota de independencia: este contenido no promueve ni evalúa productos comerciales de IA. Es agnóstico de proveedor y de jurisdicción — los principios aplican a cualquier gobierno." },
+          {
+            type: 'quiz',
+            quizData: {
+              question: "¿Qué caracteriza a la 'IA ofensiva' según esta ruta?",
+              options: [
+                "Un producto específico de un fabricante de inteligencia artificial.",
+                "Un conjunto de capacidades de IA generativa o agéntica usadas para ejecutar o escalar ataques.",
+                "Una ley que regula el uso de inteligencia artificial en bancos centrales."
+              ],
+              correctOptionIndex: 1,
+              feedback: {
+                correct: "Correcto. Es un conjunto de capacidades, no un producto ni una ley — por eso el enfoque es agnóstico de proveedor.",
+                incorrect: "No exactamente. La IA ofensiva se define por el uso —ejecutar o escalar ataques—, no por un producto o una norma específica."
+              }
+            }
+          }
+        ]
+      },
+      {
+        id: 'ia_ins_s2',
+        title: "2. El Nuevo Paradigma: Dos Vías hacia Ser Insider",
+        content: [
+          { type: 'text', icon: 'SpyIcon', text: "El modelo clásico de insider threat —formalizado por centros como el Insider Threat Center del SEI en Carnegie Mellon, la misma cuna del concepto 'CERT'— define al insider por tres elementos: persona de confianza, acceso legítimo, e intención o error." },
+          { type: 'text', icon: 'SpyIcon', text: "Vía 1 — El impostor perfecto: un deepfake de voz o video explota la confianza jerárquica. El atacante no roba una credencial: roba una identidad completa, suficiente para superar la 'verificación' que muchas organizaciones usan hoy para autorizar transferencias." },
+          { type: 'text', icon: 'BrainCircuitIcon', text: "Vía 2 — El insider no humano: un agente de IA con credenciales propias y acceso a sistemas financieros es, en la práctica, un empleado que nunca duerme, nunca cuestiona y puede ser manipulado. La guía CISA de amenaza interna (actualización 2026) ya incorpora esta 'dimensión de seguridad de IA'." },
+          {
+            type: 'interactive',
+            title: 'Glosario: las dos vías',
+            items: [
+              { term: 'Vía 1 — Identidad sintética', definition: 'Un externo se hace pasar por un insider mediante voz/video clonados, explotando la confianza jerárquica.' },
+              { term: 'Vía 2 — Agente con privilegios', definition: 'Un agente o copiloto de IA con acceso a sistemas se convierte, funcionalmente, en un nuevo tipo de insider no humano.' },
+              { term: 'ASI03 (OWASP)', definition: 'Abuso de Identidad y Privilegios — la falla más reportada en encuestas empresariales de agentes de IA, 2025-2026.' },
+              { term: 'Mínima agencia (Least Agency)', definition: 'Principio de OWASP: la autonomía de un agente de IA debe limitarse a lo estrictamente necesario para su tarea.' },
+            ]
+          },
+          {
+            type: 'flashcards',
+            title: 'Elementos del Insider Threat clásico',
+            cards: [
+              { front: 'Persona de confianza', back: 'Acceso legítimo otorgado por la organización — el primer elemento del modelo clásico de insider threat.' },
+              { front: 'Acceso a sistemas', back: 'Privilegios reales sobre información o procesos críticos.' },
+              { front: 'Intención o error', back: 'Daño intencional, negligente o accidental — el tercer elemento del modelo clásico.' },
+            ]
+          },
+          {
+            type: 'quiz',
+            quizData: {
+              question: "¿Qué tienen en común las 'dos vías nuevas' hacia ser insider?",
+              options: [
+                "Ambas requieren robar físicamente una computadora de la organización.",
+                "Ambas permiten cumplir los elementos del insider clásico (confianza, acceso, intención) sin ser, en el sentido tradicional, 'de la casa'.",
+                "Ambas están reguladas exclusivamente por la Unión Europea."
+              ],
+              correctOptionIndex: 1,
+              feedback: {
+                correct: "Correcto. La identidad sintética y los agentes con privilegios son formas nuevas de cumplir el patrón clásico del insider sin ser personal interno tradicional.",
+                incorrect: "No exactamente. Lo que comparten es que ambas vías cumplen el patrón del insider clásico —confianza, acceso, intención— sin ser 'de la casa' en el sentido tradicional."
+              }
+            }
+          }
+        ]
+      },
+      {
+        id: 'ia_ins_s3',
+        title: "3. Casos y Cifras: Cuando la Confianza es el Vector",
+        content: [
+          { type: 'text', icon: 'FishHookIcon', text: "Caso Arup (Hong Kong, enero 2024): un colaborador de finanzas recibió una videollamada de quien parecía ser el director financiero, junto a varios colegas, en tiempo real. Autorizó 15 transferencias por USD 25.6M. Cada persona en la llamada —excepto la víctima— era generada por IA." },
+          { type: 'text', icon: 'ClosedEnvelopeIcon', text: "No hubo malware, ni phishing de correo, ni contraseña robada: el único punto de falla fue la confianza depositada en rostros y voces familiares. Patrones similares se reportaron en Singapur (2025), Europa y Norteamérica (2026), con cifras que varían según la fuente." },
+          { type: 'text', icon: 'DocumentTextIcon', text: "La primera alerta oficial: FinCEN (Red de Control de Delitos Financieros de EE.UU.) emitió la Alerta FIN-2024-Alert004 el 13 de noviembre de 2024, sobre identidades sintéticas y suplantación de ejecutivos para autorizar transferencias fraudulentas." },
+          {
+            type: 'memory',
+            title: 'Asociar caso o cifra con su detalle',
+            pairs: [
+              { term: 'Caso Arup', definition: 'USD 25.6M transferidos en 15 operaciones tras una videollamada con deepfakes, Hong Kong, enero 2024.' },
+              { term: 'FIN-2024-Alert004', definition: 'Primera alerta oficial de EE.UU. sobre fraude con medios deepfake generados por IA (FinCEN, nov. 2024).' },
+              { term: 'Punto de falla en Arup', definition: 'No hubo malware ni phishing: el único punto de falla fue la confianza en rostros y voces familiares.' },
+              { term: 'Cifras del sector', definition: 'Reportadas por firmas de ciberseguridad y consultoría, no por una fuente gubernamental única — indicador de tendencia, no estadística oficial.' },
+            ]
+          },
+          { type: 'text', icon: 'CalendarIcon', text: "Actividad presencial sugerida: pedir a los participantes identificar, en su propio proceso de autorización de transferencias, qué controles dependen hoy únicamente de un canal audiovisual." },
+          {
+            type: 'quiz',
+            quizData: {
+              question: "En el caso Arup, ¿cuál fue el único punto de falla real?",
+              options: [
+                "Un software malicioso instalado en la computadora del colaborador.",
+                "La confianza depositada en rostros y voces familiares durante una videollamada.",
+                "Una contraseña débil reutilizada en varios sistemas."
+              ],
+              correctOptionIndex: 1,
+              feedback: {
+                correct: "Correcto. No hubo malware ni contraseña robada: el ataque explotó exclusivamente la confianza en una identidad audiovisual convincente.",
+                incorrect: "No exactamente. En Arup no hubo malware ni contraseña comprometida — el vector fue puramente la confianza en la videollamada."
+              }
+            }
+          }
+        ]
+      },
+      {
+        id: 'ia_ins_s4',
+        title: "4. El Terreno de Hacienda: Pagos, Impuestos y Adquisiciones",
+        content: [
+          { type: 'text', icon: 'ServerIcon', text: "Frente 1 — Pagos y tesorería: la autorización de transferencias de alto valor es exactamente el vector explotado en los casos vistos. Pregunta de diagnóstico: ¿existe un segundo canal, independiente del primero, obligatorio para toda transferencia de alto valor?" },
+          { type: 'text', icon: 'DocumentTextIcon', text: "Frente 2 — Impuestos: la IA generativa escala la suplantación de autoridades tributarias. En EE.UU., el fraude fiscal identificado por investigaciones criminales del IRS creció +111% interanual (año fiscal 2025), alcanzando USD 10.59B en delitos financieros identificados." },
+          { type: 'text', icon: 'ServerIcon', text: "Frente 3 — Adquisiciones y pagos indebidos: el gobierno federal de EE.UU. emitió USD 186B en pagos indebidos en el año fiscal 2025 — el universo de fraude que cadenas de aprobación automatizadas y agentes de IA mal gobernados pueden ampliar." },
+          { type: 'text', icon: 'CheckCircleIcon', text: "La paradoja defensiva: la misma tecnología que ataca, defiende. El Departamento del Tesoro de EE.UU. previno y recuperó más de USD 4B en el año fiscal 2024 mediante detección de fraude con IA/ML. La diferencia no es la herramienta: es la gobernanza." },
+          {
+            type: 'interactive',
+            title: 'Glosario: los tres frentes',
+            items: [
+              { term: 'Pagos y tesorería', definition: 'Autorización de transferencias de alto valor — el vector directo de los casos de deepfake vistos.' },
+              { term: 'Impuestos', definition: 'Suplantación de autoridades tributarias para extraer datos personales y bancarios.' },
+              { term: 'Adquisiciones', definition: 'Pagos indebidos y fraude de proveedores, potencialmente ampliados por automatización mal gobernada.' },
+              { term: 'Paradoja defensiva', definition: 'La misma clase de IA que ataca también detecta fraude a gran escala cuando se gobierna con cuidado.' },
+            ]
+          },
+          {
+            type: 'h5p_check',
+            title: 'Autoevaluación: el terreno de Hacienda',
+            description: 'Comprueba tu comprensión de los tres frentes de exposición específicos de un Ministerio de Hacienda.',
+            questions: [
+              {
+                question: '¿Cuál de los siguientes es el vector directo explotado por los casos de deepfake vistos en esta ruta?',
+                options: [
+                  { id: 'h1_o1', text: 'La autorización de transferencias de alto valor en tesorería.', isCorrect: true, score: 10 },
+                  { id: 'h1_o2', text: 'La publicación de boletines de prensa del ministerio.', isCorrect: false, score: 0 },
+                  { id: 'h1_o3', text: 'El diseño gráfico del sitio web institucional.', isCorrect: false, score: 0 }
+                ],
+                feedback: 'Correcto. La autorización de transferencias de alto valor es, exactamente, el vector explotado en los casos de deepfake analizados.'
+              },
+              {
+                question: '¿Qué demuestra la cifra de USD 4B+ prevenidos/recuperados por el Tesoro de EE.UU.?',
+                options: [
+                  { id: 'h2_o1', text: 'Que la misma tecnología usada para atacar puede usarse para defender, con la gobernanza adecuada.', isCorrect: true, score: 10 },
+                  { id: 'h2_o2', text: 'Que el fraude con IA ya fue completamente erradicado en el sector público.', isCorrect: false, score: 0 },
+                  { id: 'h2_o3', text: 'Que solo un proveedor comercial específico puede prevenir este tipo de fraude.', isCorrect: false, score: 0 }
+                ],
+                feedback: 'Correcto. Es la "paradoja defensiva": la diferencia no es la herramienta, es la gobernanza y los controles de verificación humana.'
+              }
+            ]
+          }
+        ]
+      },
+      {
+        id: 'ia_ins_s5',
+        title: "5. Marcos Oficiales de Respuesta",
+        content: [
+          { type: 'text', icon: 'ShieldCheckIcon', text: "Este problema ya está en la agenda de gobierno: seis referencias oficiales e internacionales lo enmarcan, ninguna atada a un proveedor de tecnología específico." },
+          { type: 'text', icon: 'ShieldCheckIcon', text: "CISA (EE.UU.) actualizó en 2026 su Guía de Mitigación de Amenaza Interna con una nueva 'dimensión de seguridad de IA'. NIST mantiene el AI Risk Management Framework y el Perfil de IA Generativa (AI 600-1). Seis agencias de ciberseguridad nacionales (CISA/NSA + Australia, Canadá, Nueva Zelanda y Reino Unido) publicaron en mayo de 2026 'Careful Adoption of Agentic AI Services'." },
+          { type: 'text', icon: 'DocumentTextIcon', text: "MITRE ATLAS (v5.1.0, nov. 2025) mapea 16 tácticas y 84 técnicas adversarias contra sistemas de IA. OWASP publicó en diciembre de 2025 su Top 10 para Aplicaciones Agénticas. La OCDE define gobernanza de IA en el sector público en tres pilares, con participación activa del G20 —incluyendo numerosos países de habla hispana." },
+          {
+            type: 'interactive',
+            title: 'Glosario: seis marcos de referencia',
+            items: [
+              { term: 'CISA', definition: 'Agencia de Ciberseguridad e Infraestructura de EE.UU. — Guía de Mitigación de Amenaza Interna, actualización 2026.' },
+              { term: 'NIST', definition: 'Instituto Nacional de Estándares y Tecnología de EE.UU. — AI Risk Management Framework y Perfil de IA Generativa.' },
+              { term: 'Five Eyes', definition: 'CISA/NSA + Australia, Canadá, Nueva Zelanda y Reino Unido — guía conjunta sobre adopción de IA agéntica (mayo 2026).' },
+              { term: 'MITRE ATLAS', definition: 'Mapa público de tácticas y técnicas adversarias contra sistemas de IA — 16 tácticas, 84 técnicas, 42 casos reales.' },
+              { term: 'OWASP', definition: 'Top 10 para Aplicaciones Agénticas 2026 — ASI03, Abuso de Identidad y Privilegios, es la falla más reportada.' },
+              { term: 'OCDE / G20', definition: 'Gobernanza de IA en el sector público (tres pilares) y Mesa Redonda del G20 sobre IA en las Finanzas, jul. 2025.' },
+            ]
+          },
+          {
+            type: 'flashcards',
+            title: 'Documento clave de cada organismo',
+            cards: [
+              { front: 'CISA', back: 'Insider Threat Mitigation Guide, actualización 2026 — agrega la "dimensión de seguridad de IA".' },
+              { front: 'NIST', back: 'AI Risk Management Framework + Generative AI Profile (AI 600-1).' },
+              { front: 'MITRE ATLAS', back: 'Adversarial Threat Landscape for Artificial-Intelligence Systems, v5.1.0 (nov. 2025).' },
+              { front: 'OWASP', back: 'Top 10 for Agentic Applications 2026, publicado 9 dic. 2025.' },
+            ]
+          },
+          {
+            type: 'quiz',
+            quizData: {
+              question: "¿Qué tienen en común los seis marcos oficiales citados en esta ruta?",
+              options: [
+                "Todos exigen la compra de un software específico para cumplirlos.",
+                "Todos son gratuitos, públicos y no están atados a un proveedor de tecnología específico.",
+                "Todos aplican exclusivamente dentro de Estados Unidos."
+              ],
+              correctOptionIndex: 1,
+              feedback: {
+                correct: "Correcto. Son marcos públicos y gratuitos, pensados para orientar gobernanza — no requieren comprar nada ni dependen de un proveedor.",
+                incorrect: "No exactamente. Ninguno de los seis marcos exige comprar un producto ni está limitado a un solo país — varios (OCDE/G20) tienen alcance internacional."
+              }
+            }
+          }
+        ]
+      },
+      {
+        id: 'ia_ins_s6',
+        title: "6. Recomendaciones y Evaluación Final",
+        content: [
+          { type: 'text', icon: 'CheckCircleIcon', text: "Cuatro líneas de acción, ninguna atada a un producto o proveedor específico — principios de gobernanza aplicables con el presupuesto y la estructura de cualquier ministerio." },
+          { type: 'text', icon: 'LockIcon', text: "1) Verificación fuera de banda: ninguna autorización financiera de alto valor debe depender de un único canal audiovisual — se confirma por un segundo canal independiente y preestablecido." },
+          { type: 'text', icon: 'BrainCircuitIcon', text: "2) Mínima agencia para IA: la autonomía de un agente debe ser la mínima necesaria para su tarea — inventario de permisos, límites explícitos y registro auditable de sus acciones." },
+          { type: 'text', icon: 'AlarmIcon', text: "3) Amenaza interna actualizada: incorporar explícitamente identidad sintética y agentes/herramientas de IA al programa de amenaza interna, alineado a la guía CISA 2026." },
+          { type: 'text', icon: 'UserSearchIcon', text: "4) Visibilidad de Shadow AI: inventario de herramientas de IA en uso (aprobadas y no aprobadas), política clara de qué información nunca debe ingresarse a una herramienta externa, y un canal sin sanción para declarar su uso." },
+          {
+            type: 'memory',
+            title: 'Asociar cada marco con lo que resuelve',
+            pairs: [
+              { term: 'Verificación fuera de banda', definition: 'Responde al vector de identidad sintética (deepfake) en autorizaciones financieras.' },
+              { term: 'Mínima agencia', definition: 'Responde al vector de agentes de IA con privilegios excesivos.' },
+              { term: 'Amenaza interna actualizada', definition: 'Integra ambos vectores nuevos al programa de gestión de riesgo ya existente.' },
+              { term: 'Visibilidad de Shadow AI', definition: 'Responde a la fuga de datos por herramientas de IA no aprobadas ni auditadas.' },
+            ]
+          },
+          {
+            type: 'h5p_check',
+            title: 'Evaluación Final: IA Ofensiva y el Nuevo Insider',
+            description: 'Repaso integral de los seis bloques de esta ruta, previo al cierre de la sesión.',
+            questions: [
+              {
+                question: '¿Cuál es la tesis central de esta ruta sobre el "nuevo paradigma del insider"?',
+                options: [
+                  { id: 'f1_o1', text: 'La IA generativa y agéntica abre dos vías nuevas —identidad sintética y agentes con privilegios— para cumplir el patrón clásico del insider sin ser personal interno tradicional.', isCorrect: true, score: 10 },
+                  { id: 'f1_o2', text: 'Los insiders humanos ya no representan ningún riesgo desde la llegada de la IA.', isCorrect: false, score: 0 },
+                  { id: 'f1_o3', text: 'Solo los gobiernos que usan un proveedor específico de IA están en riesgo.', isCorrect: false, score: 0 }
+                ],
+                feedback: 'Correcto. Esa es la tesis central: dos vías nuevas hacia el patrón clásico del insider (confianza, acceso, intención).'
+              },
+              {
+                question: '¿Qué recomendación responde directamente al vector de "identidad sintética" (deepfake)?',
+                options: [
+                  { id: 'f2_o1', text: 'Verificación fuera de banda para autorizaciones financieras de alto valor.', isCorrect: true, score: 10 },
+                  { id: 'f2_o2', text: 'Mínima agencia para agentes de IA.', isCorrect: false, score: 0 },
+                  { id: 'f2_o3', text: 'Visibilidad de Shadow AI.', isCorrect: false, score: 0 }
+                ],
+                feedback: 'Correcto. La verificación fuera de banda es el control directo frente a una videollamada o llamada con voz clonada.'
+              },
+              {
+                question: '¿Qué organismo publicó "Careful Adoption of Agentic AI Services" en mayo de 2026?',
+                options: [
+                  { id: 'f3_o1', text: 'CISA/NSA junto con las agencias de ciberseguridad de Australia, Canadá, Nueva Zelanda y Reino Unido (Five Eyes).', isCorrect: true, score: 10 },
+                  { id: 'f3_o2', text: 'La Organización Mundial del Comercio.', isCorrect: false, score: 0 },
+                  { id: 'f3_o3', text: 'Un consorcio de fabricantes de hardware.', isCorrect: false, score: 0 }
+                ],
+                feedback: '¡Excelente! Es un ejemplo de cooperación internacional entre agencias de ciberseguridad nacionales — el problema no se resuelve en una sola jurisdicción. Fin de la ruta.'
+              }
+            ]
+          }
+        ]
+      }
+    ]
   }
 };
 

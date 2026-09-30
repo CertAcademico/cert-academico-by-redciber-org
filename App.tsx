@@ -391,6 +391,11 @@ const pathThemes: Record<string, { card: string; title: string; bar: string }> =
     title: 'text-teal-400',
     bar: 'from-teal-500 to-cyan-400',
   },
+  ia_ofensiva_insider: {
+    card: 'from-orange-900/50 to-slate-900/50 ring-orange-700 hover:ring-orange-500 hover:shadow-orange-500/30',
+    title: 'text-orange-400',
+    bar: 'from-orange-500 to-amber-400',
+  },
   default: {
     card: 'bg-black/30 ring-slate-700 hover:ring-blue-500 hover:shadow-blue-500/30',
     title: 'text-blue-400',
