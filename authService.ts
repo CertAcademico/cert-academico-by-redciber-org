@@ -73,3 +73,13 @@ export async function getSession(): Promise<SessionUser | null> {
 export async function logoutUser(): Promise<void> {
   await supabase.auth.signOut();
 }
+
+export async function changePassword(newPassword: string): Promise<void> {
+  const { error } = await supabase.auth.updateUser({ password: newPassword });
+  if (error) {
+    if (error.message.toLowerCase().includes('different from the old')) {
+      throw new Error('La nueva contraseña debe ser distinta de la actual.');
+    }
+    throw new Error(error.message);
+  }
+}

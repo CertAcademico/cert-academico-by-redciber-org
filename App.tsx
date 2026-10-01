@@ -25,6 +25,7 @@ import H5PCheckView from './components/H5PCheckView';
 import AICourseCompanion from './components/AICourseCompanion';
 import LoginView from './components/LoginView';
 import TeacherDashboard from './components/TeacherDashboard';
+import ChangePasswordModal from './components/ChangePasswordModal';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   PlayCircleIcon,
@@ -431,6 +432,7 @@ const LearningPathSelector: React.FC<LearningPathSelectorProps> = ({
   const [stats, setStats] = useState<UserStats>(emptyStats);
   const [userProgress, setUserProgress] = useState<UserProgressMap>({});
   const [isStatsLoading, setIsStatsLoading] = useState(true);
+  const [showChangePassword, setShowChangePassword] = useState(false);
   const firstName = userName.split(' ')[0];
   const initial = userName.charAt(0).toUpperCase();
 
@@ -486,6 +488,12 @@ const LearningPathSelector: React.FC<LearningPathSelectorProps> = ({
                 </button>
               )}
               <button
+                onClick={() => setShowChangePassword(true)}
+                className="text-xs text-slate-400 hover:text-white border border-slate-700 hover:border-slate-500 rounded-lg px-3 py-1.5 transition-all"
+              >
+                🔑 Contraseña
+              </button>
+              <button
                 onClick={onLogout}
                 className="text-xs text-slate-400 hover:text-white border border-slate-700 hover:border-slate-500 rounded-lg px-3 py-1.5 transition-all"
               >
@@ -495,6 +503,7 @@ const LearningPathSelector: React.FC<LearningPathSelectorProps> = ({
           </div>
         </div>
       </header>
+      {showChangePassword && <ChangePasswordModal onClose={() => setShowChangePassword(false)} />}
 
       {/* ── Main content ── */}
       <main className="flex-grow max-w-7xl mx-auto w-full px-6 py-10">
