@@ -1,5 +1,5 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { requireAdmin, serviceClient, generatePassword } from './_shared';
+import { requireAdmin, serviceClient, generatePassword } from './_shared.js';
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (req.method !== 'POST') {

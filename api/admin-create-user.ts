@@ -1,5 +1,5 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { requireAdmin, serviceClient, generatePassword } from './_shared';
+import { requireAdmin, serviceClient, generatePassword } from './_shared.js';
 
 const VALID_ROLES = ['student', 'teacher', 'tutor', 'admin'];
 
