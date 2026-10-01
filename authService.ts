@@ -28,6 +28,9 @@ export async function registerUser(name: string, email: string, password: string
     if (error.message.toLowerCase().includes('already registered')) {
       throw new Error('Este correo ya está registrado en el sistema.');
     }
+    if (error.message.includes('EMAIL_NOT_ALLOWED')) {
+      throw new Error('Este correo no está autorizado para registrarte en esta plataforma. Contacta al docente.');
+    }
     throw new Error(error.message);
   }
   if (!data.user) throw new Error('No se pudo crear la cuenta. Intenta de nuevo.');

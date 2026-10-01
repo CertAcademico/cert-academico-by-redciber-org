@@ -173,6 +173,9 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLogin }) => {
                 onSubmit={handleRegister}
                 className="space-y-4"
               >
+                <p className="text-xs text-slate-400 bg-slate-800/60 border border-slate-700/50 rounded-lg px-3 py-2 -mt-1">
+                  Acceso restringido: solo correos autorizados por el docente pueden crear una cuenta.
+                </p>
                 <div>
                   <label className="text-[11px] font-bold text-slate-400 uppercase tracking-widest block mb-1.5">
                     Nombre Completo

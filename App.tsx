@@ -665,7 +665,7 @@ const App: React.FC = () => {
         onLogout={handleLogout}
         userId={currentUser.id}
         userName={currentUser.name}
-        isTeacher={currentUser.role === 'teacher'}
+        isTeacher={currentUser.role === 'teacher' || currentUser.role === 'tutor'}
         onOpenTeacherDashboard={() => setShowTeacherDashboard(true)}
       />
     );

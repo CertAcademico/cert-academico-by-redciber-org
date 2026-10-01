@@ -83,7 +83,149 @@ const LEARNING_PATHS_DATA: LearningPaths = {
         title: "6. Defensa Activa",
         content: [
           { type: 'text', icon: 'HappyUsersIcon', text: "Entender el marco legal nos ayuda a aplicar defensas efectivas y responsables como contraseñas fuertes y software antivirus." },
-          { type: 'text', icon: 'CheckCircleIcon', text: "¡Felicidades! Has completado la ruta de Fundamentos de Ciberseguridad." },
+          { type: 'text', icon: 'CheckCircleIcon', text: "Con esto cerramos la base defensiva. A continuación pasamos al otro lado: cómo piensan y actúan quienes prueban la seguridad de un sistema con autorización." },
+        ]
+      },
+      {
+        id: 'cs_hacking_intro',
+        title: "7. Hacking Ético: Marco y Autorización",
+        content: [
+          { type: 'text', icon: 'UserSearchIcon', text: "El hacking ético es el uso de las mismas técnicas que un atacante, pero con autorización explícita del dueño del sistema, con el fin de encontrar y corregir vulnerabilidades antes de que alguien más las explote." },
+          { type: 'text', icon: 'LockIcon', text: "Lo único que distingue a un pentester de un atacante no es la técnica: es la autorización por escrito. Sin un documento de 'Reglas de Enganche' (Rules of Engagement) firmado antes de empezar, la misma acción deja de ser ética y se vuelve un delito." },
+          { type: 'text', icon: 'DocumentTextIcon', text: "El alcance (scope) define exactamente qué sistemas, redes o aplicaciones se pueden probar, durante qué ventana de tiempo, y qué técnicas quedan explícitamente prohibidas (por ejemplo, ataques de denegación de servicio)." },
+          {
+            type: 'interactive',
+            title: 'Glosario: fundamentos del hacking ético',
+            items: [
+              { term: 'Hacking Ético', definition: 'Pruebas de seguridad autorizadas por escrito, que usan las mismas técnicas que un atacante real para encontrar vulnerabilidades antes que alguien malintencionado.' },
+              { term: 'Rules of Engagement (RoE)', definition: 'Documento firmado antes de iniciar una prueba: qué se permite, qué no, y quién responde si algo sale mal.' },
+              { term: 'Alcance (Scope)', definition: 'La lista exacta de sistemas, redes o aplicaciones autorizadas para la prueba — todo lo que esté fuera de esa lista no se toca.' },
+              { term: 'Red Team', definition: 'Equipo que simula un ataque real y sostenido contra una organización, generalmente sin que el personal de defensa sepa la fecha exacta.' },
+            ]
+          },
+          {
+            type: 'quiz',
+            quizData: {
+              question: "¿Qué distingue realmente a un pentester ético de un atacante malicioso?",
+              options: [
+                "El pentester usa herramientas más avanzadas que el atacante.",
+                "La autorización por escrito (Rules of Engagement) antes de actuar, no la técnica usada.",
+                "El pentester nunca encuentra vulnerabilidades reales."
+              ],
+              correctOptionIndex: 1,
+              feedback: {
+                correct: "Correcto. La técnica puede ser idéntica; lo que cambia todo es el consentimiento explícito y documentado del dueño del sistema.",
+                incorrect: "No exactamente. La diferencia no está en la herramienta ni en la habilidad: está en tener autorización por escrito antes de actuar."
+              }
+            }
+          }
+        ]
+      },
+      {
+        id: 'cs_hacking_phases',
+        title: "8. Las Fases del Pentesting",
+        content: [
+          { type: 'text', icon: 'ServerIcon', text: "Toda prueba de penetración sigue un ciclo ordenado: Reconocimiento, Escaneo, Explotación, Post-explotación y Reporte. Saltarse fases suele producir resultados incompletos o, peor, daños no autorizados." },
+          { type: 'text', icon: 'ServerIcon', text: "Reconocimiento: recolectar información pública sobre el objetivo. Escaneo: identificar sistemas activos, puertos y servicios. Explotación: intentar aprovechar una vulnerabilidad encontrada, dentro del alcance autorizado." },
+          { type: 'text', icon: 'DocumentTextIcon', text: "Post-explotación: evaluar hasta dónde se podría escalar el acceso (sin hacerlo si no está autorizado). Reporte: el entregable más importante — sin un reporte claro y accionable, la prueba no tuvo valor para la organización." },
+          {
+            type: 'flashcards',
+            title: 'Las 5 fases del pentesting',
+            cards: [
+              { front: 'Reconocimiento', back: 'Recolectar información pública del objetivo: dominios, empleados, tecnologías usadas, sin interactuar directamente con los sistemas.' },
+              { front: 'Escaneo', back: 'Identificar activamente sistemas vivos, puertos abiertos y servicios en ejecución dentro del alcance autorizado.' },
+              { front: 'Explotación', back: 'Intentar aprovechar una vulnerabilidad identificada para confirmar que es real y explotable.' },
+              { front: 'Post-explotación', back: 'Evaluar el impacto potencial: qué más se podría alcanzar desde el punto comprometido.' },
+              { front: 'Reporte', back: 'Documentar hallazgos, evidencia y recomendaciones de remediación de forma clara para la organización.' },
+            ]
+          },
+          {
+            type: 'quiz',
+            quizData: {
+              question: "¿Cuál es, según esta ruta, la fase más importante para que la organización realmente se beneficie de la prueba?",
+              options: [
+                "Explotación, porque es la fase más técnica.",
+                "Reporte, porque sin un entregable claro y accionable la prueba no genera valor real.",
+                "Reconocimiento, porque es la que más tiempo toma."
+              ],
+              correctOptionIndex: 1,
+              feedback: {
+                correct: "Correcto. Un hallazgo que no se documenta y comunica de forma clara no se puede corregir — el reporte es lo que convierte la prueba en mejora real.",
+                incorrect: "No exactamente. Todas las fases importan, pero el valor final para la organización depende del reporte: sin él, nada se corrige."
+              }
+            }
+          }
+        ]
+      },
+      {
+        id: 'cs_hacking_frameworks',
+        title: "9. Marcos y Estándares de Referencia",
+        content: [
+          { type: 'text', icon: 'DocumentTextIcon', text: "El hacking ético no se improvisa: existen marcos públicos y reconocidos internacionalmente que estandarizan cómo se planean, ejecutan y documentan estas pruebas." },
+          { type: 'text', icon: 'DocumentTextIcon', text: "OWASP Testing Guide se enfoca en aplicaciones web. PTES (Penetration Testing Execution Standard) cubre el proceso completo de una prueba, desde el acuerdo inicial hasta el reporte. NIST SP 800-115 es la guía técnica de referencia del gobierno de EE.UU. para pruebas de seguridad de la información. MITRE ATT&CK documenta tácticas y técnicas reales usadas por atacantes, organizadas en una matriz pública." },
+          {
+            type: 'interactive',
+            title: 'Glosario: marcos de referencia',
+            items: [
+              { term: 'OWASP Testing Guide', definition: 'Metodología de referencia para probar la seguridad de aplicaciones web, mantenida por la comunidad OWASP.' },
+              { term: 'PTES', definition: 'Penetration Testing Execution Standard: cubre todo el ciclo de una prueba de penetración, desde el acuerdo previo hasta el reporte final.' },
+              { term: 'NIST SP 800-115', definition: 'Guía técnica del NIST (EE.UU.) sobre cómo planear y ejecutar pruebas de seguridad de la información.' },
+              { term: 'MITRE ATT&CK', definition: 'Matriz pública de tácticas y técnicas reales de atacantes, usada tanto para pruebas ofensivas como para defensa.' },
+            ]
+          },
+          {
+            type: 'memory',
+            title: 'Asociar cada marco con lo que cubre',
+            pairs: [
+              { term: 'OWASP Testing Guide', definition: 'Metodología para probar la seguridad de aplicaciones web.' },
+              { term: 'PTES', definition: 'El ciclo completo de una prueba de penetración, de inicio a fin.' },
+              { term: 'NIST SP 800-115', definition: 'Guía técnica gubernamental para planear y ejecutar pruebas de seguridad.' },
+              { term: 'MITRE ATT&CK', definition: 'Matriz pública de tácticas y técnicas reales de atacantes.' },
+            ]
+          }
+        ]
+      },
+      {
+        id: 'cs_hacking_final',
+        title: "10. Buenas Prácticas y Evaluación Final",
+        content: [
+          { type: 'text', icon: 'LockIcon', text: "Toda la información obtenida durante una prueba de hacking ético es confidencial por defecto: credenciales, datos personales o vulnerabilidades encontradas no se comparten fuera del canal acordado con el cliente." },
+          { type: 'text', icon: 'ClosedEnvelopeIcon', text: "Divulgación responsable: si se encuentra una vulnerabilidad que afecta a terceros (un proveedor, una librería de código abierto), se notifica de forma privada y se da tiempo razonable para corregirla antes de hacerla pública." },
+          { type: 'text', icon: 'CheckCircleIcon', text: "Con esto completas la ruta de Fundamentos de Ciberseguridad, incluyendo la base de hacking ético: autorización, fases, marcos de referencia y buenas prácticas de reporte." },
+          {
+            type: 'h5p_check',
+            title: 'Evaluación Final: Hacking Ético',
+            description: 'Repaso integral de los 4 módulos de hacking ético de esta ruta.',
+            questions: [
+              {
+                question: '¿Qué documento debe existir antes de iniciar cualquier prueba de hacking ético?',
+                options: [
+                  { id: 'hf1_o1', text: 'Las Rules of Engagement (RoE), firmadas por el dueño del sistema.', isCorrect: true, score: 10 },
+                  { id: 'hf1_o2', text: 'Un certificado de antivirus actualizado del equipo del pentester.', isCorrect: false, score: 0 },
+                  { id: 'hf1_o3', text: 'Un comunicado de prensa anunciando la prueba.', isCorrect: false, score: 0 }
+                ],
+                feedback: 'Correcto. Sin Rules of Engagement firmadas, la prueba no tiene base legal ni ética.'
+              },
+              {
+                question: '¿En qué fase del pentesting se confirma que una vulnerabilidad es realmente explotable?',
+                options: [
+                  { id: 'hf2_o1', text: 'Explotación.', isCorrect: true, score: 10 },
+                  { id: 'hf2_o2', text: 'Reconocimiento.', isCorrect: false, score: 0 },
+                  { id: 'hf2_o3', text: 'Reporte.', isCorrect: false, score: 0 }
+                ],
+                feedback: 'Correcto. El reconocimiento y el escaneo recolectan información; la explotación confirma el riesgo real.'
+              },
+              {
+                question: '¿Qué marco cubre específicamente el ciclo completo de una prueba de penetración, de inicio a fin?',
+                options: [
+                  { id: 'hf3_o1', text: 'PTES (Penetration Testing Execution Standard).', isCorrect: true, score: 10 },
+                  { id: 'hf3_o2', text: 'MITRE ATT&CK.', isCorrect: false, score: 0 },
+                  { id: 'hf3_o3', text: 'OWASP Testing Guide.', isCorrect: false, score: 0 }
+                ],
+                feedback: '¡Excelente! PTES abarca desde el acuerdo inicial hasta el reporte final, a diferencia de los marcos más específicos como OWASP (web) o ATT&CK (tácticas de atacantes).'
+              }
+            ]
+          }
         ]
       }
     ]
