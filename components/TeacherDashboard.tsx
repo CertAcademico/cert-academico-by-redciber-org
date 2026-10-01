@@ -32,6 +32,7 @@ const ROLE_OPTIONS: { value: UserRole; label: string }[] = [
   { value: 'teacher', label: 'Docente' },
   { value: 'tutor', label: 'Tutor' },
   { value: 'admin', label: 'Administrador' },
+  { value: 'cert_student', label: 'Estudiante CERTs/CSIRTs' },
 ];
 
 const ResultBox: React.FC<{ email: string; password: string; onClose: () => void }> = ({ email, password, onClose }) => (

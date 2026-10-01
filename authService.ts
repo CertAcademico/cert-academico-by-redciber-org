@@ -44,7 +44,7 @@ export async function registerUser(name: string, email: string, password: string
       await new Promise(resolve => setTimeout(resolve, 300));
     }
   }
-  return { id: data.user.id, name: name.trim(), email: email.toLowerCase().trim(), role: 'student' };
+  return { id: data.user.id, name: name.trim(), email: email.toLowerCase().trim(), role: 'cert_student' };
 }
 
 export async function loginUser(email: string, password: string): Promise<SessionUser> {

@@ -1,7 +1,7 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { requireAdmin, serviceClient, generatePassword } from './_shared.js';
 
-const VALID_ROLES = ['student', 'teacher', 'tutor', 'admin'];
+const VALID_ROLES = ['student', 'teacher', 'tutor', 'admin', 'cert_student'];
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (req.method !== 'POST') {
@@ -17,7 +17,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   const cleanName = (name || '').trim();
 
   if (!cleanName || !cleanEmail || !role || !VALID_ROLES.includes(role)) {
-    res.status(400).json({ error: 'Faltan datos: nombre, correo y un rol válido (student/teacher/tutor/admin).' });
+    res.status(400).json({ error: 'Faltan datos: nombre, correo y un rol válido (student/teacher/tutor/admin/cert_student).' });
     return;
   }
 

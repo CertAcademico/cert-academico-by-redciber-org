@@ -14,10 +14,11 @@ create table if not exists public.profiles (
   created_at timestamptz not null default now()
 );
 
--- Permite 'tutor' y 'admin' además de 'student'/'teacher' (ya sea tabla nueva o existente).
+-- Permite 'tutor', 'admin' y 'cert_student' además de 'student'/'teacher' (ya sea tabla nueva o existente).
+-- 'cert_student' = registro abierto (cualquier correo), solo ve el curso CERTs/CSIRTs.
 alter table public.profiles drop constraint if exists profiles_role_check;
 alter table public.profiles add constraint profiles_role_check
-  check (role in ('student', 'teacher', 'tutor', 'admin'));
+  check (role in ('student', 'teacher', 'tutor', 'admin', 'cert_student'));
 
 alter table public.profiles enable row level security;
 
@@ -39,8 +40,9 @@ create table if not exists public.course_progress (
 alter table public.course_progress enable row level security;
 
 -- ─────────────────────────────────────────────────────────────
--- 3. allowed_emails — lista cerrada de correos autorizados a registrarse
---    (cohorte de 16: 14 estudiantes + docente + tutor). Gestiónala desde el
+-- 3. allowed_emails — correos de la cohorte (14 estudiantes + docente + tutor)
+--    con su rol. Quien no esté aquí igual puede registrarse, pero queda como
+--    'cert_student' (solo curso CERTs/CSIRTs). Gestiónala desde el
 --    Table Editor de Supabase — el cliente de la app nunca lee ni escribe
 --    aquí directamente (sin policies = sin acceso vía anon/authenticated).
 -- ─────────────────────────────────────────────────────────────
@@ -52,7 +54,7 @@ create table if not exists public.allowed_emails (
 
 alter table public.allowed_emails drop constraint if exists allowed_emails_role_check;
 alter table public.allowed_emails add constraint allowed_emails_role_check
-  check (role in ('student', 'teacher', 'tutor', 'admin'));
+  check (role in ('student', 'teacher', 'tutor', 'admin', 'cert_student'));
 
 alter table public.allowed_emails enable row level security;
 
@@ -95,9 +97,9 @@ as $$
 $$;
 
 -- ─────────────────────────────────────────────────────────────
--- 5. Trigger: crear profiles automáticamente al registrarse,
---    SOLO si el correo está en allowed_emails. Si no está, aborta
---    todo el registro (Supabase Auth devuelve el error al cliente).
+-- 5. Trigger: crear profiles automáticamente al registrarse.
+--    Si el correo está en allowed_emails toma ese rol; si no, cualquier
+--    correo se acepta con rol 'cert_student' (solo curso CERTs/CSIRTs).
 -- ─────────────────────────────────────────────────────────────
 create or replace function public.handle_new_user()
 returns trigger
@@ -111,7 +113,7 @@ begin
   select role into v_role from public.allowed_emails where email = new.email;
 
   if v_role is null then
-    raise exception 'EMAIL_NOT_ALLOWED';
+    v_role := 'cert_student';
   end if;
 
   insert into public.profiles (id, name, email, role)

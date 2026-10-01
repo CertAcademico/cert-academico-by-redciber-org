@@ -654,10 +654,14 @@ const App: React.FC = () => {
   }
 
   const isAdmin = currentUser.role === 'admin';
-  // CERTs/CSIRTs es para otro público (no esta cohorte) — se oculta del todo salvo para admin.
+  const isCertStudent = currentUser.role === 'cert_student';
+  // CERTs/CSIRTs es para otro público (registro abierto, rol cert_student) — la cohorte no lo ve,
+  // y cert_student solo ve ese curso. Admin ve todo.
   // Se filtra acá (no solo en el grid) para que tampoco se pueda entrar por URL directa (?topic=cert_csirt).
   const visiblePaths: LearningPaths = Object.fromEntries(
-    (Object.entries(learningPaths) as [string, LearningPathType][]).filter(([id]) => id !== 'cert_csirt' || isAdmin),
+    (Object.entries(learningPaths) as [string, LearningPathType][]).filter(([id]) =>
+      isAdmin || (isCertStudent ? id === 'cert_csirt' : id !== 'cert_csirt'),
+    ),
   );
 
   if (showTeacherDashboard) {
