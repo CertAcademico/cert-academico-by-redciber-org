@@ -726,6 +726,7 @@ const LEARNING_PATHS_DATA: LearningPaths = {
               { title: 'Preparen su hallazgo', minutes: '1 min', detail: 'Elijan UNA cosa que les llamó la atención: un país con dos CSIRT, un mandato distinto al resto, una red inesperada…' },
               { title: 'Plenaria', minutes: '5–10 min', detail: 'Cada grupo comparte su hallazgo en 1 minuto. El docente cierra comparando los modelos.' },
             ],
+            groupsTitle: 'Grupos y países asignados',
             groups: [
               { name: 'Grupo A — Américas I', items: ['Brasil', 'Canadá', 'Estados Unidos', 'México'] },
               { name: 'Grupo B — Américas II', items: ['Chile', 'Colombia', 'Perú', 'Uruguay'] },
@@ -771,7 +772,37 @@ const LEARNING_PATHS_DATA: LearningPaths = {
               { term: 'NIS2', definition: 'Directiva de la Unión Europea (sucesora de NIS) que exige a los Estados miembro fortalecer sus CSIRT nacionales y obliga a sectores críticos a reportar incidentes.' },
             ]
           },
-          { type: 'text', icon: 'CalendarIcon', text: "Actividad presencial: cada grupo redacta, en formato taller, un RFC 2350 simplificado (media página) para un CSIRT ficticio de un escenario asignado por el docente (universidad, banco regional, ministerio). Se expone y se retroalimenta entre grupos." },
+          {
+            type: 'activity',
+            title: 'Taller RFC 2350',
+            duration: '40–45 min',
+            groupSize: '6 grupos de 3–4 personas',
+            goal: 'Cada grupo es el equipo fundador de un CSIRT ficticio y redacta su RFC 2350 simplificado (máx. una página). Lo más importante es definir bien la constituencia —a quién sirve y a quién NO— y la autoridad: de dónde viene el mandato y hasta dónde puede actuar el equipo.',
+            downloads: [
+              {
+                label: 'Hoja de trabajo del estudiante (.docx)',
+                href: '/materiales/certs-csirts/hoja-estudiante-taller-rfc2350.docx',
+                note: 'Los 6 escenarios, un ejemplo de carta constitutiva, la plantilla RFC 2350 para completar y la lista de revisión para retroalimentar a otro grupo.',
+              },
+            ],
+            steps: [
+              { title: 'Lean su escenario', minutes: '3 min', detail: 'El docente asigna una letra (A a F). Lean su escenario en la hoja de trabajo y fíjense en el "punto de tensión": es lo que más tendrán que resolver.' },
+              { title: 'Redacten su RFC 2350', minutes: '20 min', detail: 'Completen la plantilla. Empiecen por la sección 3 (Carta constitutiva: misión, constituencia, afiliación y autoridad); el resto se deriva de ella. Pueden inventar los datos de contacto.' },
+              { title: 'Expongan', minutes: '2 min por grupo', detail: 'Lean su misión, constituencia y autoridad, y expliquen cómo resolvieron el punto de tensión.' },
+              { title: 'Retroalimenten a otro grupo', minutes: '5 min', detail: 'Con la lista de revisión de la hoja, revisen el documento del grupo que indique el docente (A→B, B→C… F→A): una fortaleza y una mejora concreta.' },
+              { title: 'Cierre', minutes: '5–10 min', detail: 'El docente compara cómo cambian la constituencia y la autoridad según el tipo de organización.' },
+            ],
+            groupsTitle: 'Grupos y escenarios asignados',
+            groups: [
+              { name: 'Grupo A — CSIRT universitario', items: ['Universidad Andina de Tecnología'] },
+              { name: 'Grupo B — CSIRT financiero', items: ['Banco Regional del Pacífico'] },
+              { name: 'Grupo C — CSIRT sectorial de salud', items: ['Ministerio de Salud'] },
+              { name: 'Grupo D — Infraestructura crítica', items: ['Electrificadora Nacional S.A.'] },
+              { name: 'Grupo E — CSIRT municipal', items: ['Alcaldía de una ciudad intermedia'] },
+              { name: 'Grupo F — Proveedor de servicios', items: ['NubeSur (internet y nube)'] },
+            ],
+            closing: 'Entregable: el RFC 2350 simplificado de su CSIRT y la lista de revisión completada para otro grupo. Recuerden: un buen RFC 2350 dice tanto a quién sirve el equipo como a quién NO.',
+          },
           {
             type: 'flashcards',
             title: 'Secciones clave de un documento RFC 2350',

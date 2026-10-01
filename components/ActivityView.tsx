@@ -49,7 +49,7 @@ const ActivityView: React.FC<{ data: ActivityContent }> = ({ data }) => (
 
     {data.groups && (
       <>
-        <h4 className="text-sm font-bold uppercase tracking-widest text-slate-400 mb-3">Grupos y países asignados</h4>
+        <h4 className="text-sm font-bold uppercase tracking-widest text-slate-400 mb-3">{data.groupsTitle ?? 'Grupos asignados'}</h4>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 mb-6">
           {data.groups.map(g => (
             <div key={g.name} className="bg-slate-900/60 border border-slate-700/60 rounded-xl p-3">

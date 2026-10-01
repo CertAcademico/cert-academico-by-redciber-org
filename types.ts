@@ -91,6 +91,7 @@ export interface ActivityContent {
   goal: string;
   downloads: ActivityDownload[];
   steps: ActivityStep[];
+  groupsTitle?: string;
   groups?: { name: string; items: string[] }[];
   closing?: string;
 }
