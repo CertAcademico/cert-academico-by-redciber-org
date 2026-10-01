@@ -773,6 +773,7 @@ const LEARNING_PATHS_DATA: LearningPaths = {
       },
       {
         id: 'cert_s3',
+        locked: true,
         title: "Sesión 3: Modelo de Servicios — FIRST CSIRT Services Framework v2.1",
         content: [
           { type: 'text', icon: 'CheckCircleIcon', text: "Objetivo de la sesión: conocer el FIRST CSIRT Services Framework v2.1 — el estándar internacional para catalogar servicios de un CSIRT — y aplicarlo al diseño de un portafolio de servicios según el mandato y la constituencia de una organización." },
@@ -820,6 +821,7 @@ const LEARNING_PATHS_DATA: LearningPaths = {
       },
       {
         id: 'cert_s4',
+        locked: true,
         title: "Sesión 4: Madurez Organizacional — SIM3 y el Marco de ENISA",
         content: [
           { type: 'text', icon: 'QuestionMarkCircleIcon', text: "Objetivo de la sesión: aplicar el modelo SIM3 (Security Incident Management Maturity Model) y el Marco de Madurez de ENISA para evaluar el nivel de madurez organizacional, humano, de herramientas y de procesos de un CSIRT." },
@@ -874,6 +876,7 @@ const LEARNING_PATHS_DATA: LearningPaths = {
       },
       {
         id: 'cert_s5',
+        locked: true,
         title: "Sesión 5: Gestión Operativa de Incidentes — NIST SP 800-61",
         content: [
           { type: 'text', icon: 'AlarmIcon', text: "Objetivo de la sesión: dominar el ciclo de vida de gestión de incidentes de NIST SP 800-61 (rev. 3) y aplicarlo en un ejercicio de simulación (tabletop) ante un incidente de ransomware." },
@@ -910,6 +913,7 @@ const LEARNING_PATHS_DATA: LearningPaths = {
       },
       {
         id: 'cert_s6',
+        locked: true,
         title: "Sesión 6: Cooperación e Intercambio de Información",
         content: [
           { type: 'text', icon: 'ClosedEnvelopeIcon', text: "Objetivo de la sesión: aplicar el Traffic Light Protocol (TLP) para clasificar y compartir información sensible entre organizaciones, y reconocer las principales redes de confianza y mecanismos de divulgación coordinada de vulnerabilidades." },
@@ -956,6 +960,7 @@ const LEARNING_PATHS_DATA: LearningPaths = {
       },
       {
         id: 'cert_s7',
+        locked: true,
         title: "Sesión 7: Taller Aplicado — Diseño de un CSIRT",
         content: [
           { type: 'text', icon: 'ServerIcon', text: "Objetivo de la sesión: diseñar el anteproyecto de un CSIRT completo — mandato, constituencia, portafolio de servicios y nivel de madurez objetivo — tomando como referencia casos reales de CSIRT nacionales y sectoriales." },
@@ -1001,6 +1006,7 @@ const LEARNING_PATHS_DATA: LearningPaths = {
       },
       {
         id: 'cert_s8',
+        locked: true,
         title: "Sesión 8: Integración, Evaluación y Proyecto Final",
         content: [
           { type: 'text', icon: 'CheckCircleIcon', text: "Objetivo de la sesión: integrar los 7 marcos trabajados durante el curso (terminología, RFC 2350, FIRST Services Framework, SIM3/ENISA, NIST SP 800-61, TLP y redes de cooperación) en la defensa del proyecto final: el diseño completo de un CSIRT." },

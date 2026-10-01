@@ -83,6 +83,8 @@ export interface Module {
   id: string;
   title:string;
   content: ContentBlock[];
+  /** Sesión aún no habilitada por el docente (solo admin puede abrirla). */
+  locked?: boolean;
 }
 
 export interface QuizData {

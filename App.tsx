@@ -91,9 +91,10 @@ interface LearningPathViewProps {
   pathId: string;
   onExit: () => void;
   userId: string;
+  unlockAll: boolean;
 }
 
-const LearningPathView: React.FC<LearningPathViewProps> = ({ path, pathId, onExit, userId }) => {
+const LearningPathView: React.FC<LearningPathViewProps> = ({ path, pathId, onExit, userId, unlockAll }) => {
   const [currentModuleIndex, setCurrentModuleIndex] = useState(0);
   const [completedModules, setCompletedModules] = useState<number[]>([]);
   const [isProgressLoading, setIsProgressLoading] = useState(true);
@@ -135,6 +136,7 @@ const LearningPathView: React.FC<LearningPathViewProps> = ({ path, pathId, onExi
   }, [currentModuleIndex, path, userId, pathId]);
 
   const isModuleLocked = (index: number): boolean => {
+    if (path.modules[index]?.locked && !unlockAll) return true;
     const checkInteractive = (m: Module) =>
       m.content.some(
         c => c.type === 'quiz' || c.type === 'flashcards' || c.type === 'memory' || c.type === 'h5p_check',
@@ -254,6 +256,7 @@ const LearningPathView: React.FC<LearningPathViewProps> = ({ path, pathId, onExi
                       >
                         <div className="w-6 h-6 flex-shrink-0">{getModuleIcon(module, index)}</div>
                         <span className="flex-grow text-xs font-semibold leading-snug">{module.title}</span>
+                        {module.locked && <span className="text-xs shrink-0" title="Sesión aún no habilitada">🔒</span>}
                       </button>
                     </li>
                   );
@@ -698,6 +701,7 @@ const App: React.FC = () => {
       pathId={selectedPathId}
       onExit={() => setSelectedPathId(null)}
       userId={currentUser.id}
+      unlockAll={isAdmin}
     />
   );
 };
