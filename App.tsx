@@ -653,25 +653,32 @@ const App: React.FC = () => {
     );
   }
 
+  const isAdmin = currentUser.role === 'admin';
+  // CERTs/CSIRTs es para otro público (no esta cohorte) — se oculta del todo salvo para admin.
+  // Se filtra acá (no solo en el grid) para que tampoco se pueda entrar por URL directa (?topic=cert_csirt).
+  const visiblePaths: LearningPaths = Object.fromEntries(
+    (Object.entries(learningPaths) as [string, LearningPathType][]).filter(([id]) => id !== 'cert_csirt' || isAdmin),
+  );
+
   if (showTeacherDashboard) {
-    return <TeacherDashboard paths={learningPaths} onExit={() => setShowTeacherDashboard(false)} />;
+    return <TeacherDashboard paths={visiblePaths} onExit={() => setShowTeacherDashboard(false)} isAdmin={isAdmin} />;
   }
 
-  if (!selectedPathId) {
+  if (!selectedPathId || !(selectedPathId in visiblePaths)) {
     return (
       <LearningPathSelector
-        paths={learningPaths}
+        paths={visiblePaths}
         onSelect={setSelectedPathId}
         onLogout={handleLogout}
         userId={currentUser.id}
         userName={currentUser.name}
-        isTeacher={currentUser.role === 'teacher' || currentUser.role === 'tutor'}
+        isTeacher={currentUser.role === 'teacher' || currentUser.role === 'tutor' || isAdmin}
         onOpenTeacherDashboard={() => setShowTeacherDashboard(true)}
       />
     );
   }
 
-  const selectedPath = learningPaths[selectedPathId];
+  const selectedPath = visiblePaths[selectedPathId];
   return (
     <LearningPathView
       path={selectedPath}

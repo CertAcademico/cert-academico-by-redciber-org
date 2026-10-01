@@ -14,10 +14,10 @@ create table if not exists public.profiles (
   created_at timestamptz not null default now()
 );
 
--- Permite 'tutor' además de 'student'/'teacher' (ya sea tabla nueva o existente).
+-- Permite 'tutor' y 'admin' además de 'student'/'teacher' (ya sea tabla nueva o existente).
 alter table public.profiles drop constraint if exists profiles_role_check;
 alter table public.profiles add constraint profiles_role_check
-  check (role in ('student', 'teacher', 'tutor'));
+  check (role in ('student', 'teacher', 'tutor', 'admin'));
 
 alter table public.profiles enable row level security;
 
@@ -46,9 +46,13 @@ alter table public.course_progress enable row level security;
 -- ─────────────────────────────────────────────────────────────
 create table if not exists public.allowed_emails (
   email text primary key,
-  role text not null default 'student' check (role in ('student', 'teacher', 'tutor')),
+  role text not null default 'student' check (role in ('student', 'teacher', 'tutor', 'admin')),
   created_at timestamptz not null default now()
 );
+
+alter table public.allowed_emails drop constraint if exists allowed_emails_role_check;
+alter table public.allowed_emails add constraint allowed_emails_role_check
+  check (role in ('student', 'teacher', 'tutor', 'admin'));
 
 alter table public.allowed_emails enable row level security;
 
@@ -60,8 +64,9 @@ alter table public.allowed_emails enable row level security;
 -- on conflict (email) do update set role = excluded.role;
 
 -- ─────────────────────────────────────────────────────────────
--- 4. is_teacher() — helper security-definer, evita recursión en las policies
---    (docente y tutor ven el Panel Docente por igual)
+-- 4. is_teacher() / is_admin() — helpers security-definer, evitan
+--    recursión en las policies (docente, tutor y admin ven el Panel
+--    Docente por igual; admin además tiene permisos exclusivos)
 -- ─────────────────────────────────────────────────────────────
 create or replace function public.is_teacher()
 returns boolean
@@ -72,7 +77,20 @@ stable
 as $$
   select exists (
     select 1 from public.profiles
-    where id = auth.uid() and role in ('teacher', 'tutor')
+    where id = auth.uid() and role in ('teacher', 'tutor', 'admin')
+  );
+$$;
+
+create or replace function public.is_admin()
+returns boolean
+language sql
+security definer
+set search_path = public
+stable
+as $$
+  select exists (
+    select 1 from public.profiles
+    where id = auth.uid() and role = 'admin'
   );
 $$;
 
@@ -152,6 +170,13 @@ create policy "course_progress: delete own rows"
   on public.course_progress for delete
   using (user_id = auth.uid());
 
--- Nota: allowed_emails no tiene policies a propósito — ningún usuario anon/authenticated
--- puede leerla ni escribirla desde la app. Solo se gestiona desde el Table Editor de
--- Supabase (o el SQL Editor), y el trigger handle_new_user() la lee como security definer.
+-- ─────────────────────────────────────────────────────────────
+-- 8. Policies — allowed_emails (solo lectura, solo admin)
+--    Las escrituras siguen sin policy de cliente a propósito: pasan
+--    únicamente por las funciones serverless (service_role key), nunca
+--    directo desde el navegador.
+-- ─────────────────────────────────────────────────────────────
+drop policy if exists "allowed_emails: admin reads all" on public.allowed_emails;
+create policy "allowed_emails: admin reads all"
+  on public.allowed_emails for select
+  using (public.is_admin());
