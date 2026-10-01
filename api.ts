@@ -706,7 +706,7 @@ const LEARNING_PATHS_DATA: LearningPaths = {
               { term: 'PSIRT (Product Security Incident Response Team)', definition: 'Equipo enfocado en vulnerabilidades de un producto o software específico de un fabricante, no en la infraestructura de una organización.' },
             ]
           },
-          { type: 'text', icon: 'CalendarIcon', text: "Actividad presencial: en grupos de 3-4, los estudiantes reciben un mapa mundial y deben identificar el CSIRT nacional de 5 países asignados, su tipo de mandato (gubernamental, académico, comercial o coordinador nacional) y a qué red regional pertenece. Cierre en plenaria comparando modelos." },
+          { type: 'text', icon: 'CalendarIcon', text: "Actividad presencial — 'Mapa Mundial de CSIRTs' (20-25 min): en 6 grupos de 3-4, cada equipo investiga el CSIRT nacional de 4 países asignados — su tipo de mandato (gubernamental, académico/técnico, coordinador nacional o institucional) y su red regional (FIRST, TF-CSIRT, CSIRTAmericas, APCERT) — y lo marca en un mapamundi proyectado. Cierre en plenaria comparando modelos (casos como Australia o España, con dos CSIRT de mandato distinto, son un buen disparador). Guía completa del facilitador con las 6 tarjetas de grupo y la ficha de respuesta: materiales/certs-csirts/ejercicio-mapa-mundial-csirts.docx." },
           {
             type: 'quiz',
             quizData: {
