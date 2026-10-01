@@ -706,7 +706,36 @@ const LEARNING_PATHS_DATA: LearningPaths = {
               { term: 'PSIRT (Product Security Incident Response Team)', definition: 'Equipo enfocado en vulnerabilidades de un producto o software específico de un fabricante, no en la infraestructura de una organización.' },
             ]
           },
-          { type: 'text', icon: 'CalendarIcon', text: "Actividad presencial — 'Mapa Mundial de CSIRTs' (20-25 min): en 6 grupos de 3-4, cada equipo investiga el CSIRT nacional de 4 países asignados — su tipo de mandato (gubernamental, académico/técnico, coordinador nacional o institucional) y su red regional (FIRST, TF-CSIRT, CSIRTAmericas, APCERT) — y lo marca en un mapamundi proyectado. Cierre en plenaria comparando modelos (casos como Australia o España, con dos CSIRT de mandato distinto, son un buen disparador). Guía completa del facilitador con las 6 tarjetas de grupo y la ficha de respuesta: materiales/certs-csirts/ejercicio-mapa-mundial-csirts.docx." },
+          {
+            type: 'activity',
+            title: 'Mapa Mundial de CSIRTs',
+            duration: '20–25 min',
+            groupSize: '6 grupos de 3–4 personas',
+            goal: 'Cada grupo investiga el CSIRT nacional de 4 países: su nombre, su tipo de mandato (gubernamental, académico/técnico, coordinador nacional o institucional) y la red regional a la que pertenece. La idea es descubrir que no existe un solo modelo de CSIRT.',
+            downloads: [
+              {
+                label: 'Hoja de trabajo del estudiante (.docx)',
+                href: '/materiales/certs-csirts/hoja-estudiante-mapa-mundial-csirts.docx',
+                note: 'Instrucciones, cómo clasificar el mandato, dónde investigar y la tabla que cada grupo debe completar.',
+              },
+            ],
+            steps: [
+              { title: 'Identifiquen su grupo', minutes: '2 min', detail: 'El docente asigna una letra (A a F) a cada grupo. Busquen sus 4 países abajo y anótenlos en la Tabla del grupo de la hoja de trabajo.' },
+              { title: 'Investiguen cada país', minutes: '12 min (~3 min por país)', detail: 'Para cada país averigüen: (a) el nombre del CSIRT nacional, (b) su tipo de mandato y (c) su red regional (FIRST, TF-CSIRT, CSIRTAmericas o APCERT). Anoten dónde lo encontraron. Fuentes: first.org/members, trusted-introducer.org, csirtamericas.org, apcert.org.' },
+              { title: 'Márquenlo en el mapa', minutes: '2 min', detail: 'Pasen al mapamundi que proyecta el docente y marquen sus 4 países.' },
+              { title: 'Preparen su hallazgo', minutes: '1 min', detail: 'Elijan UNA cosa que les llamó la atención: un país con dos CSIRT, un mandato distinto al resto, una red inesperada…' },
+              { title: 'Plenaria', minutes: '5–10 min', detail: 'Cada grupo comparte su hallazgo en 1 minuto. El docente cierra comparando los modelos.' },
+            ],
+            groups: [
+              { name: 'Grupo A — Américas I', items: ['Brasil', 'Canadá', 'Estados Unidos', 'México'] },
+              { name: 'Grupo B — Américas II', items: ['Chile', 'Colombia', 'Perú', 'Uruguay'] },
+              { name: 'Grupo C — Europa', items: ['Reino Unido', 'Alemania', 'Países Bajos', 'Estonia'] },
+              { name: 'Grupo D — Multilateral y Asia I', items: ['Unión Europea', 'Japón', 'Corea del Sur', 'China'] },
+              { name: 'Grupo E — Asia-Pacífico y Oceanía', items: ['Singapur', 'India', 'Australia', 'Nueva Zelanda'] },
+              { name: 'Grupo F — Variados', items: ['Costa Rica', 'Israel', 'España', 'Panamá'] },
+            ],
+            closing: 'Entregable: la Tabla del grupo completa y un hallazgo para compartir. Si encuentran más de un CSIRT para un país, anoten ambos: es justamente lo que discutiremos en el cierre.',
+          },
           {
             type: 'quiz',
             quizData: {

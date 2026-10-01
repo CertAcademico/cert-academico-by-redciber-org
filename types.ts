@@ -1,4 +1,4 @@
-export type ContentBlockType = 'text' | 'video' | 'quiz' | 'interactive' | 'flashcards' | 'memory' | 'h5p_check';
+export type ContentBlockType = 'text' | 'video' | 'quiz' | 'interactive' | 'flashcards' | 'memory' | 'h5p_check' | 'activity';
 
 export interface TextContent {
   type: 'text';
@@ -70,6 +70,31 @@ export interface H5PCheckContent {
   questions: H5PQuestion[];
 }
 
+export interface ActivityStep {
+  title: string;
+  minutes: string;
+  detail: string;
+}
+
+export interface ActivityDownload {
+  label: string;
+  href: string; // Ruta pública, p. ej. /materiales/...
+  note?: string;
+}
+
+/** Actividad grupal presencial: pasos, grupos asignados y materiales descargables. */
+export interface ActivityContent {
+  type: 'activity';
+  title: string;
+  duration: string;
+  groupSize: string;
+  goal: string;
+  downloads: ActivityDownload[];
+  steps: ActivityStep[];
+  groups?: { name: string; items: string[] }[];
+  closing?: string;
+}
+
 export type ContentBlock = 
   | TextContent 
   | VideoContent 
@@ -77,7 +102,8 @@ export type ContentBlock =
   | InteractiveContent 
   | FlashcardsContent 
   | MemoryContent 
-  | H5PCheckContent;
+  | H5PCheckContent
+  | ActivityContent;
 
 export interface Module {
   id: string;

@@ -25,6 +25,7 @@ import H5PCheckView from './components/H5PCheckView';
 import AICourseCompanion from './components/AICourseCompanion';
 import LoginView from './components/LoginView';
 import TeacherDashboard from './components/TeacherDashboard';
+import ActivityView from './components/ActivityView';
 import ChangePasswordModal from './components/ChangePasswordModal';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
@@ -77,6 +78,8 @@ const renderContentBlock = (
       return <MemoryPuzzleView title={block.title} pairs={block.pairs} onComplete={onComplete} />;
     case 'h5p_check':
       return <H5PCheckView data={block} onComplete={onH5PComplete} />;
+    case 'activity':
+      return <ActivityView data={block} />;
     default:
       return null;
   }
