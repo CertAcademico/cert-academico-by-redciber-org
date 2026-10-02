@@ -422,7 +422,11 @@ interface LearningPathSelectorProps {
   userName: string;
   isTeacher: boolean;
   onOpenTeacherDashboard: () => void;
+  /** Cursos visibles pero aún no habilitados para este usuario (se muestran con 🔒). */
+  lockedPathIds: string[];
 }
+
+const STUDENT_ENABLED_PATHS = ['cybersecurity'];
 
 const emptyStats: UserStats = { totalXP: 0, coursesCompleted: 0, totalModulesCompleted: 0 };
 
@@ -434,6 +438,7 @@ const LearningPathSelector: React.FC<LearningPathSelectorProps> = ({
   userName,
   isTeacher,
   onOpenTeacherDashboard,
+  lockedPathIds,
 }) => {
   const [stats, setStats] = useState<UserStats>(emptyStats);
   const [userProgress, setUserProgress] = useState<UserProgressMap>({});
@@ -537,6 +542,7 @@ const LearningPathSelector: React.FC<LearningPathSelectorProps> = ({
             const isDone = !!cp?.completedAt;
             const started = completedCount > 0;
             const lastAccessed = cp ? formatRelativeTime(cp.lastAccessedAt) : null;
+            const isPathLocked = lockedPathIds.includes(id);
 
             let courseXP = completedCount * 10 + (isDone ? 50 : 0);
             if (cp) for (const s of Object.values<ModuleScore>(cp.scores)) courseXP += s.score;
@@ -544,10 +550,11 @@ const LearningPathSelector: React.FC<LearningPathSelectorProps> = ({
             return (
               <motion.button
                 key={id}
-                onClick={() => onSelect(id)}
-                className={`bg-gradient-to-br p-6 rounded-2xl shadow-lg transition-all duration-300 text-left flex flex-col h-full ring-1 relative overflow-hidden ${theme.card}`}
-                whileHover={{ y: -5 }}
-                aria-label={`${started ? 'Continuar' : 'Iniciar'} la ruta: ${typedPath.title}`}
+                onClick={() => !isPathLocked && onSelect(id)}
+                disabled={isPathLocked}
+                className={`bg-gradient-to-br p-6 rounded-2xl shadow-lg transition-all duration-300 text-left flex flex-col h-full ring-1 relative overflow-hidden ${theme.card} ${isPathLocked ? 'opacity-50 grayscale cursor-not-allowed' : ''}`}
+                whileHover={isPathLocked ? undefined : { y: -5 }}
+                aria-label={isPathLocked ? `Curso aún no habilitado: ${typedPath.title}` : `${started ? 'Continuar' : 'Iniciar'} la ruta: ${typedPath.title}`}
               >
                 {isDone && (
                   <span className="absolute top-3 right-3 bg-emerald-500/20 border border-emerald-500/30 rounded-full px-2.5 py-0.5 text-[10px] font-bold text-emerald-400 uppercase tracking-wider">
@@ -592,14 +599,16 @@ const LearningPathSelector: React.FC<LearningPathSelectorProps> = ({
                 {/* CTA */}
                 <div
                   className={`py-2 px-4 rounded-xl text-center text-sm font-bold transition-colors ${
-                    isDone
+                    isPathLocked
+                      ? 'bg-black/20 text-slate-500'
+                      : isDone
                       ? 'bg-emerald-600/20 text-emerald-300'
                       : started
                       ? 'bg-blue-600/20 text-blue-300'
                       : 'bg-white/5 text-slate-300'
                   }`}
                 >
-                  {isDone ? '🔄 Repasar' : started ? '▶ Continuar' : '🚀 Comenzar'}
+                  {isPathLocked ? '🔒 Próximamente' : isDone ? '🔄 Repasar' : started ? '▶ Continuar' : '🚀 Comenzar'}
                 </div>
               </motion.button>
             );
@@ -683,7 +692,13 @@ const App: React.FC = () => {
     return <TeacherDashboard paths={visiblePaths} onExit={() => setShowTeacherDashboard(false)} isAdmin={isAdmin} />;
   }
 
-  if (!selectedPathId || !(selectedPathId in visiblePaths)) {
+  // La cohorte de pregrado (rol student) avanza un curso a la vez: solo los de esta lista están
+  // habilitados; el resto se ve con 🔒. Para abrir el siguiente curso, agregar su id acá.
+  const lockedPathIds = currentUser.role === 'student'
+    ? Object.keys(visiblePaths).filter(id => !STUDENT_ENABLED_PATHS.includes(id))
+    : [];
+
+  if (!selectedPathId || !(selectedPathId in visiblePaths) || lockedPathIds.includes(selectedPathId)) {
     return (
       <LearningPathSelector
         paths={visiblePaths}
@@ -693,6 +708,7 @@ const App: React.FC = () => {
         userName={currentUser.name}
         isTeacher={currentUser.role === 'teacher' || currentUser.role === 'tutor' || isAdmin}
         onOpenTeacherDashboard={() => setShowTeacherDashboard(true)}
+        lockedPathIds={lockedPathIds}
       />
     );
   }
