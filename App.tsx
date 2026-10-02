@@ -422,11 +422,28 @@ interface LearningPathSelectorProps {
   userName: string;
   isTeacher: boolean;
   onOpenTeacherDashboard: () => void;
-  /** Cursos visibles pero aún no habilitados para este usuario (se muestran con 🔒). */
-  lockedPathIds: string[];
+  /** Cursos visibles pero no habilitados para este usuario → texto que se muestra en la tarjeta. */
+  lockedPaths: Record<string, string>;
 }
 
-const STUDENT_ENABLED_PATHS = ['cybersecurity'];
+// Calendario de la cohorte de pregrado (rol student, Universidad EAN): cada curso se abre solo
+// dentro de su ventana (hora de Colombia, UTC-5); fuera de ella, y cualquier curso que no esté
+// acá, se ve con 🔒. Para habilitar el siguiente curso, agregar su id con sus fechas.
+const STUDENT_COURSE_WINDOWS: Record<string, { opensAt: string; closesAt: string }> = {
+  cybersecurity: { opensAt: '2026-10-05T00:00:00-05:00', closesAt: '2026-10-12T23:59:59-05:00' },
+};
+
+const formatCourseDate = (iso: string) =>
+  new Date(iso).toLocaleDateString('es-CO', { day: 'numeric', month: 'short', timeZone: 'America/Bogota' });
+
+/** Devuelve el texto de bloqueo del curso para un estudiante, o null si está habilitado ahora. */
+const getStudentLockLabel = (pathId: string, now: number): string | null => {
+  const w = STUDENT_COURSE_WINDOWS[pathId];
+  if (!w) return '🔒 Próximamente';
+  if (now < Date.parse(w.opensAt)) return `🔒 Disponible desde el ${formatCourseDate(w.opensAt)}`;
+  if (now > Date.parse(w.closesAt)) return `🔒 Cerrado el ${formatCourseDate(w.closesAt)}`;
+  return null;
+};
 
 const emptyStats: UserStats = { totalXP: 0, coursesCompleted: 0, totalModulesCompleted: 0 };
 
@@ -438,7 +455,7 @@ const LearningPathSelector: React.FC<LearningPathSelectorProps> = ({
   userName,
   isTeacher,
   onOpenTeacherDashboard,
-  lockedPathIds,
+  lockedPaths,
 }) => {
   const [stats, setStats] = useState<UserStats>(emptyStats);
   const [userProgress, setUserProgress] = useState<UserProgressMap>({});
@@ -542,7 +559,8 @@ const LearningPathSelector: React.FC<LearningPathSelectorProps> = ({
             const isDone = !!cp?.completedAt;
             const started = completedCount > 0;
             const lastAccessed = cp ? formatRelativeTime(cp.lastAccessedAt) : null;
-            const isPathLocked = lockedPathIds.includes(id);
+            const lockLabel = lockedPaths[id];
+            const isPathLocked = lockLabel !== undefined;
 
             let courseXP = completedCount * 10 + (isDone ? 50 : 0);
             if (cp) for (const s of Object.values<ModuleScore>(cp.scores)) courseXP += s.score;
@@ -608,7 +626,7 @@ const LearningPathSelector: React.FC<LearningPathSelectorProps> = ({
                       : 'bg-white/5 text-slate-300'
                   }`}
                 >
-                  {isPathLocked ? '🔒 Próximamente' : isDone ? '🔄 Repasar' : started ? '▶ Continuar' : '🚀 Comenzar'}
+                  {isPathLocked ? lockLabel : isDone ? '🔄 Repasar' : started ? '▶ Continuar' : '🚀 Comenzar'}
                 </div>
               </motion.button>
             );
@@ -634,6 +652,13 @@ const App: React.FC = () => {
   const [showTeacherDashboard, setShowTeacherDashboard] = useState(false);
   const [learningPaths, setLearningPaths] = useState<LearningPaths | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  // Reloj para que los cursos con fecha se abran/cierren solos sin recargar la página.
+  const [now, setNow] = useState(() => Date.now());
+
+  useEffect(() => {
+    const t = setInterval(() => setNow(Date.now()), 60_000);
+    return () => clearInterval(t);
+  }, []);
 
   useEffect(() => {
     getSession()
@@ -694,11 +719,15 @@ const App: React.FC = () => {
 
   // La cohorte de pregrado (rol student) avanza un curso a la vez: solo los de esta lista están
   // habilitados; el resto se ve con 🔒. Para abrir el siguiente curso, agregar su id acá.
-  const lockedPathIds = currentUser.role === 'student'
-    ? Object.keys(visiblePaths).filter(id => !STUDENT_ENABLED_PATHS.includes(id))
-    : [];
+  const lockedPaths: Record<string, string> = {};
+  if (currentUser.role === 'student') {
+    for (const id of Object.keys(visiblePaths)) {
+      const label = getStudentLockLabel(id, now);
+      if (label) lockedPaths[id] = label;
+    }
+  }
 
-  if (!selectedPathId || !(selectedPathId in visiblePaths) || lockedPathIds.includes(selectedPathId)) {
+  if (!selectedPathId || !(selectedPathId in visiblePaths) || selectedPathId in lockedPaths) {
     return (
       <LearningPathSelector
         paths={visiblePaths}
@@ -708,7 +737,7 @@ const App: React.FC = () => {
         userName={currentUser.name}
         isTeacher={currentUser.role === 'teacher' || currentUser.role === 'tutor' || isAdmin}
         onOpenTeacherDashboard={() => setShowTeacherDashboard(true)}
-        lockedPathIds={lockedPathIds}
+        lockedPaths={lockedPaths}
       />
     );
   }
