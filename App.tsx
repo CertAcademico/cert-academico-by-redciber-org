@@ -431,6 +431,7 @@ interface LearningPathSelectorProps {
 // acá, se ve con 🔒. Para habilitar el siguiente curso, agregar su id con sus fechas.
 const STUDENT_COURSE_WINDOWS: Record<string, { opensAt: string; closesAt: string }> = {
   cybersecurity: { opensAt: '2026-10-05T00:00:00-05:00', closesAt: '2026-10-12T23:59:59-05:00' },
+  cybercrime: { opensAt: '2026-10-13T00:00:00-05:00', closesAt: '2026-10-19T23:59:59-05:00' },
 };
 
 const formatCourseDate = (iso: string) =>
