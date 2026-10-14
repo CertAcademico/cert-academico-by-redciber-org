@@ -232,8 +232,8 @@ const LEARNING_PATHS_DATA: LearningPaths = {
   },
   cybercrime: {
     title: "Introducción a la Investigación del Cibercrimen",
-    description: "Explora las motivaciones y métodos comunes detrás de los delitos cometidos en el ciberespacio.",
-    lastUpdated: "Enero 2025",
+    description: "Explora las motivaciones, tipologías, marco legal colombiano, evidencia digital y metodología de investigación de los delitos cometidos en el ciberespacio.",
+    lastUpdated: "Octubre 2026",
     modules: [
       {
         id: 'cc_intro',
@@ -244,10 +244,20 @@ const LEARNING_PATHS_DATA: LearningPaths = {
       },
       {
         id: 'cc_motivations_video',
-        title: "2. Video: ¿Por qué lo hacen?",
+        title: "2. ¿Por qué lo hacen? Actores y Motivaciones",
         content: [
-           { type: 'video', title: "Las Motivaciones del Cibercriminal", videoId: "dQw4w9WgXcQ" },
            { type: 'text', icon: 'ClosedEnvelopeIcon', text: "Las motivaciones varían desde el beneficio económico y el espionaje hasta el activismo (hacktivismo)." },
+           {
+             type: 'interactive',
+             title: 'Perfiles de actores y sus motivaciones',
+             items: [
+               { term: 'Crimen organizado', definition: 'Busca beneficio económico a escala: fraude, ransomware, robo y venta de datos. Opera como una empresa, con roles especializados.' },
+               { term: 'Actores estatales (APT)', definition: 'Grupos patrocinados por gobiernos que buscan espionaje, sabotaje o ventaja estratégica. Son persistentes y con muchos recursos.' },
+               { term: 'Hacktivistas', definition: 'Motivados por causas políticas o sociales: desfiguran sitios web, filtran documentos o hacen ataques de denegación de servicio como protesta.' },
+               { term: 'Insiders', definition: 'Personas con acceso legítimo (empleados, contratistas) que abusan de él por dinero, venganza o descuido.' },
+               { term: 'Oportunistas', definition: 'Atacantes con poca habilidad que usan herramientas ya hechas contra objetivos fáciles, sin un blanco específico.' },
+             ]
+           },
         ]
       },
       {
@@ -291,7 +301,231 @@ const LEARNING_PATHS_DATA: LearningPaths = {
         id: 'cc_impact',
         title: "5. Impacto en el Mundo Real",
         content: [
-          { type: 'text', icon: 'CheckCircleIcon', text: "Las leyes establecen el marco para perseguir el cibercrimen, que tiene consecuencias reales causando pérdidas financieras y dañando reputaciones. ¡Has finalizado la introducción al cibercrimen!" },
+          { type: 'text', icon: 'CheckCircleIcon', text: "Las leyes establecen el marco para perseguir el cibercrimen, que tiene consecuencias reales causando pérdidas financieras y dañando reputaciones. En los siguientes módulos pasamos de la teoría a la práctica: qué delitos se ven con más frecuencia, cómo los tipifica la ley colombiana y cómo se investigan." },
+        ]
+      },
+      {
+        id: 'cc_typologies',
+        title: "6. Tipologías del Cibercrimen",
+        content: [
+          { type: 'text', icon: 'FishHookIcon', text: "La mayoría de los cibercrímenes no empiezan con una falla técnica sofisticada, sino con el engaño a una persona: un correo, un mensaje o una llamada que la lleva a entregar datos, dinero o acceso." },
+          { type: 'text', icon: 'BugIcon', text: "Hoy el cibercrimen funciona como una economía de servicios: unos grupos venden accesos iniciales a redes comprometidas, otros alquilan su ransomware a afiliados (Ransomware-as-a-Service) y otros lavan el dinero mediante 'mulas' y criptoactivos." },
+          {
+            type: 'flashcards',
+            title: 'Delitos frecuentes y cómo operan',
+            cards: [
+              { front: 'Phishing', back: 'Mensajes que suplantan a una entidad de confianza (banco, empresa, gobierno) para robar credenciales o datos. Variantes: smishing (SMS) y vishing (llamadas).' },
+              { front: 'Ransomware', back: 'Malware que cifra los datos de la víctima y exige un pago para recuperarlos. Hoy suele combinarse con robo de datos y amenaza de publicarlos (doble extorsión).' },
+              { front: 'BEC (Business Email Compromise)', back: 'El atacante suplanta o compromete el correo de un directivo o proveedor para ordenar transferencias o cambiar datos bancarios de pago.' },
+              { front: 'SIM swapping', back: 'El delincuente logra que el operador transfiera la línea de la víctima a otra SIM, y así recibe sus códigos de verificación por SMS.' },
+              { front: 'Sextorsión', back: 'Amenaza de difundir imágenes íntimas (reales o falsas) para obtener dinero o más material. Afecta especialmente a menores y jóvenes.' },
+            ]
+          },
+          {
+            type: 'quiz',
+            quizData: {
+              question: "Una empresa recibe un correo, aparentemente de su proveedor habitual, pidiendo actualizar la cuenta bancaria para el próximo pago. ¿Qué tipología es más probable?",
+              options: [
+                "Ransomware.",
+                "BEC (Business Email Compromise).",
+                "SIM swapping."
+              ],
+              correctOptionIndex: 1,
+              feedback: {
+                correct: "Correcto. Cambiar los datos de pago suplantando a un proveedor o directivo es el patrón clásico del BEC. La defensa es verificar por un canal distinto al correo.",
+                incorrect: "No exactamente. Cuando se suplanta a un proveedor o directivo para desviar un pago, se trata de BEC (Business Email Compromise)."
+              }
+            }
+          }
+        ]
+      },
+      {
+        id: 'cc_colombia_law',
+        title: "7. Marco Legal Colombiano: Ley 1273 de 2009",
+        content: [
+          { type: 'text', icon: 'DocumentTextIcon', text: "En Colombia, la Ley 1273 de 2009 creó en el Código Penal un nuevo bien jurídico: 'la protección de la información y de los datos' (Título VII Bis). Desde entonces, conductas como entrar sin autorización a un sistema o usar software malicioso son delitos autónomos." },
+          { type: 'text', icon: 'ShieldCheckIcon', text: "Colombia también aprobó el Convenio de Budapest mediante la Ley 1928 de 2018, lo que facilita la cooperación con otros países para preservar y obtener evidencia. La protección de datos personales se rige además por la Ley 1581 de 2012, vigilada por la Superintendencia de Industria y Comercio." },
+          {
+            type: 'interactive',
+            title: 'Delitos de la Ley 1273 de 2009 (Código Penal)',
+            items: [
+              { term: 'Art. 269A — Acceso abusivo a un sistema informático', definition: 'Entrar o mantenerse en un sistema informático, en todo o en parte, sin autorización o contra la voluntad de quien tiene derecho a excluirlo.' },
+              { term: 'Art. 269B — Obstaculización ilegítima de sistema informático o red', definition: 'Impedir u obstaculizar sin autorización el funcionamiento o acceso normal a un sistema, a sus datos o a una red de telecomunicaciones.' },
+              { term: 'Art. 269C — Interceptación de datos informáticos', definition: 'Interceptar sin orden judicial datos informáticos en su origen, destino o dentro de un sistema.' },
+              { term: 'Art. 269D — Daño informático', definition: 'Destruir, dañar, borrar, deteriorar, alterar o suprimir datos o sistemas sin estar facultado para ello.' },
+              { term: 'Art. 269E — Uso de software malicioso', definition: 'Producir, traficar, distribuir, vender o introducir al país software malicioso u otros programas de efectos dañinos.' },
+              { term: 'Art. 269F — Violación de datos personales', definition: 'Obtener, vender, comprar, divulgar o usar datos personales sin estar facultado, con provecho propio o de un tercero.' },
+              { term: 'Art. 269G — Suplantación de sitios web para capturar datos personales', definition: 'Diseñar, vender o alojar páginas web falsas, o redirigir a las víctimas a ellas, para capturar sus datos (la base legal contra el phishing).' },
+              { term: 'Art. 269I — Hurto por medios informáticos y semejantes', definition: 'Apoderarse de bienes ajenos manipulando sistemas informáticos o suplantando a un usuario ante un sistema de autenticación.' },
+              { term: 'Art. 269J — Transferencia no consentida de activos', definition: 'Manipular sistemas para transferir activos sin consentimiento del titular, en perjuicio de un tercero.' },
+            ]
+          },
+          {
+            type: 'memory',
+            title: 'Asocia cada conducta con su artículo',
+            pairs: [
+              { term: 'Art. 269A', definition: 'Entrar sin autorización a un sistema informático.' },
+              { term: 'Art. 269E', definition: 'Distribuir o introducir malware.' },
+              { term: 'Art. 269G', definition: 'Crear una página falsa para capturar datos.' },
+              { term: 'Art. 269I', definition: 'Hurtar dinero manipulando un sistema o suplantando a un usuario.' },
+            ]
+          },
+          {
+            type: 'quiz',
+            quizData: {
+              question: "Un estudiante entra al sistema de notas de su universidad usando la contraseña de un profesor, aunque no cambia nada. ¿Comete un delito según la Ley 1273 de 2009?",
+              options: [
+                "No, porque no modificó ni borró ningún dato.",
+                "Sí: acceso abusivo a un sistema informático (Art. 269A), que se configura con solo entrar sin autorización.",
+                "Solo si la universidad pierde dinero."
+              ],
+              correctOptionIndex: 1,
+              feedback: {
+                correct: "Correcto. El Art. 269A castiga el acceso sin autorización en sí mismo. No hace falta dañar ni modificar nada; eso sería un delito adicional (daño informático, Art. 269D).",
+                incorrect: "No. El acceso abusivo (Art. 269A) se configura con solo entrar o mantenerse en el sistema sin autorización, aunque no se cambie ningún dato."
+              }
+            }
+          }
+        ]
+      },
+      {
+        id: 'cc_evidence',
+        title: "8. Evidencia Digital y Cadena de Custodia",
+        content: [
+          { type: 'text', icon: 'UserSearchIcon', text: "La evidencia digital es frágil: se modifica con solo encender un equipo o abrir un archivo. Por eso su manejo sigue reglas estrictas; si se rompen, la prueba puede ser rechazada en un juicio aunque demuestre la culpa." },
+          { type: 'text', icon: 'LockIcon', text: "La cadena de custodia documenta quién recolectó cada evidencia, cuándo, cómo y por qué manos pasó hasta llegar al juez. Se complementa con el cálculo de un hash (por ejemplo SHA-256) al momento de la adquisición: si el hash coincide después, se demuestra que la evidencia no fue alterada." },
+          { type: 'text', icon: 'DocumentTextIcon', text: "La norma ISO/IEC 27037 da las pautas internacionales para identificar, recolectar, adquirir y preservar evidencia digital. El RFC 3227 recomienda recolectar primero lo más volátil, porque es lo que primero se pierde." },
+          {
+            type: 'flashcards',
+            title: 'Orden de volatilidad (de más a menos volátil)',
+            cards: [
+              { front: '1. Registros y caché del procesador', back: 'Desaparecen en nanosegundos. Rara vez se pueden capturar fuera de un laboratorio.' },
+              { front: '2. Memoria RAM', back: 'Procesos activos, conexiones de red, claves de cifrado. Se pierde al apagar el equipo: por eso no se apaga un equipo encendido sin antes evaluar capturar la RAM.' },
+              { front: '3. Estado de la red y archivos temporales', back: 'Tablas de rutas, caché ARP, conexiones abiertas y archivos temporales del sistema.' },
+              { front: '4. Disco', back: 'Se adquiere con una copia forense bit a bit, usando un bloqueador de escritura para no alterar el original.' },
+              { front: '5. Registros remotos y copias de respaldo', back: 'Logs en servidores externos, nube o backups. Son los menos volátiles, pero pueden rotarse o borrarse con el tiempo.' },
+            ]
+          },
+          {
+            type: 'quiz',
+            quizData: {
+              question: "Un investigador llega a una oficina y encuentra encendido el computador de un sospechoso. ¿Qué debe evaluar antes de apagarlo?",
+              options: [
+                "Nada: apagarlo de inmediato es siempre lo más seguro.",
+                "Capturar la memoria RAM, porque contiene información volátil que se pierde al apagar.",
+                "Abrir los archivos del escritorio para ver si hay algo relevante."
+              ],
+              correctOptionIndex: 1,
+              feedback: {
+                correct: "Correcto. La RAM puede contener procesos, conexiones y claves de cifrado que desaparecen al apagar. Abrir archivos, en cambio, altera la evidencia.",
+                incorrect: "No. Según el orden de volatilidad, primero se evalúa capturar la RAM. Apagar sin evaluar pierde esa información, y abrir archivos modifica la evidencia."
+              }
+            }
+          }
+        ]
+      },
+      {
+        id: 'cc_investigation',
+        title: "9. Metodología de Investigación y Cooperación",
+        content: [
+          { type: 'text', icon: 'ServerIcon', text: "Una investigación de cibercrimen sigue un ciclo: (1) denuncia o detección del hecho, (2) preservación urgente de la evidencia, (3) adquisición y análisis forense, (4) correlación y atribución, y (5) informe para la judicialización." },
+          { type: 'text', icon: 'UserSearchIcon', text: "La atribución es la fase más difícil: los delincuentes usan VPN, redes anónimas, servidores comprometidos en otros países y criptoactivos. Por eso se combinan indicadores técnicos (IP, dominios, hashes de malware) con el rastro del dinero y la inteligencia de fuentes abiertas (OSINT)." },
+          { type: 'text', icon: 'ClosedEnvelopeIcon', text: "Como la evidencia suele estar en servidores de otros países, la cooperación es clave. El Convenio de Budapest creó una red de puntos de contacto disponibles 24/7 para pedir la preservación urgente de datos, mientras se tramita la solicitud formal de asistencia judicial." },
+          {
+            type: 'interactive',
+            title: '¿A quién acudir en Colombia?',
+            items: [
+              { term: 'CAI Virtual — Policía Nacional', definition: 'Canal en línea del Centro Cibernético Policial para reportar incidentes y recibir orientación sobre delitos informáticos.' },
+              { term: 'Fiscalía General de la Nación', definition: 'Entidad que recibe las denuncias penales, dirige la investigación y acusa ante los jueces.' },
+              { term: 'Superintendencia de Industria y Comercio (SIC)', definition: 'Autoridad de protección de datos personales (Ley 1581 de 2012). Recibe quejas por el mal uso de datos personales.' },
+              { term: 'Red 24/7 del Convenio de Budapest', definition: 'Puntos de contacto permanentes entre países para preservar evidencia rápidamente antes de que se pierda.' },
+              { term: 'MLAT (Asistencia Judicial Mutua)', definition: 'Tratados o solicitudes formales entre Estados para obtener evidencia en otra jurisdicción. Son más lentos, por eso primero se preserva.' },
+            ]
+          },
+          {
+            type: 'quiz',
+            quizData: {
+              question: "La evidencia clave de un fraude está en un servidor de otro país. ¿Cuál es el primer paso más urgente?",
+              options: [
+                "Esperar a que se tramite la solicitud formal de asistencia judicial (MLAT).",
+                "Pedir la preservación urgente de los datos por la red 24/7, para que no se borren mientras avanza el trámite formal.",
+                "Acceder directamente al servidor para copiar la información."
+              ],
+              correctOptionIndex: 1,
+              feedback: {
+                correct: "Correcto. Primero se preservan los datos (red 24/7) y luego se obtienen formalmente. Acceder por cuenta propia sería un acceso abusivo y la prueba no serviría.",
+                incorrect: "No. El trámite formal puede tardar meses y los datos podrían borrarse; entrar al servidor sin autorización sería un delito. Lo urgente es pedir la preservación por la red 24/7."
+              }
+            }
+          }
+        ]
+      },
+      {
+        id: 'cc_final',
+        title: "10. Evaluación Final",
+        content: [
+          { type: 'text', icon: 'CheckCircleIcon', text: "Con esto completas la Introducción a la Investigación del Cibercrimen: actores y motivaciones, tipologías, marco legal colombiano, evidencia digital y metodología de investigación y cooperación." },
+          {
+            type: 'h5p_check',
+            title: 'Evaluación Final: Investigación del Cibercrimen',
+            description: 'Repaso integral de los módulos del curso.',
+            questions: [
+              {
+                question: '¿Qué tipo de actor busca principalmente espionaje o ventaja estratégica con apoyo de un gobierno?',
+                options: [
+                  { id: 'ccf1_o1', text: 'Un actor estatal (APT).', isCorrect: true, score: 10 },
+                  { id: 'ccf1_o2', text: 'Un hacktivista.', isCorrect: false, score: 0 },
+                  { id: 'ccf1_o3', text: 'Un oportunista.', isCorrect: false, score: 0 }
+                ],
+                feedback: 'Correcto. Los actores estatales (APT) son persistentes, tienen muchos recursos y buscan espionaje o sabotaje.'
+              },
+              {
+                question: '¿Qué ataque permite al delincuente recibir los códigos de verificación por SMS de la víctima?',
+                options: [
+                  { id: 'ccf2_o1', text: 'SIM swapping.', isCorrect: true, score: 10 },
+                  { id: 'ccf2_o2', text: 'Ransomware.', isCorrect: false, score: 0 },
+                  { id: 'ccf2_o3', text: 'Phishing por correo.', isCorrect: false, score: 0 }
+                ],
+                feedback: 'Correcto. Con el SIM swapping la línea de la víctima pasa a otra SIM, y con ella sus códigos por SMS.'
+              },
+              {
+                question: 'Crear una página falsa de un banco para capturar las credenciales de sus clientes corresponde al artículo:',
+                options: [
+                  { id: 'ccf3_o1', text: '269G — Suplantación de sitios web para capturar datos personales.', isCorrect: true, score: 10 },
+                  { id: 'ccf3_o2', text: '269B — Obstaculización ilegítima de sistema informático.', isCorrect: false, score: 0 },
+                  { id: 'ccf3_o3', text: '269C — Interceptación de datos informáticos.', isCorrect: false, score: 0 }
+                ],
+                feedback: 'Correcto. El Art. 269G es la base legal para perseguir el phishing con sitios falsos.'
+              },
+              {
+                question: '¿Para qué sirve calcular el hash de una evidencia digital al adquirirla?',
+                options: [
+                  { id: 'ccf4_o1', text: 'Para demostrar después que la evidencia no fue alterada.', isCorrect: true, score: 10 },
+                  { id: 'ccf4_o2', text: 'Para cifrar la evidencia y que nadie la pueda leer.', isCorrect: false, score: 0 },
+                  { id: 'ccf4_o3', text: 'Para comprimirla y que ocupe menos espacio.', isCorrect: false, score: 0 }
+                ],
+                feedback: 'Correcto. Si el hash calculado al final coincide con el original, la integridad de la evidencia queda demostrada.'
+              },
+              {
+                question: 'Según el orden de volatilidad, ¿qué se debe recolectar primero?',
+                options: [
+                  { id: 'ccf5_o1', text: 'La memoria RAM.', isCorrect: true, score: 10 },
+                  { id: 'ccf5_o2', text: 'Las copias de respaldo.', isCorrect: false, score: 0 },
+                  { id: 'ccf5_o3', text: 'El disco duro.', isCorrect: false, score: 0 }
+                ],
+                feedback: 'Correcto. Entre lo que normalmente se puede capturar, la RAM es lo más volátil: se pierde al apagar el equipo.'
+              },
+              {
+                question: '¿Qué mecanismo del Convenio de Budapest permite pedir la preservación urgente de datos en otro país?',
+                options: [
+                  { id: 'ccf6_o1', text: 'La red de puntos de contacto 24/7.', isCorrect: true, score: 10 },
+                  { id: 'ccf6_o2', text: 'Una queja ante la Superintendencia de Industria y Comercio.', isCorrect: false, score: 0 },
+                  { id: 'ccf6_o3', text: 'Una publicación en redes sociales.', isCorrect: false, score: 0 }
+                ],
+                feedback: 'Correcto. La red 24/7 preserva los datos rápido, mientras se tramita la solicitud formal de asistencia judicial (MLAT).'
+              }
+            ]
+          }
         ]
       }
     ]

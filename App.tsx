@@ -565,7 +565,8 @@ const LearningPathSelector: React.FC<LearningPathSelectorProps> = ({
             const completedCount = cp?.completedModules.length ?? 0;
             const totalCount = typedPath.modules.length;
             const pct = Math.round((completedCount / totalCount) * 100);
-            const isDone = !!cp?.completedAt;
+            // Si a un curso terminado se le agregan módulos, vuelve a mostrarse como pendiente.
+            const isDone = !!cp?.completedAt && completedCount >= totalCount;
             const started = completedCount > 0;
             const lastAccessed = cp ? formatRelativeTime(cp.lastAccessedAt) : null;
             const lockLabel = lockedPaths[id];
