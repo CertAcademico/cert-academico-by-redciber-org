@@ -33,9 +33,8 @@ const LEARNING_PATHS_DATA: LearningPaths = {
       },
       {
         id: 'cs_threats_video',
-        title: "3. Video: Amenazas Comunes",
+        title: "3. Amenazas Comunes",
         content: [
-          { type: 'video', title: "Entendiendo Malware y Phishing", videoId: "h_ljq_Al_k0" },
           { type: 'text', icon: 'BugIcon', text: "El malware es software malicioso (virus, ransomware) diseñado para dañar sistemas." },
           { type: 'text', icon: 'FishHookIcon', text: "El phishing es un fraude donde los atacantes se hacen pasar por entidades legítimas para robar información." },
         ]
@@ -545,9 +544,8 @@ const LEARNING_PATHS_DATA: LearningPaths = {
         },
         {
             id: 'ccy_psychology_video',
-            title: "2. Video: La Psicología del Hacker",
+            title: "2. La Psicología del Hacker",
             content: [
-                { type: 'video', title: "Dentro de la Mente de un Cibercriminal", videoId: "o-YBDTqX_ZU" },
                 { type: 'text', icon: 'SpyIcon', text: "El ciberespacio ofrece un sentido de anonimato y distancia, lo que puede disminuir las barreras morales." },
             ]
         },
@@ -613,7 +611,6 @@ const LEARNING_PATHS_DATA: LearningPaths = {
         id: 'qc_threat_video',
         title: "2. El Peligro para la Criptografía",
         content: [
-          { type: 'video', title: "Cómo la Computación Cuántica Rompe el Cifrado", videoId: "wUwZZl-2x34" },
           { type: 'text', icon: 'BrokenEnvelopeIcon', text: "Algoritmos como el de Shor, ejecutados en un computador cuántico, podrían romper los sistemas de cifrado (como RSA) que protegen hoy en día el comercio electrónico, los bancos y las comunicaciones." },
         ]
       },
@@ -710,9 +707,8 @@ const LEARNING_PATHS_DATA: LearningPaths = {
       },
       {
         id: 'df_tools_video',
-        title: "3. Video: Herramientas del Investigador",
+        title: "3. Herramientas del Investigador",
         content: [
-          { type: 'video', title: "Introducción a Herramientas Forenses", videoId: "E-t6a5Q_pI0" },
           { type: 'text', icon: 'AlarmIcon', text: "Un investigador debe diferenciar entre datos volátiles (como la RAM, que se pierde al apagar) y no volátiles (como el disco duro)." },
         ]
       },
