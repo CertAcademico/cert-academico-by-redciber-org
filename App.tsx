@@ -434,11 +434,19 @@ const STUDENT_COURSE_WINDOWS: Record<string, { opensAt: string; closesAt: string
   cybercrime: { opensAt: '2026-10-13T00:00:00-05:00', closesAt: '2026-10-19T23:59:59-05:00' },
 };
 
+// Extensiones individuales: estudiantes que se sumaron tarde y necesitan un curso abierto más tiempo.
+const STUDENT_COURSE_EXTENSIONS: Record<string, Record<string, string>> = {
+  // Ingresó a la cohorte después de cerrado el curso 1.
+  'jgaribe76593@universidadean.edu.co': { cybersecurity: '2026-10-19T23:59:59-05:00' },
+};
+
 const formatCourseDate = (iso: string) =>
   new Date(iso).toLocaleDateString('es-CO', { day: 'numeric', month: 'short', timeZone: 'America/Bogota' });
 
 /** Devuelve el texto de bloqueo del curso para un estudiante, o null si está habilitado ahora. */
-const getStudentLockLabel = (pathId: string, now: number): string | null => {
+const getStudentLockLabel = (pathId: string, now: number, email: string): string | null => {
+  const extendedUntil = STUDENT_COURSE_EXTENSIONS[email.toLowerCase()]?.[pathId];
+  if (extendedUntil && now <= Date.parse(extendedUntil)) return null;
   const w = STUDENT_COURSE_WINDOWS[pathId];
   if (!w) return '🔒 Próximamente';
   if (now < Date.parse(w.opensAt)) return `🔒 Disponible desde el ${formatCourseDate(w.opensAt)}`;
@@ -723,7 +731,7 @@ const App: React.FC = () => {
   const lockedPaths: Record<string, string> = {};
   if (currentUser.role === 'student') {
     for (const id of Object.keys(visiblePaths)) {
-      const label = getStudentLockLabel(id, now);
+      const label = getStudentLockLabel(id, now, currentUser.email);
       if (label) lockedPaths[id] = label;
     }
   }

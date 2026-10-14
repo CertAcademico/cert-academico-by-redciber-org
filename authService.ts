@@ -15,7 +15,13 @@ async function fetchProfile(userId: string): Promise<{ name: string; email: stri
     .eq('id', userId)
     .single();
   if (error || !data) throw new Error('No se pudo cargar el perfil del usuario.');
-  return data as { name: string; email: string; role: UserRole };
+  const profile = data as { name: string; email: string; role: UserRole };
+  // Un estudiante de la EAN que se autoregistró queda como cert_student (el trigger da ese rol a
+  // todo correo fuera de allowed_emails), pero pertenece a la cohorte de pregrado, no a CERTs/CSIRTs.
+  if (profile.role === 'cert_student' && profile.email.toLowerCase().endsWith('@universidadean.edu.co')) {
+    profile.role = 'student';
+  }
+  return profile;
 }
 
 export async function registerUser(name: string, email: string, password: string): Promise<SessionUser> {
