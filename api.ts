@@ -35,6 +35,7 @@ const LEARNING_PATHS_DATA: LearningPaths = {
         id: 'cs_threats_video',
         title: "3. Amenazas Comunes",
         content: [
+          { type: 'video', title: "¿Qué es un phishing y un malware? — Agencia Nacional de Ciberseguridad", videoId: "4Zl20jvJtho" },
           { type: 'text', icon: 'BugIcon', text: "El malware es software malicioso (virus, ransomware) diseñado para dañar sistemas." },
           { type: 'text', icon: 'FishHookIcon', text: "El phishing es un fraude donde los atacantes se hacen pasar por entidades legítimas para robar información." },
         ]
@@ -245,6 +246,7 @@ const LEARNING_PATHS_DATA: LearningPaths = {
         id: 'cc_motivations_video',
         title: "2. ¿Por qué lo hacen? Actores y Motivaciones",
         content: [
+           { type: 'video', title: "Cibercrimen transnacional: modus operandi e impacto — LISA Institute", videoId: "ZgMDI66M2DU" },
            { type: 'text', icon: 'ClosedEnvelopeIcon', text: "Las motivaciones varían desde el beneficio económico y el espionaje hasta el activismo (hacktivismo)." },
            {
              type: 'interactive',
@@ -548,6 +550,7 @@ const LEARNING_PATHS_DATA: LearningPaths = {
             id: 'ccy_psychology_video',
             title: "2. La Psicología del Hacker",
             content: [
+                { type: 'video', title: "Cibercrimen, ciberseguridad e ingeniería social: el eslabón humano — LISA Institute", videoId: "s5nEONGW-70" },
                 { type: 'text', icon: 'SpyIcon', text: "El ciberespacio ofrece un sentido de anonimato y distancia, lo que puede disminuir las barreras morales." },
             ]
         },
@@ -613,6 +616,7 @@ const LEARNING_PATHS_DATA: LearningPaths = {
         id: 'qc_threat_video',
         title: "2. El Peligro para la Criptografía",
         content: [
+          { type: 'video', title: "El algoritmo de Shor — Ket.G", videoId: "6SlX_FR4wOM" },
           { type: 'text', icon: 'BrokenEnvelopeIcon', text: "Algoritmos como el de Shor, ejecutados en un computador cuántico, podrían romper los sistemas de cifrado (como RSA) que protegen hoy en día el comercio electrónico, los bancos y las comunicaciones." },
         ]
       },
@@ -711,6 +715,7 @@ const LEARNING_PATHS_DATA: LearningPaths = {
         id: 'df_tools_video',
         title: "3. Herramientas del Investigador",
         content: [
+          { type: 'video', title: "Peritaje Informático Forense — Andrés Pablo Marcos Bursztyn", videoId: "2XJNSwrbN6M" },
           { type: 'text', icon: 'AlarmIcon', text: "Un investigador debe diferenciar entre datos volátiles (como la RAM, que se pierde al apagar) y no volátiles (como el disco duro)." },
         ]
       },
