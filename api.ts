@@ -307,6 +307,8 @@ const LEARNING_PATHS_DATA: LearningPaths = {
         id: 'cc_typologies',
         title: "6. Tipologías del Cibercrimen",
         content: [
+          { type: 'video', title: "Delitos Informáticos más Comunes — Pablo Maza Abogado", videoId: "F3CUj4ZhV7I" },
+          { type: 'text', icon: 'DocumentTextIcon', text: "El video presenta los delitos informáticos más comunes desde una mirada jurídica. Las leyes cambian según el país: en Colombia, estas conductas se tipifican en la Ley 1273 de 2009, que veremos en el módulo 7." },
           { type: 'text', icon: 'FishHookIcon', text: "La mayoría de los cibercrímenes no empiezan con una falla técnica sofisticada, sino con el engaño a una persona: un correo, un mensaje o una llamada que la lleva a entregar datos, dinero o acceso." },
           { type: 'text', icon: 'BugIcon', text: "Hoy el cibercrimen funciona como una economía de servicios: unos grupos venden accesos iniciales a redes comprometidas, otros alquilan su ransomware a afiliados (Ransomware-as-a-Service) y otros lavan el dinero mediante 'mulas' y criptoactivos." },
           {
