@@ -456,6 +456,8 @@ const COURSE_WINDOWS_BY_ROLE: Partial<Record<UserRole, Record<string, { opensAt:
 const STUDENT_COURSE_EXTENSIONS: Record<string, Record<string, string>> = {
   // Ingresó a la cohorte después de cerrado el curso 1.
   'jgaribe76593@universidadean.edu.co': { cybersecurity: '2026-10-19T23:59:59-05:00' },
+  // Extensión de dos días para terminar el curso 1.
+  'dmaldon11763@universidadean.edu.co': { cybersecurity: '2026-10-17T23:59:59-05:00' },
 };
 
 const formatCourseDate = (iso: string) =>
