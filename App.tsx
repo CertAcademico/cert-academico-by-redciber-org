@@ -14,7 +14,7 @@ import {
   touchCourse,
 } from './progressService';
 import type { UserStats } from './progressService';
-import type { UserProgressMap, ModuleScore } from './types';
+import type { UserProgressMap, ModuleScore, UserRole } from './types';
 import QuizView from './components/QuizView';
 import VideoPlayer from './components/VideoPlayer';
 import InteractiveCard from './components/InteractiveCard';
@@ -398,6 +398,11 @@ const pathThemes: Record<string, { card: string; title: string; bar: string }> =
     title: 'text-teal-400',
     bar: 'from-teal-500 to-cyan-400',
   },
+  auditoria_ciberriesgo: {
+    card: 'from-rose-900/50 to-slate-900/50 ring-rose-700 hover:ring-rose-500 hover:shadow-rose-500/30',
+    title: 'text-rose-400',
+    bar: 'from-rose-500 to-orange-400',
+  },
   ia_ofensiva_insider: {
     card: 'from-orange-900/50 to-slate-900/50 ring-orange-700 hover:ring-orange-500 hover:shadow-orange-500/30',
     title: 'text-orange-400',
@@ -426,12 +431,25 @@ interface LearningPathSelectorProps {
   lockedPaths: Record<string, string>;
 }
 
-// Calendario de la cohorte de pregrado (rol student, Universidad EAN): cada curso se abre solo
-// dentro de su ventana (hora de Colombia, UTC-5); fuera de ella, y cualquier curso que no esté
-// acá, se ve con 🔒. Para habilitar el siguiente curso, agregar su id con sus fechas.
-const STUDENT_COURSE_WINDOWS: Record<string, { opensAt: string; closesAt: string }> = {
-  cybersecurity: { opensAt: '2026-10-05T00:00:00-05:00', closesAt: '2026-10-12T23:59:59-05:00' },
-  cybercrime: { opensAt: '2026-10-13T00:00:00-05:00', closesAt: '2026-10-19T23:59:59-05:00' },
+// Cursos exclusivos de un público: solo los ve ese rol (y admin). Los demás roles no los ven,
+// y quien tiene uno de estos roles ve únicamente su(s) curso(s).
+const EXCLUSIVE_PATHS: Record<string, UserRole> = {
+  cert_csirt: 'cert_student', // Ministerios de Hacienda (registro abierto)
+  auditoria_ciberriesgo: 'auditor', // Comités de riesgo de cooperativas financieras de Antioquia
+};
+
+// Calendario por rol: cada curso se abre solo dentro de su ventana (hora de Colombia, UTC-5);
+// fuera de ella, y cualquier curso del rol que no esté acá, se ve con 🔒. Los roles que no
+// aparecen (admin, teacher, tutor, cert_student) no tienen restricción de fechas.
+const COURSE_WINDOWS_BY_ROLE: Partial<Record<UserRole, Record<string, { opensAt: string; closesAt: string }>>> = {
+  // Cohorte de pregrado, Universidad EAN.
+  student: {
+    cybersecurity: { opensAt: '2026-10-05T00:00:00-05:00', closesAt: '2026-10-12T23:59:59-05:00' },
+    cybercrime: { opensAt: '2026-10-13T00:00:00-05:00', closesAt: '2026-10-19T23:59:59-05:00' },
+  },
+  auditor: {
+    auditoria_ciberriesgo: { opensAt: '2026-10-15T08:00:00-05:00', closesAt: '2026-10-22T23:59:59-05:00' },
+  },
 };
 
 // Extensiones individuales: estudiantes que se sumaron tarde y necesitan un curso abierto más tiempo.
@@ -443,11 +461,13 @@ const STUDENT_COURSE_EXTENSIONS: Record<string, Record<string, string>> = {
 const formatCourseDate = (iso: string) =>
   new Date(iso).toLocaleDateString('es-CO', { day: 'numeric', month: 'short', timeZone: 'America/Bogota' });
 
-/** Devuelve el texto de bloqueo del curso para un estudiante, o null si está habilitado ahora. */
-const getStudentLockLabel = (pathId: string, now: number, email: string): string | null => {
+/** Devuelve el texto de bloqueo del curso para el usuario, o null si está habilitado ahora. */
+const getCourseLockLabel = (role: UserRole, pathId: string, now: number, email: string): string | null => {
+  const windows = COURSE_WINDOWS_BY_ROLE[role];
+  if (!windows) return null;
   const extendedUntil = STUDENT_COURSE_EXTENSIONS[email.toLowerCase()]?.[pathId];
   if (extendedUntil && now <= Date.parse(extendedUntil)) return null;
-  const w = STUDENT_COURSE_WINDOWS[pathId];
+  const w = windows[pathId];
   if (!w) return '🔒 Próximamente';
   if (now < Date.parse(w.opensAt)) return `🔒 Disponible desde el ${formatCourseDate(w.opensAt)}`;
   if (now > Date.parse(w.closesAt)) return `🔒 Cerrado el ${formatCourseDate(w.closesAt)}`;
@@ -713,13 +733,12 @@ const App: React.FC = () => {
   }
 
   const isAdmin = currentUser.role === 'admin';
-  const isCertStudent = currentUser.role === 'cert_student';
-  // CERTs/CSIRTs es para otro público (registro abierto, rol cert_student) — la cohorte no lo ve,
-  // y cert_student solo ve ese curso. Admin ve todo.
-  // Se filtra acá (no solo en el grid) para que tampoco se pueda entrar por URL directa (?topic=cert_csirt).
+  const hasExclusivePaths = Object.values(EXCLUSIVE_PATHS).includes(currentUser.role);
+  // Se filtra acá (no solo en el grid) para que tampoco se pueda entrar por URL directa (?topic=...).
+  // Admin ve todo; un rol con cursos exclusivos ve solo esos; el resto ve todo menos los exclusivos.
   const visiblePaths: LearningPaths = Object.fromEntries(
     (Object.entries(learningPaths) as [string, LearningPathType][]).filter(([id]) =>
-      isAdmin || (isCertStudent ? id === 'cert_csirt' : id !== 'cert_csirt'),
+      isAdmin || (hasExclusivePaths ? EXCLUSIVE_PATHS[id] === currentUser.role : !(id in EXCLUSIVE_PATHS)),
     ),
   );
 
@@ -727,14 +746,11 @@ const App: React.FC = () => {
     return <TeacherDashboard paths={visiblePaths} onExit={() => setShowTeacherDashboard(false)} isAdmin={isAdmin} />;
   }
 
-  // La cohorte de pregrado (rol student) avanza un curso a la vez: solo los de esta lista están
-  // habilitados; el resto se ve con 🔒. Para abrir el siguiente curso, agregar su id acá.
+  // Roles con calendario (ver COURSE_WINDOWS_BY_ROLE): fuera de su ventana el curso se ve con 🔒.
   const lockedPaths: Record<string, string> = {};
-  if (currentUser.role === 'student') {
-    for (const id of Object.keys(visiblePaths)) {
-      const label = getStudentLockLabel(id, now, currentUser.email);
-      if (label) lockedPaths[id] = label;
-    }
+  for (const id of Object.keys(visiblePaths)) {
+    const label = getCourseLockLabel(currentUser.role, id, now, currentUser.email);
+    if (label) lockedPaths[id] = label;
   }
 
   if (!selectedPathId || !(selectedPathId in visiblePaths) || selectedPathId in lockedPaths) {

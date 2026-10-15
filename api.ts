@@ -1655,6 +1655,529 @@ const LEARNING_PATHS_DATA: LearningPaths = {
         ]
       }
     ]
+  },
+  auditoria_ciberriesgo: {
+    title: "Curso Rápido para Auditores: Cuando el Riesgo Cibernético se Materializa",
+    description: "Para comités de riesgo y auditoría de cooperativas financieras: cómo se materializa un incidente, qué le toca a la Auditoría Interna y qué preguntas, indicadores y pruebas aplicar desde el lunes.",
+    lastUpdated: "Octubre 2026",
+    modules: [
+      {
+        id: 'aud_intro',
+        title: "1. 🚨 Pregunta de Apertura: ¿Cuántas Horas Aguanta?",
+        content: [
+          { type: 'text', icon: 'AlarmIcon', text: "Imagine esto: hoy, a primera hora, todos los servidores de su cooperativa amanecen cifrados. El core no responde, los asociados llaman y nadie sabe por dónde empezar." },
+          { type: 'text', icon: 'QuestionMarkCircleIcon', text: "Antes de seguir, responda con honestidad: ¿cuántas horas podría operar su cooperativa en ese escenario? ¿0 horas, menos de 24, de 1 a 3 días… o no sabe?" },
+          { type: 'text', icon: 'PointerIcon', text: "Cómo funciona este curso: 11 módulos cortos con retos, tarjetas, juegos de memoria y un simulacro. Cada módulo completado suma XP y las pruebas le muestran cuánto domina el tema. Puede avanzar a su ritmo hasta el jueves 22 de octubre." },
+          {
+            type: 'quiz',
+            quizData: {
+              question: "Si la respuesta honesta de su cooperativa a la pregunta de apertura es \"no sé\", ¿qué significa para la auditoría?",
+              options: [
+                "Nada grave: es normal no tener ese dato.",
+                "Es el hallazgo número uno: la organización no conoce su tolerancia real a la interrupción.",
+                "Que la responsabilidad es solo del área de TI."
+              ],
+              correctOptionIndex: 1,
+              feedback: {
+                correct: "¡Exacto! Si nadie sabe cuánto tiempo se puede operar sin sistemas, la cooperativa no conoce su tolerancia a la interrupción. Ese ya es un hallazgo concreto de auditoría.",
+                incorrect: "No del todo. \"No sé\" no es una respuesta neutra: es el primer hallazgo de auditoría. Sin ese dato no se puede gestionar la continuidad."
+              }
+            }
+          }
+        ]
+      },
+      {
+        id: 'aud_numbers',
+        title: "2. El Riesgo Ya se Materializó: las Cifras",
+        content: [
+          { type: 'text', icon: 'ShieldCheckIcon', text: "La pregunta ya no es \"si nos pasa\", sino \"cuándo\" y \"qué tan preparados estamos\". El ataque es industrial y automatizado: una cooperativa pequeña no es invisible." },
+          { type: 'text', icon: 'DocumentTextIcon', text: "Las cifras no son para asustar, son para dimensionar el apetito de riesgo. Voltee cada tarjeta y adivine el dato antes de verlo." },
+          {
+            type: 'flashcards',
+            title: '¿Adivina la cifra? Voltee la tarjeta',
+            cards: [
+              { front: '¿Qué lugar ocupa Colombia entre los países más atacados de Latinoamérica?', back: 'El 2.º lugar, con 4.090 ataques semanales por organización (Check Point Research, 2026).' },
+              { front: '¿Cuántos intentos de ciberataque recibió Colombia en 2025?', back: '10,9 billones (millones de millones) de intentos, según FortiGuard Labs.' },
+              { front: '¿Cuántas denuncias por delitos informáticos hubo en Colombia en 2024?', back: '77.866 denuncias (+23 %). De ellas, 37.409 fueron hurtos por medios informáticos (+20 %): exactamente el riesgo de los asociados. Fuente: CCIT – Centro Cibernético Policial.' },
+              { front: '¿Cuánto cuesta en promedio una brecha de datos en el mundo?', back: 'US$4,44 millones (IBM, Cost of a Data Breach Report 2025).' },
+              { front: '¿Cuánto tiempo toma identificar y contener una brecha?', back: '241 días en promedio (IBM 2025). Casi 8 meses en los que el atacante puede seguir actuando.' },
+            ]
+          },
+          {
+            type: 'quiz',
+            quizData: {
+              question: "De las 77.866 denuncias por delitos informáticos de 2024, ¿qué conducta fue la más frecuente, y por qué debería preocupar a una cooperativa?",
+              options: [
+                "El hurto por medios informáticos (37.409 casos): afecta directamente el dinero de los asociados.",
+                "Los ataques a páginas web gubernamentales.",
+                "La piratería de software."
+              ],
+              correctOptionIndex: 0,
+              feedback: {
+                correct: "Correcto. Casi la mitad de las denuncias fueron hurtos por medios informáticos, el riesgo que más directamente toca a los asociados de una cooperativa.",
+                incorrect: "No. La conducta más denunciada fue el hurto por medios informáticos (37.409 casos, +20 %), que afecta directamente el dinero de los asociados."
+              }
+            }
+          }
+        ]
+      },
+      {
+        id: 'aud_ifx',
+        title: "3. Caso Real: el Ataque Llegó por el Proveedor",
+        content: [
+          { type: 'text', icon: 'ServerIcon', text: "Septiembre de 2023: un ransomware contra IFX Networks, proveedor de hosting y conectividad, afectó a 762 empresas en la región y a unos 1.800 clientes en Colombia, incluidas entidades públicas como la SIC, la Supersalud, el Consejo Superior de la Judicatura y el Ministerio de Salud." },
+          { type: 'text', icon: 'AlarmIcon', text: "Durante semanas se interrumpieron trámites de salud, justicia y supervisión. Lo más importante: ninguna de esas entidades fue atacada directamente. El riesgo se materializó en un tercero." },
+          { type: 'text', icon: 'QuestionMarkCircleIcon', text: "¿Su cooperativa sabe qué hace su proveedor de core financiero o de hosting si lo cifran? ¿Está escrito en el contrato?" },
+          {
+            type: 'activity',
+            title: 'Reto 1: ¿Qué proveedor, si cae mañana, detiene su cooperativa?',
+            duration: '6 min',
+            groupSize: 'Individual (o con su comité)',
+            goal: 'Identificar los terceros críticos de su cooperativa y si la auditoría los está cubriendo. Esta lista será la base de su plan 30-60-90 al final del curso.',
+            downloads: [],
+            steps: [
+              { title: 'Liste sus proveedores críticos', minutes: '2 min', detail: 'Anote los terceros sin los cuales la cooperativa no opera: core financiero, nube u hosting, pasarela de pagos, call center, proveedor de internet.' },
+              { title: 'Revise el plan de auditoría', minutes: '2 min', detail: '¿Alguno de esos proveedores está en el plan de auditoría de este año? Marque cuáles sí y cuáles no.' },
+              { title: 'Revise los contratos', minutes: '2 min', detail: '¿El contrato exige reportar incidentes, hacer pruebas de continuidad y le da derecho a auditar? Si no lo sabe, ya tiene una pregunta para la gerencia.' },
+            ],
+            closing: 'Guarde esta lista: la usará en el último módulo para armar su plan de 30, 60 y 90 días.',
+          },
+          {
+            type: 'quiz',
+            quizData: {
+              question: "¿Cuál es la principal lección de auditoría del caso IFX Networks?",
+              options: [
+                "Que solo las entidades públicas son blanco de ataques.",
+                "Que el riesgo cibernético puede materializarse en un tercero: los proveedores críticos deben estar en el plan de auditoría y en los contratos.",
+                "Que el ransomware solo afecta a los proveedores de internet."
+              ],
+              correctOptionIndex: 1,
+              feedback: {
+                correct: "Correcto. Ninguna de las entidades afectadas fue atacada directamente. La gestión de terceros (contratos, reporte de incidentes, pruebas de continuidad, derecho a auditar) es un frente clave.",
+                incorrect: "No exactamente. La lección es que el riesgo llegó por un proveedor: los terceros críticos deben auditarse y sus contratos deben exigir reporte de incidentes y continuidad."
+              }
+            }
+          }
+        ]
+      },
+      {
+        id: 'aud_bowtie',
+        title: "4. Anatomía de un Incidente: el Corbatín",
+        content: [
+          { type: 'text', icon: 'BugIcon', text: "Para prevenir, primero hay que entender la secuencia. El diagrama de corbatín (bow-tie) lo muestra: a la izquierda, las causas; en el centro, el evento (el incidente cibernético); a la derecha, las consecuencias." },
+          { type: 'text', icon: 'ShieldCheckIcon', text: "Los controles preventivos (lado izquierdo) reducen la probabilidad. Los controles de respuesta (lado derecho: respaldos, plan de incidentes, seguro) reducen el impacto. Un riesgo se materializa cuando todas las barreras de la izquierda fallan al mismo tiempo." },
+          { type: 'text', icon: 'UserSearchIcon', text: "El papel de la auditoría: probar si cada barrera existe, si funciona y si alguien la monitorea." },
+          {
+            type: 'memory',
+            title: '¿Causa o consecuencia? Arme las parejas del corbatín',
+            pairs: [
+              { term: 'Phishing / SMS falso', definition: 'Causa: abre la puerta al atacante (lado izquierdo).' },
+              { term: 'Actualización pendiente', definition: 'Causa: vulnerabilidad sin parchar que el atacante aprovecha.' },
+              { term: 'Operación detenida', definition: 'Consecuencia: la cooperativa no puede atender a sus asociados.' },
+              { term: 'Fuga de datos personales', definition: 'Consecuencia: exposición de información de asociados y empleados.' },
+              { term: 'Respaldo probado y fuera de línea', definition: 'Control de respuesta: reduce el impacto si ocurre el evento.' },
+              { term: 'Doble factor (MFA)', definition: 'Control preventivo: reduce la probabilidad de un acceso con contraseña robada.' },
+            ]
+          },
+          {
+            type: 'quiz',
+            quizData: {
+              question: "En el diagrama de corbatín, ¿qué tipo de control es una prueba de restauración de respaldos?",
+              options: [
+                "Un control preventivo: evita que ocurra el ataque.",
+                "Un control de respuesta: reduce el impacto cuando el evento ya ocurrió.",
+                "No es un control, es un trámite de TI."
+              ],
+              correctOptionIndex: 1,
+              feedback: {
+                correct: "Correcto. Un respaldo no evita el ransomware, pero define si la cooperativa se recupera en horas o en semanas. Por eso está del lado derecho del corbatín.",
+                incorrect: "No. El respaldo no impide el ataque: actúa después del evento, reduciendo el impacto. Es un control de respuesta (lado derecho del corbatín)."
+              }
+            }
+          }
+        ]
+      },
+      {
+        id: 'aud_scenarios',
+        title: "5. Cinco Escenarios que Ya Ocurren",
+        content: [
+          { type: 'text', icon: 'FishHookIcon', text: "Estos cinco escenarios no son hipotéticos: ya les han ocurrido a cooperativas y entidades financieras. Mientras los repasa, piense cuál ya vivió su cooperativa o una cercana." },
+          {
+            type: 'interactive',
+            title: 'Los 5 escenarios',
+            items: [
+              { term: '1. Suplantación a asociados', definition: 'SMS, llamadas y apps falsas con la marca de la cooperativa para robar claves o dinero.' },
+              { term: '2. Ransomware', definition: 'Secuestro de información: cifran el core y los respaldos, y exigen un rescate.' },
+              { term: '3. Fraude del "gerente" (BEC)', definition: 'Un correo falso o comprometido de un directivo ordena una transferencia urgente. BEC = Business Email Compromise.' },
+              { term: '4. Falla de un tercero', definition: 'El core, la nube o el hosting de un proveedor es comprometido o deja de funcionar.' },
+              { term: '5. Abuso interno', definition: 'Accesos privilegiados sin revisión ni trazabilidad, usados indebidamente por alguien de adentro.' },
+            ]
+          },
+          {
+            type: 'memory',
+            title: 'Juego: ¿qué escenario es?',
+            pairs: [
+              { term: 'Suplantación a asociados', definition: 'Un asociado recibe un SMS "de la cooperativa" pidiendo su clave.' },
+              { term: 'Ransomware', definition: 'Aparece una nota de rescate y el core no responde.' },
+              { term: 'Fraude del "gerente"', definition: 'Tesorería recibe un correo del gerente ordenando un pago urgente a una cuenta nueva.' },
+              { term: 'Falla de un tercero', definition: 'El proveedor de hosting cae y con él la banca en línea.' },
+              { term: 'Abuso interno', definition: 'Un ex empleado sigue teniendo acceso de administrador meses después de su retiro.' },
+            ]
+          },
+          {
+            type: 'activity',
+            title: 'Reto 2: un asociado denuncia que le vaciaron la cuenta con una app falsa',
+            duration: '6 min',
+            groupSize: 'Individual (o con su comité)',
+            goal: 'Pensar como auditor frente a un caso de suplantación: quién responde, en cuánto tiempo y qué evidencia se debe pedir.',
+            downloads: [],
+            steps: [
+              { title: '¿Quién responde?', minutes: '2 min', detail: 'Escriba qué área recibe el reclamo, quién lo escala a seguridad y quién habla con el asociado.' },
+              { title: '¿En cuánto tiempo?', minutes: '1 min', detail: '¿Existe un tiempo de respuesta definido? ¿Alguien monitorea apps y sitios falsos con la marca de la cooperativa?' },
+              { title: '¿Qué evidencia pediría?', minutes: '3 min', detail: 'Piense en: registro del reclamo, trazabilidad de las transacciones, monitoreo de marca, protocolo de comunicación con el asociado y reporte al supervisor.' },
+            ],
+            closing: 'Si alguna de estas respuestas fue "no sé" o "nadie", acaba de encontrar un hallazgo.',
+          },
+          {
+            type: 'quiz',
+            quizData: {
+              question: "Tesorería recibe un correo del gerente ordenando una transferencia urgente a una cuenta nueva. ¿Qué control lo detiene?",
+              options: [
+                "Responder el mismo correo pidiendo confirmación.",
+                "Verificar la orden por un canal distinto al correo (por ejemplo, una llamada a un número ya conocido) antes de pagar.",
+                "Hacer la transferencia y avisar después."
+              ],
+              correctOptionIndex: 1,
+              feedback: {
+                correct: "Correcto. Si el correo está suplantado o comprometido, responderlo le contesta al atacante. La verificación por otro canal es el control clave contra el fraude del \"gerente\".",
+                incorrect: "No. Si el correo está comprometido, responderlo confirma con el propio atacante. El control es verificar por un canal distinto antes de pagar."
+              }
+            }
+          }
+        ]
+      },
+      {
+        id: 'aud_attack_chain',
+        title: "6. Un Ataque es una Secuencia (y se Puede Cortar)",
+        content: [
+          { type: 'text', icon: 'ServerIcon', text: "Un ataque no ocurre en un instante: es una secuencia de etapas. Entre el acceso inicial y la extorsión suelen pasar semanas, y cada etapa es una oportunidad de detección." },
+          { type: 'text', icon: 'UserSearchIcon', text: "El valor de la auditoría es verificar que la organización tenga \"ojos\" en cada etapa: monitoreo, alertas, revisión de cuentas privilegiadas y un canal de reclamos de asociados conectado con seguridad." },
+          {
+            type: 'flashcards',
+            title: 'Las 5 etapas y la señal que alguien debería estar mirando',
+            cards: [
+              { front: '1. Reconocimiento', back: 'Buscan correos, proveedores y sistemas expuestos. Señal: huella pública y dominios falsos parecidos al de la cooperativa.' },
+              { front: '2. Acceso inicial', back: 'Phishing, credencial robada o vulnerabilidad. Señal: alertas de inicio de sesión inusual.' },
+              { front: '3. Movimiento lateral', back: 'Escalan privilegios y buscan los respaldos. Señal: nuevas cuentas administradoras.' },
+              { front: '4. Exfiltración / cifrado', back: 'Copian datos y luego bloquean sistemas. Señal: tráfico saliente anómalo.' },
+              { front: '5. Extorsión / fraude', back: 'Rescate, venta de datos, fraude a asociados. Señal: aumento de reclamos y PQR de asociados.' },
+            ]
+          },
+          {
+            type: 'quiz',
+            quizData: {
+              question: "Aparece una nueva cuenta con permisos de administrador que nadie solicitó. ¿En qué etapa del ataque está probablemente el intruso?",
+              options: [
+                "Reconocimiento.",
+                "Movimiento lateral: está escalando privilegios y buscando los respaldos.",
+                "Extorsión."
+              ],
+              correctOptionIndex: 1,
+              feedback: {
+                correct: "Correcto. Crear cuentas administradoras es típico del movimiento lateral. Si alguien revisa las cuentas privilegiadas, todavía se puede cortar el ataque antes del cifrado.",
+                incorrect: "No. Las cuentas administradoras nuevas son la señal del movimiento lateral: el intruso ya entró y está escalando privilegios antes de cifrar."
+              }
+            }
+          }
+        ]
+      },
+      {
+        id: 'aud_three_lines',
+        title: "7. El Rol de la Auditoría: las Tres Líneas",
+        content: [
+          { type: 'text', icon: 'HappyUsersIcon', text: "Según el Modelo de las Tres Líneas del IIA (2020), la ciberseguridad es responsabilidad de todos, pero cada uno con un papel distinto. Por encima está el órgano de gobierno: el Consejo de Administración y el Comité de Auditoría." },
+          { type: 'text', icon: 'LockIcon', text: "La auditoría NO es dueña del control ni del riesgo. Su valor es la independencia: decirle al Consejo si la primera y la segunda línea realmente funcionan. Un riesgo frecuente en cooperativas pequeñas: que auditoría termine operando la seguridad y pierda su independencia." },
+          {
+            type: 'memory',
+            title: 'Asocie cada línea con su papel',
+            pairs: [
+              { term: '1ª línea: gerencia, operación y TI', definition: 'Opera y aplica los controles a diario.' },
+              { term: '2ª línea: riesgos (SARO), seguridad de la información, cumplimiento', definition: 'Define, acompaña y monitorea.' },
+              { term: '3ª línea: Auditoría Interna', definition: 'Asegura de forma independiente y asesora.' },
+              { term: 'Externos: Revisoría Fiscal y Supersolidaria', definition: 'Supervisión y control desde fuera de la organización.' },
+            ]
+          },
+          {
+            type: 'quiz',
+            quizData: {
+              question: "Por falta de personal, le piden a Auditoría Interna administrar el antivirus y las cuentas de usuario. ¿Cuál es el problema?",
+              options: [
+                "Ninguno: así se aprovecha mejor el equipo.",
+                "Auditoría pierde su independencia: no puede asegurar de forma objetiva controles que ella misma opera.",
+                "Que auditoría no sabe usar el antivirus."
+              ],
+              correctOptionIndex: 1,
+              feedback: {
+                correct: "Correcto. Si auditoría opera los controles, termina auditándose a sí misma. Esa tarea es de la primera línea; auditoría asegura de forma independiente.",
+                incorrect: "No. El problema de fondo es la independencia: auditoría no puede evaluar con objetividad controles que ella misma opera."
+              }
+            }
+          }
+        ]
+      },
+      {
+        id: 'aud_framework',
+        title: "8. El Marco que Ya nos Obliga",
+        content: [
+          { type: 'text', icon: 'DocumentTextIcon', text: "Desde el 5 de febrero de 2026 está vigente el Requisito Temático de Ciberseguridad del IIA (Cybersecurity Topical Requirement), que complementa las Normas Globales de Auditoría Interna (vigentes desde enero de 2025). Es obligatorio para quienes se declaran conformes con las Normas cuando la ciberseguridad está en el alcance de su trabajo." },
+          { type: 'text', icon: 'CheckCircleIcon', text: "Cubre tres dominios: Gobierno (estrategia aprobada por el Consejo; roles, recursos y rendición de cuentas), Gestión de riesgos (evaluación y respuesta al riesgo; incidentes, terceros y continuidad) y Procesos de control (diseño y eficacia de controles; cumplimiento, cultura y seguridad física). Úselo como lista de verificación mínima de su programa de auditoría." },
+          {
+            type: 'interactive',
+            title: 'Normas y marcos para cooperativas en Colombia',
+            items: [
+              { term: 'Supersolidaria · Circular Externa 36 de 2022', definition: 'Seguridad y calidad de la información para servicios financieros (Anexo 2 de la Circular Básica Contable y Financiera, dentro del SARO): 22 requisitos técnicos mínimos, reporte de incidentes y terceros auditables. Aplica a cooperativas de ahorro y crédito y a multiactivas o integrales con sección de ahorro.' },
+              { term: 'Ley 1581 de 2012', definition: 'Protección de los datos personales de asociados y empleados.' },
+              { term: 'Ley 1273 de 2009', definition: 'Delitos informáticos: acceso abusivo, hurto por medios informáticos y suplantación, entre otros.' },
+              { term: 'NIST CSF 2.0 (2024)', definition: 'Marco internacional de referencia en ciberseguridad. Su versión 2.0 añade la función "Gobernar".' },
+              { term: 'IIA · Requisito Temático de Ciberseguridad', definition: 'Obligatorio desde el 5 de febrero de 2026 cuando se audita ciberseguridad. Tres dominios: gobierno, gestión de riesgos y procesos de control.' },
+              { term: 'SARO', definition: 'Sistema de Administración del Riesgo Operativo (Supersolidaria). El riesgo cibernético debe vivir dentro de esta matriz, no aparte.' },
+            ]
+          },
+          {
+            type: 'memory',
+            title: 'Asocie cada norma con lo que exige',
+            pairs: [
+              { term: 'CE 36 de 2022', definition: '22 requisitos técnicos mínimos de seguridad de la información.' },
+              { term: 'Ley 1581 de 2012', definition: 'Protección de datos personales.' },
+              { term: 'Ley 1273 de 2009', definition: 'Tipifica los delitos informáticos.' },
+              { term: 'NIST CSF 2.0', definition: 'Marco internacional que añade la función "Gobernar".' },
+            ]
+          },
+          {
+            type: 'quiz',
+            quizData: {
+              question: "¿Dónde debe gestionarse el riesgo cibernético en una cooperativa vigilada por la Supersolidaria?",
+              options: [
+                "En una matriz aparte, solo del área de TI.",
+                "Dentro de la matriz del SARO, como parte del riesgo operativo.",
+                "No es necesario gestionarlo si hay un antivirus."
+              ],
+              correctOptionIndex: 1,
+              feedback: {
+                correct: "Correcto. La CE 36 de 2022 lo ubica dentro del SARO: el riesgo cibernético es riesgo operativo y debe calificarse en la misma matriz.",
+                incorrect: "No. El riesgo cibernético debe vivir dentro de la matriz del SARO (riesgo operativo), no en una matriz aparte de TI."
+              }
+            }
+          }
+        ]
+      },
+      {
+        id: 'aud_resilience',
+        title: "9. Auditar Resiliencia, No Papeles",
+        content: [
+          { type: 'text', icon: 'BrainCircuitIcon', text: "El Consejo no decide con \"vulnerabilidades críticas\" (CVE): decide con \"podríamos estar 5 días sin operar y perder X millones\". La auditoría moderna habla en pesos, días y asociados afectados." },
+          {
+            type: 'flashcards',
+            title: 'Ayer vs. hoy: voltee para ver cómo se audita ahora',
+            cards: [
+              { front: 'Ayer: ¿existe la política?', back: 'Hoy: ¿el control funciona bajo ataque?' },
+              { front: 'Ayer: lista de chequeo anual', back: 'Hoy: monitoreo continuo con datos.' },
+              { front: 'Ayer: informe técnico para TI', back: 'Hoy: informe en pesos y días para el Consejo.' },
+              { front: 'Ayer: muestreo de documentos', back: 'Hoy: pruebas reales, como restaurar un respaldo o hacer un phishing simulado.' },
+            ]
+          },
+          {
+            type: 'interactive',
+            title: 'Tres métricas que el Consejo debería conocer',
+            items: [
+              { term: 'RTO (tiempo objetivo de recuperación)', definition: 'Cuánto tiempo puede estar detenido un proceso o sistema antes de que el daño sea inaceptable.' },
+              { term: 'RPO (punto objetivo de recuperación)', definition: 'Cuántos datos (medidos en tiempo) se puede permitir perder: por ejemplo, las transacciones de las últimas 4 horas.' },
+              { term: 'Costo por día de interrupción', definition: 'Cuánto pierde la cooperativa por cada día sin operar: ingresos, multas, atención a asociados y reputación.' },
+            ]
+          },
+          {
+            type: 'activity',
+            title: 'Reto 3: ¿su último informe al Consejo dijo cuántos días podría estar detenida la cooperativa?',
+            duration: '7 min',
+            groupSize: 'Individual (o con su comité)',
+            goal: 'Llevar el riesgo cibernético al lenguaje del Consejo: días de interrupción y costo por día.',
+            downloads: [],
+            steps: [
+              { title: 'Busque el dato', minutes: '2 min', detail: '¿Su cooperativa tiene definidos el RTO y el RPO de sus sistemas críticos (core, banca en línea, pagos)?' },
+              { title: 'Póngale precio', minutes: '3 min', detail: 'Estime de forma gruesa cuánto costaría cada día de interrupción. No necesita precisión: necesita un orden de magnitud.' },
+              { title: '¿Qué le impide medirlo?', minutes: '2 min', detail: 'Si no tiene estos datos, anote qué falta: un análisis de impacto al negocio, información de TI, apoyo de la gerencia…' },
+            ],
+            closing: 'Si nadie en la cooperativa tiene estas cifras, ese es un hallazgo concreto para su próximo informe.',
+          },
+          {
+            type: 'quiz',
+            quizData: {
+              question: "¿Cuál de estos hallazgos le sirve más al Consejo para tomar una decisión?",
+              options: [
+                "\"Se identificaron 37 CVE críticas en los servidores.\"",
+                "\"Ante un ransomware, la cooperativa podría estar 5 días sin operar, con un costo estimado de X millones por día.\"",
+                "\"La política de seguridad fue actualizada el año pasado.\""
+              ],
+              correctOptionIndex: 1,
+              feedback: {
+                correct: "Correcto. Días de interrupción y pesos de impacto son el lenguaje con el que el Consejo puede priorizar inversiones y aceptar o no un riesgo.",
+                incorrect: "No. Los datos técnicos o documentales no le dicen al Consejo qué arriesga. Lo útil es traducirlo a días sin operar y pesos de impacto."
+              }
+            }
+          }
+        ]
+      },
+      {
+        id: 'aud_toolbox',
+        title: "10. 🧰 Caja de Herramientas y Simulacro Relámpago",
+        content: [
+          { type: 'text', icon: 'PointerIcon', text: "Pasamos de lo conceptual a lo práctico: preguntas, indicadores y pruebas que puede aplicar desde el lunes." },
+          {
+            type: 'flashcards',
+            title: 'Las 7 preguntas clave del auditor',
+            cards: [
+              { front: 'Pregunta 1', back: '¿Cuáles son nuestras "joyas de la corona" (datos y sistemas críticos)?' },
+              { front: 'Pregunta 2 🔴', back: '¿Cuándo restauramos por última vez un respaldo completo? (Una de las dos que más hallazgos generan.)' },
+              { front: 'Pregunta 3 🔴', back: '¿Tenemos doble factor (MFA) en correo, VPN, core y cuentas administradoras? (La otra que más hallazgos genera.)' },
+              { front: 'Pregunta 4', back: '¿Quién tiene accesos privilegiados hoy y quién los revisó?' },
+              { front: 'Pregunta 5', back: '¿Qué terceros críticos acceden a nuestros datos y cuándo se evaluaron?' },
+              { front: 'Pregunta 6', back: '¿Cuánto tardamos en detectar y contener un incidente?' },
+              { front: 'Pregunta 7', back: '¿El Consejo ha participado en un simulacro de crisis?' },
+            ]
+          },
+          {
+            type: 'memory',
+            title: 'Indicadores clave de riesgo (KRI): asocie cada indicador con su meta sugerida',
+            pairs: [
+              { term: 'Actualizaciones críticas aplicadas en menos de 30 días', definition: '≥ 95 %' },
+              { term: 'Cuentas privilegiadas y remotas con MFA', definition: '100 %' },
+              { term: 'Pruebas exitosas de restauración de respaldos', definition: '4 al año' },
+              { term: 'Clic en phishing simulado', definition: '< 5 %' },
+            ]
+          },
+          { type: 'text', icon: 'CheckCircleIcon', text: "Un KRI anticipa la materialización; un indicador de desempeño la cuenta después. Propuesta: que el Comité reciba estos 4 indicadores cada trimestre, con semáforo. Las metas son una referencia; cada cooperativa las ajusta a su apetito de riesgo." },
+          { type: 'text', icon: 'ServerIcon', text: "Programa de auditoría en 4 pasos: (1) Planear: activos críticos, terceros y mapa de calor. (2) Probar: restaurar respaldos, revisar accesos y MFA, phishing simulado. (3) Informar: hallazgos en pesos, días y asociados afectados. (4) Seguir: planes con dueño, fecha y KRI." },
+          {
+            type: 'activity',
+            title: 'Simulacro relámpago: lunes, 7:45 a. m.',
+            duration: '10 min',
+            groupSize: 'Individual (o con su comité)',
+            goal: 'Nota de rescate en pantalla. El core no responde. Los asociados reportan SMS "de la cooperativa" pidiendo claves. Usted es el auditor: responda las tres preguntas antes de ver las respuestas esperadas.',
+            downloads: [],
+            steps: [
+              { title: '1. ¿Qué controles fallaron?', minutes: '3 min', detail: 'Respuesta esperada: MFA, parches, respaldos fuera de línea y monitoreo de marca (los SMS falsos).' },
+              { title: '2. ¿Qué evidencia preservaría?', minutes: '3 min', detail: 'Respuesta esperada: bitácoras (logs), imágenes forenses y cadena de custodia. No apagar equipos sin criterio: se pierde la evidencia en memoria.' },
+              { title: '3. ¿Qué le informa al Consejo en 24 horas?', minutes: '4 min', detail: 'Respuesta esperada: alcance, impacto en asociados, decisiones requeridas, plan de comunicaciones y reporte a la Supersolidaria.' },
+            ],
+            closing: 'Compare sus respuestas con las esperadas. Lo que no se le ocurrió es justamente lo que conviene preguntar a la gerencia esta semana.',
+          },
+          {
+            type: 'quiz',
+            quizData: {
+              question: "De las 7 preguntas clave, ¿cuáles dos marcan más diferencia frente a un ransomware?",
+              options: [
+                "Las de las joyas de la corona y el simulacro del Consejo.",
+                "Cuándo se restauró por última vez un respaldo completo, y si hay MFA en todo acceso remoto y privilegiado.",
+                "Las de los terceros críticos y el tiempo de detección."
+              ],
+              correctOptionIndex: 1,
+              feedback: {
+                correct: "¡Correcto! Respaldos probados y fuera de línea, y MFA en todo acceso remoto y privilegiado: son las dos que más hallazgos generan y las que más diferencia hacen.",
+                incorrect: "Todas importan, pero las que más diferencia hacen frente a ransomware son la 2 (respaldo restaurado recientemente) y la 3 (MFA en todo acceso remoto y privilegiado)."
+              }
+            }
+          }
+        ]
+      },
+      {
+        id: 'aud_final',
+        title: "11. 🏁 Su Plan 30-60-90 y Evaluación Final",
+        content: [
+          { type: 'text', icon: 'CalendarIcon', text: "Su plan 30-60-90 días. A los 30 días: inventario de activos y terceros críticos (use la lista del Reto 1), y hacerle las 7 preguntas a la gerencia. A los 60 días: presenciar una prueba de restauración y revisar los accesos privilegiados y el MFA. A los 90 días: informe al Consejo en lenguaje de negocio, e incluir ciberseguridad en el plan anual de auditoría con KRI." },
+          { type: 'text', icon: 'ShieldCheckIcon', text: "Para profundizar: la identidad es el nuevo perímetro. Suplantar a un asociado o a un directivo es la forma más rápida de materializar un riesgo cibernético. La biometría y la criptografía poscuántica (PQC) son los controles que vienen." },
+          { type: 'text', icon: 'CheckCircleIcon', text: "Recuerde: la auditoría no evita el ataque, evita que nos encuentre sin preparación. ¡Complete la evaluación final para cerrar el curso!" },
+          {
+            type: 'h5p_check',
+            title: 'Evaluación Final: Auditoría del Riesgo Cibernético',
+            description: 'Repaso integral del curso. Cada respuesta correcta suma puntos.',
+            questions: [
+              {
+                question: 'En el caso IFX Networks (2023), ¿por dónde se materializó el riesgo para las entidades afectadas?',
+                options: [
+                  { id: 'audf1_o1', text: 'Por un proveedor tercero de hosting y conectividad.', isCorrect: true, score: 10 },
+                  { id: 'audf1_o2', text: 'Por ataques directos a cada entidad.', isCorrect: false, score: 0 },
+                  { id: 'audf1_o3', text: 'Por un error de sus propios empleados.', isCorrect: false, score: 0 }
+                ],
+                feedback: 'Correcto. Ninguna entidad fue atacada directamente: el riesgo llegó por el proveedor.'
+              },
+              {
+                question: 'En el diagrama de corbatín, los controles preventivos…',
+                options: [
+                  { id: 'audf2_o1', text: 'Reducen la probabilidad de que ocurra el evento.', isCorrect: true, score: 10 },
+                  { id: 'audf2_o2', text: 'Reducen el impacto después del evento.', isCorrect: false, score: 0 },
+                  { id: 'audf2_o3', text: 'Solo sirven para cumplir la norma.', isCorrect: false, score: 0 }
+                ],
+                feedback: 'Correcto. Los preventivos (lado izquierdo) reducen la probabilidad; los de respuesta (lado derecho) reducen el impacto.'
+              },
+              {
+                question: '¿Qué escenario es un correo falso del gerente que ordena una transferencia urgente?',
+                options: [
+                  { id: 'audf3_o1', text: 'Fraude del "gerente" (BEC).', isCorrect: true, score: 10 },
+                  { id: 'audf3_o2', text: 'Ransomware.', isCorrect: false, score: 0 },
+                  { id: 'audf3_o3', text: 'Falla de un tercero.', isCorrect: false, score: 0 }
+                ],
+                feedback: 'Correcto. BEC (Business Email Compromise): fraude por correo corporativo suplantado o comprometido.'
+              },
+              {
+                question: 'En el Modelo de las Tres Líneas, ¿cuál es el papel de la Auditoría Interna?',
+                options: [
+                  { id: 'audf4_o1', text: 'Asegurar de forma independiente y asesorar (3ª línea).', isCorrect: true, score: 10 },
+                  { id: 'audf4_o2', text: 'Operar los controles de seguridad a diario.', isCorrect: false, score: 0 },
+                  { id: 'audf4_o3', text: 'Ser dueña del riesgo cibernético.', isCorrect: false, score: 0 }
+                ],
+                feedback: 'Correcto. Auditoría no opera ni es dueña del riesgo: su valor es la independencia.'
+              },
+              {
+                question: '¿Desde cuándo es obligatorio el Requisito Temático de Ciberseguridad del IIA?',
+                options: [
+                  { id: 'audf5_o1', text: 'Desde el 5 de febrero de 2026.', isCorrect: true, score: 10 },
+                  { id: 'audf5_o2', text: 'Desde enero de 2020.', isCorrect: false, score: 0 },
+                  { id: 'audf5_o3', text: 'No es obligatorio en ningún caso.', isCorrect: false, score: 0 }
+                ],
+                feedback: 'Correcto. Vigente desde el 5 de febrero de 2026, complementa las Normas Globales de Auditoría Interna.'
+              },
+              {
+                question: '¿Qué circular de la Supersolidaria establece los 22 requisitos técnicos mínimos de seguridad de la información?',
+                options: [
+                  { id: 'audf6_o1', text: 'La Circular Externa 36 de 2022.', isCorrect: true, score: 10 },
+                  { id: 'audf6_o2', text: 'La Ley 1581 de 2012.', isCorrect: false, score: 0 },
+                  { id: 'audf6_o3', text: 'El NIST CSF 2.0.', isCorrect: false, score: 0 }
+                ],
+                feedback: 'Correcto. La CE 36 de 2022 (Anexo 2 de la Circular Básica Contable y Financiera, dentro del SARO).'
+              },
+              {
+                question: '¿Qué significa el RTO?',
+                options: [
+                  { id: 'audf7_o1', text: 'El tiempo máximo que un proceso puede estar detenido antes de que el daño sea inaceptable.', isCorrect: true, score: 10 },
+                  { id: 'audf7_o2', text: 'La cantidad de datos que se pueden perder.', isCorrect: false, score: 0 },
+                  { id: 'audf7_o3', text: 'El número de vulnerabilidades críticas.', isCorrect: false, score: 0 }
+                ],
+                feedback: 'Correcto. RTO = tiempo objetivo de recuperación. La cantidad de datos que se pueden perder es el RPO.'
+              },
+              {
+                question: '¿Cuál es la meta sugerida para cuentas privilegiadas y remotas con MFA?',
+                options: [
+                  { id: 'audf8_o1', text: '100 %.', isCorrect: true, score: 10 },
+                  { id: 'audf8_o2', text: '50 %.', isCorrect: false, score: 0 },
+                  { id: 'audf8_o3', text: 'Solo las del gerente.', isCorrect: false, score: 0 }
+                ],
+                feedback: 'Correcto. Toda cuenta privilegiada o con acceso remoto debe tener doble factor.'
+              }
+            ]
+          }
+        ]
+      }
+    ]
   }
 };
 
