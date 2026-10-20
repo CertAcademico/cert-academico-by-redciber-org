@@ -444,8 +444,10 @@ const EXCLUSIVE_PATHS: Record<string, UserRole> = {
 const COURSE_WINDOWS_BY_ROLE: Partial<Record<UserRole, Record<string, { opensAt: string; closesAt: string }>>> = {
   // Cohorte de pregrado, Universidad EAN.
   student: {
-    cybersecurity: { opensAt: '2026-10-05T00:00:00-05:00', closesAt: '2026-10-12T23:59:59-05:00' },
-    cybercrime: { opensAt: '2026-10-13T00:00:00-05:00', closesAt: '2026-10-19T23:59:59-05:00' },
+    // Cursos 1 y 2 extendidos, y curso 3 abierto, hasta el 24 de octubre.
+    cybersecurity: { opensAt: '2026-10-05T00:00:00-05:00', closesAt: '2026-10-24T23:59:59-05:00' },
+    cybercrime: { opensAt: '2026-10-13T00:00:00-05:00', closesAt: '2026-10-24T23:59:59-05:00' },
+    cybercriminology: { opensAt: '2026-10-20T00:00:00-05:00', closesAt: '2026-10-24T23:59:59-05:00' },
   },
   auditor: {
     auditoria_ciberriesgo: { opensAt: '2026-10-15T08:00:00-05:00', closesAt: '2026-10-22T23:59:59-05:00' },
@@ -454,10 +456,6 @@ const COURSE_WINDOWS_BY_ROLE: Partial<Record<UserRole, Record<string, { opensAt:
 
 // Extensiones individuales: estudiantes que se sumaron tarde y necesitan un curso abierto más tiempo.
 const STUDENT_COURSE_EXTENSIONS: Record<string, Record<string, string>> = {
-  // Ingresó a la cohorte después de cerrado el curso 1.
-  'jgaribe76593@universidadean.edu.co': { cybersecurity: '2026-10-19T23:59:59-05:00' },
-  // Extensión de dos días para terminar el curso 1.
-  'dmaldon11763@universidadean.edu.co': { cybersecurity: '2026-10-17T23:59:59-05:00' },
 };
 
 const formatCourseDate = (iso: string) =>
