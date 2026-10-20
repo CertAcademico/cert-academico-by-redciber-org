@@ -398,6 +398,11 @@ const pathThemes: Record<string, { card: string; title: string; bar: string }> =
     title: 'text-teal-400',
     bar: 'from-teal-500 to-cyan-400',
   },
+  cti_basico: {
+    card: 'from-violet-900/50 to-slate-900/50 ring-violet-700 hover:ring-violet-500 hover:shadow-violet-500/30',
+    title: 'text-violet-400',
+    bar: 'from-violet-500 to-purple-400',
+  },
   auditoria_ciberriesgo: {
     card: 'from-rose-900/50 to-slate-900/50 ring-rose-700 hover:ring-rose-500 hover:shadow-rose-500/30',
     title: 'text-rose-400',
@@ -436,6 +441,7 @@ interface LearningPathSelectorProps {
 const EXCLUSIVE_PATHS: Record<string, UserRole> = {
   cert_csirt: 'cert_student', // Ministerios de Hacienda (registro abierto)
   auditoria_ciberriesgo: 'auditor', // Comités de riesgo de cooperativas financieras de Antioquia
+  cti_basico: 'cti_student', // Grupo de estudiantes EAN del curso de CTI
 };
 
 // Calendario por rol: cada curso se abre solo dentro de su ventana (hora de Colombia, UTC-5);

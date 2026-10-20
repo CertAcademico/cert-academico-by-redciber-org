@@ -34,7 +34,113 @@ const ROLE_OPTIONS: { value: UserRole; label: string }[] = [
   { value: 'admin', label: 'Administrador' },
   { value: 'cert_student', label: 'Estudiante CERTs/CSIRTs' },
   { value: 'auditor', label: 'Auditor (cooperativas)' },
+  { value: 'cti_student', label: 'Estudiante CTI' },
 ];
+
+type BulkResult = { name: string; email: string; password?: string; error?: string };
+
+/** "Nombre, correo" o "Nombre<TAB>correo" por línea (acepta el orden inverso). */
+const parseBulkLines = (text: string): { name: string; email: string }[] =>
+  text
+    .split('\n')
+    .map(line => line.split(/[,\t;]/).map(p => p.trim()).filter(Boolean))
+    .filter(parts => parts.length >= 2)
+    .map(parts => {
+      const email = parts.find(p => p.includes('@')) ?? '';
+      const name = parts.filter(p => p !== email && !/^\d+$/.test(p)).join(' ');
+      return { name, email };
+    })
+    .filter(u => u.name && u.email);
+
+const BulkCreatePanel: React.FC<{ onUsersCreated: () => void }> = ({ onUsersCreated }) => {
+  const [text, setText] = useState('');
+  const [role, setRole] = useState<UserRole>('student');
+  const [isRunning, setIsRunning] = useState(false);
+  const [results, setResults] = useState<BulkResult[]>([]);
+  const users = parseBulkLines(text);
+
+  const handleRun = async () => {
+    setIsRunning(true);
+    const out: BulkResult[] = [];
+    for (const u of users) {
+      try {
+        const res = await callAdminApi('/api/admin-create-user', { name: u.name, email: u.email, role });
+        out.push({ ...u, password: res.password });
+      } catch (err) {
+        out.push({ ...u, error: (err as Error).message });
+      }
+      setResults([...out]);
+    }
+    setIsRunning(false);
+    setText('');
+    onUsersCreated();
+  };
+
+  const csv = ['nombre,correo,rol,contrasena', ...results.filter(r => r.password).map(r => `${r.name},${r.email},${role},${r.password}`)].join('\n');
+
+  const download = () => {
+    const url = URL.createObjectURL(new Blob([csv], { type: 'text/csv;charset=utf-8' }));
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `cuentas_${role}_${new Date().toISOString().slice(0, 10)}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
+  return (
+    <div className="bg-slate-800/50 rounded-2xl p-4 md:p-6 mb-6">
+      <h2 className="text-lg font-semibold mb-1">👥 Agregar varios usuarios</h2>
+      <p className="text-slate-400 text-sm mb-4">Una persona por línea: <span className="font-mono">Nombre, correo</span>. También puede pegar columnas copiadas de Excel.</p>
+      {results.length > 0 && (
+        <div className="bg-emerald-500/10 border border-emerald-500/30 rounded-xl p-4 mb-4">
+          <div className="flex flex-wrap justify-between items-center gap-2 mb-3">
+            <p className="text-emerald-300 text-sm font-semibold">Descargue las contraseñas ahora — no se vuelven a mostrar</p>
+            <div className="flex gap-2">
+              <button onClick={download} disabled={isRunning} className="text-xs bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 text-white font-bold rounded-lg px-3 py-1.5">⬇ Descargar CSV</button>
+              <button onClick={() => setResults([])} disabled={isRunning} className="text-slate-400 hover:text-white text-sm px-2">✕</button>
+            </div>
+          </div>
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
+              <tbody>
+                {results.map(r => (
+                  <tr key={r.email} className="border-t border-slate-700/50">
+                    <td className="py-1.5 pr-3 text-slate-200">{r.name}</td>
+                    <td className="py-1.5 pr-3 text-slate-400">{r.email}</td>
+                    <td className="py-1.5 font-mono">{r.password ? <span className="text-slate-100">{r.password}</span> : <span className="text-rose-400 font-sans">{r.error}</span>}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
+      <textarea
+        value={text}
+        onChange={e => setText(e.target.value)}
+        rows={5}
+        placeholder={'Ana Pérez Gómez, aperez12345@universidadean.edu.co\nLuis Rojas, lrojas67890@universidadean.edu.co'}
+        className="w-full bg-slate-900/80 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white placeholder-slate-500 outline-none focus:border-blue-500 font-mono mb-3"
+      />
+      <div className="flex flex-col md:flex-row gap-3 md:items-center">
+        <select
+          value={role}
+          onChange={e => setRole(e.target.value as UserRole)}
+          className="bg-slate-900/80 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white outline-none focus:border-blue-500"
+        >
+          {ROLE_OPTIONS.map(r => <option key={r.value} value={r.value}>{r.label}</option>)}
+        </select>
+        <button
+          onClick={handleRun}
+          disabled={isRunning || users.length === 0}
+          className="bg-blue-600 hover:bg-blue-500 disabled:opacity-50 text-white font-bold px-5 py-2 rounded-lg text-sm transition-colors"
+        >
+          {isRunning ? `Creando… (${results.length}/${users.length})` : `Crear ${users.length} cuenta${users.length !== 1 ? 's' : ''}`}
+        </button>
+      </div>
+    </div>
+  );
+};
 
 const ResultBox: React.FC<{ email: string; password: string; onClose: () => void }> = ({ email, password, onClose }) => (
   <div className="bg-emerald-500/10 border border-emerald-500/30 rounded-xl p-4 mb-6">
@@ -174,6 +280,7 @@ const TeacherDashboard: React.FC<TeacherDashboardProps> = ({ paths, onExit, isAd
         </div>
 
         {isAdmin && <AdminPanel onUserCreated={loadStudents} />}
+        {isAdmin && <BulkCreatePanel onUsersCreated={loadStudents} />}
         {isAdmin && resetResult && <ResultBox email={resetResult.email} password={resetResult.password} onClose={() => setResetResult(null)} />}
         {isAdmin && resetError && <p className="text-rose-400 text-sm mb-4">{resetError}</p>}
 

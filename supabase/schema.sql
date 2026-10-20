@@ -17,9 +17,10 @@ create table if not exists public.profiles (
 -- Permite 'tutor', 'admin' y 'cert_student' además de 'student'/'teacher' (ya sea tabla nueva o existente).
 -- 'cert_student' = registro abierto (cualquier correo), solo ve el curso CERTs/CSIRTs.
 -- 'auditor' = comités de riesgo de cooperativas (cuentas creadas por admin), solo ve el curso para auditores.
+-- 'cti_student' = estudiantes del curso de CTI (cuentas creadas por admin), solo ven ese curso.
 alter table public.profiles drop constraint if exists profiles_role_check;
 alter table public.profiles add constraint profiles_role_check
-  check (role in ('student', 'teacher', 'tutor', 'admin', 'cert_student', 'auditor'));
+  check (role in ('student', 'teacher', 'tutor', 'admin', 'cert_student', 'auditor', 'cti_student'));
 
 alter table public.profiles enable row level security;
 
@@ -55,7 +56,7 @@ create table if not exists public.allowed_emails (
 
 alter table public.allowed_emails drop constraint if exists allowed_emails_role_check;
 alter table public.allowed_emails add constraint allowed_emails_role_check
-  check (role in ('student', 'teacher', 'tutor', 'admin', 'cert_student', 'auditor'));
+  check (role in ('student', 'teacher', 'tutor', 'admin', 'cert_student', 'auditor', 'cti_student'));
 
 alter table public.allowed_emails enable row level security;
 

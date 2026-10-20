@@ -2178,6 +2178,485 @@ const LEARNING_PATHS_DATA: LearningPaths = {
         ]
       }
     ]
+  },
+  cti_basico: {
+    title: "Fundamentos de Cyber Threat Intelligence (CTI)",
+    description: "Aprende a convertir datos sobre amenazas en inteligencia útil: el ciclo de inteligencia, fuentes, indicadores, Kill Chain, Modelo Diamante, MITRE ATT&CK y cómo comunicar hallazgos.",
+    lastUpdated: "Octubre 2026",
+    modules: [
+      {
+        id: 'cti_intro',
+        title: "1. 🕵️ ¿Qué es la Inteligencia de Amenazas?",
+        content: [
+          { type: 'text', icon: 'UserSearchIcon', text: "La Inteligencia de Amenazas Cibernéticas (CTI, por Cyber Threat Intelligence) es conocimiento basado en evidencia sobre quién podría atacarnos, cómo lo haría y por qué, organizado para que alguien pueda tomar una mejor decisión." },
+          { type: 'text', icon: 'BrainCircuitIcon', text: "La clave está en la diferencia entre dato, información e inteligencia. Una dirección IP es un dato. Saber que esa IP aparece en una campaña de phishing es información. Saber que esa campaña apunta a entidades financieras de Colombia y que hay que bloquearla hoy es inteligencia: contexto + relevancia + acción." },
+          {
+            type: 'interactive',
+            title: 'Los 4 tipos de inteligencia según su audiencia',
+            items: [
+              { term: 'Estratégica', definition: 'Para la alta dirección. Tendencias, riesgos para el negocio, motivaciones de los actores. Responde: ¿en qué debemos invertir?' },
+              { term: 'Operacional', definition: 'Para los equipos de respuesta. Campañas en curso, quién está atacando al sector y cuándo. Responde: ¿qué se nos viene encima?' },
+              { term: 'Táctica', definition: 'Para analistas y defensores. Tácticas, técnicas y procedimientos (TTP) de los atacantes. Responde: ¿cómo atacan y cómo los detectamos?' },
+              { term: 'Técnica', definition: 'Para herramientas y SOC. Indicadores concretos: IP, dominios, hashes. Responde: ¿qué bloqueamos ahora?' },
+            ]
+          },
+          {
+            type: 'quiz',
+            quizData: {
+              question: "\"El ransomware contra el sector salud en Latinoamérica creció este año y conviene invertir en respaldos fuera de línea.\" ¿Qué tipo de inteligencia es?",
+              options: [
+                "Técnica.",
+                "Estratégica: está dirigida a la dirección y orienta una decisión de inversión.",
+                "Táctica."
+              ],
+              correctOptionIndex: 1,
+              feedback: {
+                correct: "¡Exacto! Habla de tendencias y de una decisión de negocio, no de indicadores ni de técnicas concretas: es inteligencia estratégica.",
+                incorrect: "No. No menciona IP, hashes ni técnicas de ataque: describe una tendencia y orienta una inversión. Es inteligencia estratégica."
+              }
+            }
+          }
+        ]
+      },
+      {
+        id: 'cti_cycle',
+        title: "2. El Ciclo de Inteligencia",
+        content: [
+          { type: 'text', icon: 'ServerIcon', text: "La inteligencia no se improvisa: sigue un ciclo que empieza con una pregunta, no con los datos. Si nadie definió qué necesita saber, se termina recolectando todo y no respondiendo nada." },
+          { type: 'text', icon: 'QuestionMarkCircleIcon', text: "Los requerimientos de inteligencia prioritarios (PIR, por Priority Intelligence Requirements) son esas preguntas clave. Por ejemplo: \"¿Qué grupos de ransomware están atacando a universidades en Colombia y por dónde entran?\"" },
+          {
+            type: 'flashcards',
+            title: 'Las 6 fases del ciclo de inteligencia',
+            cards: [
+              { front: '1. Planeación y dirección', back: 'Definir qué necesita saber quién, y para qué decisión. Aquí nacen los PIR.' },
+              { front: '2. Recolección', back: 'Reunir datos de las fuentes adecuadas para responder los PIR: registros internos, OSINT, feeds, comunidades.' },
+              { front: '3. Procesamiento', back: 'Normalizar, traducir, filtrar duplicados y dar formato a los datos para poder analizarlos.' },
+              { front: '4. Análisis', back: 'Convertir la información en conclusiones: conectar hechos, evaluar hipótesis y asignar un nivel de confianza.' },
+              { front: '5. Difusión', back: 'Entregar el producto a quien lo necesita, en el formato y el momento adecuados.' },
+              { front: '6. Retroalimentación', back: 'Preguntar al consumidor si le sirvió. Lo que responda ajusta los PIR y reinicia el ciclo.' },
+            ]
+          },
+          {
+            type: 'quiz',
+            quizData: {
+              question: "Un equipo descarga 50 feeds de indicadores sin saber qué preguntas debe responder. ¿Qué fase del ciclo se saltó?",
+              options: [
+                "Difusión.",
+                "Planeación y dirección: sin PIR no se sabe qué recolectar ni para qué.",
+                "Procesamiento."
+              ],
+              correctOptionIndex: 1,
+              feedback: {
+                correct: "Correcto. Recolectar sin requerimientos genera ruido. Todo empieza por definir qué decisión debe apoyar la inteligencia.",
+                incorrect: "No. El problema de origen es no tener requerimientos (PIR): sin la fase de planeación, la recolección no tiene rumbo."
+              }
+            }
+          }
+        ]
+      },
+      {
+        id: 'cti_sources',
+        title: "3. Fuentes y Confiabilidad",
+        content: [
+          { type: 'text', icon: 'ClosedEnvelopeIcon', text: "Las fuentes de CTI se dividen en internas (registros del firewall, del correo, del EDR, incidentes previos) y externas: OSINT (fuentes abiertas), feeds comerciales o gratuitos, informes de fabricantes, boletines de CSIRT nacionales y comunidades de intercambio sectoriales (ISAC)." },
+          { type: 'text', icon: 'LockIcon', text: "No toda fuente vale lo mismo. El sistema del Almirantazgo (Admiralty Code) califica por separado la confiabilidad de la fuente (de A, completamente confiable, a F, no se puede juzgar) y la credibilidad de la información (de 1, confirmada por otras fuentes, a 6, no se puede juzgar). Así, un dato \"B2\" viene de una fuente usualmente confiable y es probablemente cierto." },
+          {
+            type: 'memory',
+            title: 'Asocie cada fuente con su tipo',
+            pairs: [
+              { term: 'Registros del firewall propio', definition: 'Fuente interna.' },
+              { term: 'Publicación de un investigador en un blog', definition: 'OSINT (fuente abierta).' },
+              { term: 'Alerta de un CSIRT nacional', definition: 'Boletín de una entidad de respuesta.' },
+              { term: 'Grupo de intercambio entre bancos', definition: 'Comunidad sectorial (ISAC).' },
+            ]
+          },
+          {
+            type: 'quiz',
+            quizData: {
+              question: "Una cuenta anónima en un foro, sin historial, afirma que una universidad fue hackeada, y nadie más lo confirma. ¿Qué calificación del Almirantazgo es más adecuada?",
+              options: [
+                "A1: completamente confiable y confirmada.",
+                "F6: la confiabilidad de la fuente y la veracidad de la información no se pueden juzgar todavía.",
+                "B2: usualmente confiable y probablemente cierta."
+              ],
+              correctOptionIndex: 1,
+              feedback: {
+                correct: "Correcto. Sin historial de la fuente y sin confirmación, lo honesto es F6. No se descarta, pero tampoco se reporta como un hecho.",
+                incorrect: "No. Una fuente sin historial y una afirmación sin confirmar no pueden calificarse alto. Lo adecuado es F6 hasta tener más evidencia."
+              }
+            }
+          }
+        ]
+      },
+      {
+        id: 'cti_pyramid',
+        title: "4. Indicadores y la Pirámide del Dolor",
+        content: [
+          { type: 'text', icon: 'BugIcon', text: "Un indicador de compromiso (IoC) es una huella observable de una intrusión: un hash de malware, una IP, un dominio, una clave de registro. Son útiles, pero cambian rápido: el atacante puede cambiar de IP en minutos." },
+          { type: 'text', icon: 'ShieldCheckIcon', text: "La Pirámide del Dolor (David Bianco, 2013) ordena los indicadores según cuánto le \"duele\" al atacante que los detectemos. En la base, lo trivial de cambiar; en la cima, lo que más le cuesta: sus TTP, es decir, su forma de operar." },
+          {
+            type: 'flashcards',
+            title: 'Suba la pirámide: de lo fácil a lo doloroso para el atacante',
+            cards: [
+              { front: '1. Hashes', back: 'Trivial: cambiar un solo byte del malware genera un hash nuevo.' },
+              { front: '2. Direcciones IP', back: 'Fácil: el atacante usa otro servidor o una VPN.' },
+              { front: '3. Nombres de dominio', back: 'Simple: registrar un dominio nuevo cuesta poco.' },
+              { front: '4. Artefactos de red y de host', back: 'Molesto: patrones en el tráfico, rutas o claves de registro que delatan su herramienta.' },
+              { front: '5. Herramientas', back: 'Desafiante: tiene que conseguir o desarrollar otra herramienta.' },
+              { front: '6. TTP', back: 'Difícil: tiene que cambiar su forma de operar. Detectar comportamientos es lo que más le duele.' },
+            ]
+          },
+          {
+            type: 'memory',
+            title: 'Clasifique cada indicador en la pirámide',
+            pairs: [
+              { term: 'e3b0c442…b855', definition: 'Hash (base de la pirámide).' },
+              { term: '203.0.113.45', definition: 'Dirección IP.' },
+              { term: 'banco-actualiza-datos.co', definition: 'Nombre de dominio.' },
+              { term: 'Robar credenciales volcando la memoria de LSASS', definition: 'TTP (cima de la pirámide).' },
+            ]
+          },
+          {
+            type: 'quiz',
+            quizData: {
+              question: "¿Por qué una regla que detecta el comportamiento \"PowerShell descarga y ejecuta un archivo desde internet\" es más valiosa que bloquear 100 IP?",
+              options: [
+                "Porque bloquear IP es ilegal.",
+                "Porque detecta una técnica (TTP): el atacante puede cambiar de IP en minutos, pero cambiar su forma de operar le cuesta mucho más.",
+                "Porque PowerShell siempre es malicioso."
+              ],
+              correctOptionIndex: 1,
+              feedback: {
+                correct: "Correcto. Es subir en la Pirámide del Dolor: las IP son baratas para el atacante, sus técnicas no.",
+                incorrect: "No. La razón es la Pirámide del Dolor: las IP cambian fácilmente; los comportamientos (TTP) son lo más costoso de cambiar para el atacante."
+              }
+            }
+          }
+        ]
+      },
+      {
+        id: 'cti_killchain',
+        title: "5. Cyber Kill Chain: el Ataque Paso a Paso",
+        content: [
+          { type: 'text', icon: 'ServerIcon', text: "La Cyber Kill Chain, propuesta por Lockheed Martin en 2011, divide una intrusión en 7 fases. Su idea central: si el defensor rompe cualquier eslabón, la cadena del ataque se corta." },
+          {
+            type: 'flashcards',
+            title: 'Las 7 fases de la Kill Chain',
+            cards: [
+              { front: '1. Reconocimiento', back: 'El atacante investiga a la víctima: correos, empleados, tecnologías expuestas.' },
+              { front: '2. Armado (weaponization)', back: 'Prepara el arma: por ejemplo, un documento con una macro maliciosa.' },
+              { front: '3. Entrega', back: 'Hace llegar el arma: correo de phishing, USB, sitio web comprometido.' },
+              { front: '4. Explotación', back: 'Se ejecuta el código aprovechando una vulnerabilidad o un clic del usuario.' },
+              { front: '5. Instalación', back: 'Instala malware o una puerta trasera para mantener el acceso.' },
+              { front: '6. Comando y control (C2)', back: 'El equipo infectado se comunica con el servidor del atacante para recibir órdenes.' },
+              { front: '7. Acciones sobre el objetivo', back: 'Logra su meta: robar datos, cifrar sistemas, defraudar.' },
+            ]
+          },
+          {
+            type: 'memory',
+            title: '¿En qué fase ocurre?',
+            pairs: [
+              { term: 'Buscan en LinkedIn a los empleados de finanzas', definition: 'Reconocimiento.' },
+              { term: 'Llega un correo con una "factura" adjunta', definition: 'Entrega.' },
+              { term: 'El equipo se conecta cada 5 minutos a un dominio extraño', definition: 'Comando y control (C2).' },
+              { term: 'Copian la base de datos de clientes a un servidor externo', definition: 'Acciones sobre el objetivo.' },
+            ]
+          },
+          {
+            type: 'quiz',
+            quizData: {
+              question: "El filtro de correo bloquea el adjunto malicioso antes de que llegue al usuario. ¿En qué fase se cortó la cadena?",
+              options: [
+                "En la entrega.",
+                "En las acciones sobre el objetivo.",
+                "En el reconocimiento."
+              ],
+              correctOptionIndex: 0,
+              feedback: {
+                correct: "Correcto. El arma nunca llegó a la víctima: la cadena se rompió en la fase de entrega, y todo lo que seguía ya no ocurre.",
+                incorrect: "No. El adjunto no alcanzó al usuario: la cadena se rompió en la fase de entrega."
+              }
+            }
+          }
+        ]
+      },
+      {
+        id: 'cti_diamond',
+        title: "6. El Modelo Diamante",
+        content: [
+          { type: 'text', icon: 'BrainCircuitIcon', text: "El Modelo Diamante de análisis de intrusiones (Caltagirone, Pendergast y Betz, 2013) describe cada evento con 4 vértices conectados: un adversario usa una capacidad sobre una infraestructura contra una víctima." },
+          { type: 'text', icon: 'PointerIcon', text: "Su gran ventaja es el pivoteo: si conocemos un vértice, podemos descubrir los demás. Por ejemplo, de un dominio (infraestructura) se llega a otros dominios registrados con el mismo correo, y de ahí a otras víctimas de la misma campaña." },
+          {
+            type: 'memory',
+            title: 'Arme el diamante',
+            pairs: [
+              { term: 'Adversario', definition: 'Quién está detrás: un grupo criminal, un actor estatal, un insider.' },
+              { term: 'Capacidad', definition: 'Con qué ataca: el malware, el exploit, la técnica.' },
+              { term: 'Infraestructura', definition: 'Por dónde opera: dominios, IP, servidores de C2, cuentas de correo.' },
+              { term: 'Víctima', definition: 'A quién ataca: la organización, la persona o el sistema afectado.' },
+            ]
+          },
+          {
+            type: 'quiz',
+            quizData: {
+              question: "Descubre que el dominio usado en un phishing fue registrado con un correo que también registró otros 12 dominios. ¿Qué está haciendo?",
+              options: [
+                "Pivotear desde la infraestructura para descubrir más infraestructura (y posiblemente más víctimas) del mismo adversario.",
+                "Atribuir el ataque con certeza a un país.",
+                "Analizar la capacidad del malware."
+              ],
+              correctOptionIndex: 0,
+              feedback: {
+                correct: "¡Exacto! Eso es pivotear en el vértice de infraestructura. Los otros 12 dominios pueden revelar el resto de la campaña.",
+                incorrect: "No. Ir de un dominio a otros relacionados es pivotear sobre la infraestructura. No basta para atribuir con certeza."
+              }
+            }
+          }
+        ]
+      },
+      {
+        id: 'cti_attack',
+        title: "7. MITRE ATT&CK: el Lenguaje Común",
+        content: [
+          { type: 'text', icon: 'DocumentTextIcon', text: "MITRE ATT&CK es una base de conocimiento pública y gratuita de tácticas y técnicas reales de atacantes, construida a partir de incidentes observados. Le da a defensores, analistas y proveedores un vocabulario común." },
+          { type: 'text', icon: 'ServerIcon', text: "Se organiza en una matriz. La matriz Enterprise tiene 14 tácticas (el \"por qué\" de cada paso del atacante), y cada táctica contiene técnicas y subtécnicas (el \"cómo\"), cada una con un identificador. Por ejemplo, T1566 es Phishing y T1486 es Cifrado de datos para causar impacto (ransomware)." },
+          {
+            type: 'interactive',
+            title: 'Algunas de las 14 tácticas de ATT&CK Enterprise',
+            items: [
+              { term: 'Acceso inicial (Initial Access)', definition: 'Entrar a la red. Ej.: T1566 Phishing.' },
+              { term: 'Ejecución (Execution)', definition: 'Correr código malicioso. Ej.: T1059 Intérprete de comandos y scripts.' },
+              { term: 'Persistencia (Persistence)', definition: 'Mantener el acceso aunque se reinicie el equipo o cambien contraseñas.' },
+              { term: 'Acceso a credenciales (Credential Access)', definition: 'Robar usuarios y contraseñas. Ej.: T1003 Volcado de credenciales del sistema.' },
+              { term: 'Movimiento lateral (Lateral Movement)', definition: 'Pasar de un equipo a otro dentro de la red.' },
+              { term: 'Exfiltración (Exfiltration)', definition: 'Sacar los datos robados de la organización.' },
+              { term: 'Impacto (Impact)', definition: 'Dañar, cifrar o interrumpir. Ej.: T1486 Cifrado de datos para causar impacto.' },
+            ]
+          },
+          {
+            type: 'memory',
+            title: 'Asocie la técnica con su táctica',
+            pairs: [
+              { term: 'T1566 Phishing', definition: 'Acceso inicial.' },
+              { term: 'T1059 Intérprete de comandos y scripts', definition: 'Ejecución.' },
+              { term: 'T1003 Volcado de credenciales', definition: 'Acceso a credenciales.' },
+              { term: 'T1486 Cifrado de datos para causar impacto', definition: 'Impacto.' },
+            ]
+          },
+          {
+            type: 'quiz',
+            quizData: {
+              question: "En ATT&CK, ¿cuál es la diferencia entre una táctica y una técnica?",
+              options: [
+                "Son sinónimos.",
+                "La táctica es el objetivo del atacante en ese paso (el porqué); la técnica es la forma concreta de lograrlo (el cómo).",
+                "La técnica es el objetivo y la táctica es la herramienta."
+              ],
+              correctOptionIndex: 1,
+              feedback: {
+                correct: "Correcto. Por ejemplo, la táctica \"Acceso inicial\" (porqué) se puede lograr con la técnica \"Phishing\" (cómo).",
+                incorrect: "No. La táctica es el objetivo (por ejemplo, acceso inicial) y la técnica es el medio concreto (por ejemplo, phishing)."
+              }
+            }
+          }
+        ]
+      },
+      {
+        id: 'cti_actors',
+        title: "8. Actores de Amenaza y Atribución",
+        content: [
+          { type: 'text', icon: 'SpyIcon', text: "Conocer al adversario ayuda a anticipar su próximo paso. Los grandes grupos se rastrean con nombres que cambian según quién los reporta: el mismo actor puede tener tres o cuatro alias distintos, según el fabricante que lo describe." },
+          { type: 'text', icon: 'QuestionMarkCircleIcon', text: "Atribuir es difícil y riesgoso: los atacantes usan infraestructura prestada, imitan a otros grupos y dejan pistas falsas (operaciones de bandera falsa). Por eso un buen analista separa los hechos de las hipótesis, considera explicaciones alternativas y siempre declara su nivel de confianza: bajo, moderado o alto." },
+          {
+            type: 'flashcards',
+            title: 'Tipos de actores y qué buscan',
+            cards: [
+              { front: 'Grupos de cibercrimen', back: 'Dinero: ransomware, fraude, robo y venta de datos. Operan como empresas, con afiliados y servicios.' },
+              { front: 'Actores estatales (APT)', back: 'Espionaje, sabotaje o ventaja geopolítica. Persistentes y con muchos recursos.' },
+              { front: 'Hacktivistas', back: 'Una causa política o social. Desfiguraciones, filtraciones y denegación de servicio.' },
+              { front: 'Insiders', back: 'Personas de adentro con acceso legítimo, por dinero, venganza o descuido.' },
+            ]
+          },
+          {
+            type: 'quiz',
+            quizData: {
+              question: "El malware de un ataque tiene comentarios en ruso en su código. ¿Qué debe concluir el analista?",
+              options: [
+                "Que el ataque fue hecho por el gobierno ruso, con alta confianza.",
+                "Que es un indicio entre varios, que puede ser una pista falsa; por sí solo no permite atribuir y la confianza sería baja.",
+                "Que hay que ignorar el dato."
+              ],
+              correctOptionIndex: 1,
+              feedback: {
+                correct: "Correcto. Un idioma en el código es fácil de falsificar. Se registra como indicio, se contrasta con otras evidencias y se declara una confianza baja.",
+                incorrect: "No. Los rastros de idioma son fáciles de plantar. No se ignoran, pero solos no permiten atribuir: confianza baja hasta tener más evidencia."
+              }
+            }
+          }
+        ]
+      },
+      {
+        id: 'cti_sharing',
+        title: "9. Compartir Inteligencia: TLP, STIX y MISP",
+        content: [
+          { type: 'text', icon: 'HappyUsersIcon', text: "La inteligencia gana valor cuando se comparte: lo que una organización detecta hoy puede proteger a otra mañana. Pero hay que compartir con reglas claras." },
+          { type: 'text', icon: 'DocumentTextIcon', text: "Para el intercambio automatizado existen estándares: STIX (formato para describir amenazas: indicadores, actores, campañas, técnicas) y TAXII (protocolo para transportarlos), ambos de OASIS. MISP es una plataforma de código abierto muy usada por CSIRT y comunidades para almacenar y compartir esa información." },
+          {
+            type: 'interactive',
+            title: 'TLP 2.0 (FIRST): ¿con quién puedo compartir?',
+            items: [
+              { term: 'TLP:RED', definition: 'Solo para los presentes en la reunión o los destinatarios directos. No se comparte con nadie más.' },
+              { term: 'TLP:AMBER+STRICT', definition: 'Solo dentro de la organización del destinatario.' },
+              { term: 'TLP:AMBER', definition: 'Dentro de la organización del destinatario y con sus clientes, cuando necesiten saberlo para protegerse.' },
+              { term: 'TLP:GREEN', definition: 'Con la comunidad (por ejemplo, el sector), pero no en canales públicos.' },
+              { term: 'TLP:CLEAR', definition: 'Sin restricción: se puede publicar.' },
+            ]
+          },
+          {
+            type: 'quiz',
+            quizData: {
+              question: "Recibe un informe marcado TLP:AMBER+STRICT. ¿Puede reenviarlo a un colega de otra universidad?",
+              options: [
+                "Sí, porque también es del sector educativo.",
+                "No: AMBER+STRICT solo permite compartirlo dentro de su propia organización.",
+                "Sí, si le quita el logo."
+              ],
+              correctOptionIndex: 1,
+              feedback: {
+                correct: "Correcto. AMBER+STRICT no sale de su organización. Si quiere compartirlo, pida autorización a quien lo emitió.",
+                incorrect: "No. TLP:AMBER+STRICT limita el informe a su organización. Reenviarlo rompe la confianza de la comunidad que lo compartió."
+              }
+            }
+          }
+        ]
+      },
+      {
+        id: 'cti_report',
+        title: "10. 🧪 Laboratorio: Su Primer Informe de Inteligencia",
+        content: [
+          { type: 'text', icon: 'DocumentTextIcon', text: "Un informe de inteligencia empieza por la conclusión (BLUF, por Bottom Line Up Front): en las primeras líneas, qué pasa, qué tan seguro está y qué se recomienda hacer. Los detalles van después." },
+          { type: 'text', icon: 'AlarmIcon', text: "Caso ficticio: varios funcionarios de una universidad reciben un correo \"de Rectoría\" con el asunto \"Actualización de nómina\" que lleva a un formulario en el dominio rectoria-nomina-universidad.co (registrado hace 3 días). Dos personas ingresaron su contraseña. Al día siguiente, una de esas cuentas inicia sesión desde otro país y crea una regla para reenviar todo su correo hacia afuera." },
+          {
+            type: 'activity',
+            title: 'Laboratorio: analice el caso y redacte su informe',
+            duration: '25–30 min',
+            groupSize: 'Individual o en parejas',
+            goal: 'Aplicar las herramientas del curso a un caso y producir un informe corto de inteligencia, con conclusión, nivel de confianza y recomendaciones.',
+            downloads: [],
+            steps: [
+              { title: 'Extraiga los indicadores', minutes: '5 min', detail: 'Liste los IoC del caso (dominio, asunto del correo, país del inicio de sesión) y ubíquelos en la Pirámide del Dolor. ¿Cuál sería la TTP?' },
+              { title: 'Ubique la Kill Chain', minutes: '5 min', detail: 'Ordene lo ocurrido en las 7 fases. ¿En cuáles se pudo haber cortado la cadena?' },
+              { title: 'Mapee con ATT&CK', minutes: '5 min', detail: 'Identifique al menos dos técnicas. Pista: T1566 Phishing (acceso inicial) y T1114 Recolección de correo electrónico (incluye las reglas de reenvío).' },
+              { title: 'Arme el diamante', minutes: '5 min', detail: 'Complete los 4 vértices. ¿Qué sabe del adversario? Probablemente poco: declárelo con confianza baja.' },
+              { title: 'Redacte el BLUF', minutes: '5–10 min', detail: 'En máximo 5 líneas: qué pasó, nivel de confianza, a quién afecta y 3 acciones recomendadas (por ejemplo, bloquear el dominio, restablecer contraseñas, activar MFA y revisar reglas de reenvío). Asígnele un TLP.' },
+            ],
+            closing: 'Compare su informe con el de un compañero: ¿llegaron a las mismas conclusiones? ¿Declararon el mismo nivel de confianza?',
+          },
+          {
+            type: 'quiz',
+            quizData: {
+              question: "En el caso, ¿qué recomendación ataca la TTP y no solo el indicador?",
+              options: [
+                "Bloquear el dominio rectoria-nomina-universidad.co.",
+                "Activar MFA y alertar sobre la creación de reglas de reenvío externo, para que una contraseña robada no baste y el robo de correo se detecte.",
+                "Bloquear la IP del país desde donde se conectaron."
+              ],
+              correctOptionIndex: 1,
+              feedback: {
+                correct: "Correcto. El atacante puede registrar otro dominio o usar otra IP mañana; el MFA y la detección del reenvío frenan su forma de operar.",
+                incorrect: "Bloquear el dominio o la IP sirve hoy, pero el atacante los cambia fácilmente. Lo que ataca la TTP es el MFA y detectar las reglas de reenvío."
+              }
+            }
+          }
+        ]
+      },
+      {
+        id: 'cti_final',
+        title: "11. 🏁 Evaluación Final",
+        content: [
+          { type: 'text', icon: 'CheckCircleIcon', text: "Completó los fundamentos de Cyber Threat Intelligence: tipos de inteligencia, ciclo, fuentes, Pirámide del Dolor, Kill Chain, Modelo Diamante, MITRE ATT&CK, atribución y TLP. ¡Demuestre lo que aprendió!" },
+          {
+            type: 'h5p_check',
+            title: 'Evaluación Final: Fundamentos de CTI',
+            description: 'Repaso integral del curso. Cada respuesta correcta suma puntos.',
+            questions: [
+              {
+                question: '¿Qué convierte la información en inteligencia?',
+                options: [
+                  { id: 'ctif1_o1', text: 'El contexto y la relevancia para tomar una decisión.', isCorrect: true, score: 10 },
+                  { id: 'ctif1_o2', text: 'La cantidad de datos recolectados.', isCorrect: false, score: 0 },
+                  { id: 'ctif1_o3', text: 'Que provenga de una fuente pagada.', isCorrect: false, score: 0 }
+                ],
+                feedback: 'Correcto. La inteligencia es información con contexto, relevante y accionable.'
+              },
+              {
+                question: '¿Con qué fase empieza el ciclo de inteligencia?',
+                options: [
+                  { id: 'ctif2_o1', text: 'Planeación y dirección (definir los PIR).', isCorrect: true, score: 10 },
+                  { id: 'ctif2_o2', text: 'Recolección.', isCorrect: false, score: 0 },
+                  { id: 'ctif2_o3', text: 'Difusión.', isCorrect: false, score: 0 }
+                ],
+                feedback: 'Correcto. Primero se define qué se necesita saber y para qué decisión.'
+              },
+              {
+                question: 'En la Pirámide del Dolor, ¿qué es lo más difícil de cambiar para el atacante?',
+                options: [
+                  { id: 'ctif3_o1', text: 'Sus TTP (tácticas, técnicas y procedimientos).', isCorrect: true, score: 10 },
+                  { id: 'ctif3_o2', text: 'Sus direcciones IP.', isCorrect: false, score: 0 },
+                  { id: 'ctif3_o3', text: 'Los hashes de su malware.', isCorrect: false, score: 0 }
+                ],
+                feedback: 'Correcto. Las TTP están en la cima: cambiarlas le cuesta mucho al atacante.'
+              },
+              {
+                question: 'En la Kill Chain, la comunicación del equipo infectado con el servidor del atacante corresponde a…',
+                options: [
+                  { id: 'ctif4_o1', text: 'Comando y control (C2).', isCorrect: true, score: 10 },
+                  { id: 'ctif4_o2', text: 'Reconocimiento.', isCorrect: false, score: 0 },
+                  { id: 'ctif4_o3', text: 'Armado.', isCorrect: false, score: 0 }
+                ],
+                feedback: 'Correcto. Es la fase 6: el equipo recibe órdenes del atacante.'
+              },
+              {
+                question: '¿Cuáles son los 4 vértices del Modelo Diamante?',
+                options: [
+                  { id: 'ctif5_o1', text: 'Adversario, capacidad, infraestructura y víctima.', isCorrect: true, score: 10 },
+                  { id: 'ctif5_o2', text: 'Fuente, dato, información e inteligencia.', isCorrect: false, score: 0 },
+                  { id: 'ctif5_o3', text: 'Hash, IP, dominio y TTP.', isCorrect: false, score: 0 }
+                ],
+                feedback: 'Correcto. Conocer un vértice permite pivotear hacia los demás.'
+              },
+              {
+                question: 'En MITRE ATT&CK, T1566 Phishing es una técnica de la táctica…',
+                options: [
+                  { id: 'ctif6_o1', text: 'Acceso inicial.', isCorrect: true, score: 10 },
+                  { id: 'ctif6_o2', text: 'Exfiltración.', isCorrect: false, score: 0 },
+                  { id: 'ctif6_o3', text: 'Impacto.', isCorrect: false, score: 0 }
+                ],
+                feedback: 'Correcto. El phishing es una de las formas más comunes de lograr el acceso inicial.'
+              },
+              {
+                question: 'Una fuente sin historial publica un dato que nadie confirma. Según el código del Almirantazgo, se califica…',
+                options: [
+                  { id: 'ctif7_o1', text: 'F6: no se puede juzgar todavía.', isCorrect: true, score: 10 },
+                  { id: 'ctif7_o2', text: 'A1: confiable y confirmado.', isCorrect: false, score: 0 },
+                  { id: 'ctif7_o3', text: 'Se publica como hecho.', isCorrect: false, score: 0 }
+                ],
+                feedback: 'Correcto. Sin historial ni confirmación, la calificación honesta es F6.'
+              },
+              {
+                question: 'Un informe marcado TLP:GREEN se puede compartir…',
+                options: [
+                  { id: 'ctif8_o1', text: 'Con la comunidad o el sector, pero no en canales públicos.', isCorrect: true, score: 10 },
+                  { id: 'ctif8_o2', text: 'En redes sociales.', isCorrect: false, score: 0 },
+                  { id: 'ctif8_o3', text: 'Solo con los presentes en la reunión.', isCorrect: false, score: 0 }
+                ],
+                feedback: 'Correcto. GREEN es para la comunidad; CLEAR es lo único que se puede publicar.'
+              }
+            ]
+          }
+        ]
+      }
+    ]
   }
 };
 

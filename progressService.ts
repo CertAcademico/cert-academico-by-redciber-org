@@ -140,7 +140,7 @@ export async function getUserStats(userId: string): Promise<UserStats> {
 // Solo devuelve datos si el usuario que llama tiene rol 'teacher' (lo garantiza la RLS policy is_teacher()).
 export async function getAllStudentsProgress(): Promise<StudentSummary[]> {
   const [{ data: profiles, error: profilesError }, { data: rows, error: rowsError }] = await Promise.all([
-    supabase.from('profiles').select('id, name, email, role').in('role', ['student', 'auditor']),
+    supabase.from('profiles').select('id, name, email, role').in('role', ['student', 'auditor', 'cti_student']),
     supabase.from('course_progress').select('*'),
   ]);
   if (profilesError || rowsError || !profiles) return [];
