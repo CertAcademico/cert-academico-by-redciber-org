@@ -25,9 +25,9 @@ export interface RankingRow {
 
 export async function getMyCampaignRank(): Promise<MyRank | null> {
   const { data, error } = await supabase.rpc('my_campaign_rank');
-  const row = (data as { position: number; total: number; badges: number; score: number }[] | null)?.[0];
+  const row = (data as { rank_position: number; total: number; badges: number; score: number }[] | null)?.[0];
   if (error || !row) return null;
-  return { position: Number(row.position), total: Number(row.total), badges: row.badges, score: Number(row.score) };
+  return { position: Number(row.rank_position), total: Number(row.total), badges: row.badges, score: Number(row.score) };
 }
 
 /** Solo admin (la función valida el rol en el servidor). */
@@ -42,6 +42,6 @@ export async function getCampaignRanking(): Promise<RankingRow[]> {
     score: Number(r.score),
     lastBadgeAt: (r.last_badge_at as string) ?? null,
     startedAt: (r.started_at as string) ?? null,
-    position: Number(r.position),
+    position: Number(r.rank_position),
   }));
 }

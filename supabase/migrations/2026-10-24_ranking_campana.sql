@@ -15,10 +15,12 @@ as $$ select timestamptz '2026-10-31 23:59:59-05'; $$;
 --   1) badges de los 7 cursos de la ruta gratuita emitidos hasta el corte (los valida el servidor);
 --   2) suma de las notas (en %) de las evaluaciones de esos cursos registradas hasta el corte;
 --   3) desempate: quien obtuvo su último badge antes.
+drop function if exists public.campaign_ranking();
+drop function if exists public.campaign_scores();
 create or replace function public.campaign_scores()
 returns table (
   user_id uuid, name text, email text,
-  badges int, score numeric, last_badge_at timestamptz, started_at timestamptz, position bigint
+  badges int, score numeric, last_badge_at timestamptz, started_at timestamptz, rank_position bigint
 )
 language sql
 stable
@@ -64,7 +66,7 @@ drop function if exists public.campaign_ranking();
 create or replace function public.campaign_ranking()
 returns table (
   user_id uuid, name text, email text,
-  badges int, score numeric, last_badge_at timestamptz, started_at timestamptz, position bigint
+  badges int, score numeric, last_badge_at timestamptz, started_at timestamptz, rank_position bigint
 )
 language plpgsql
 stable
@@ -75,19 +77,20 @@ begin
   if not public.is_admin() then
     raise exception 'ADMIN_ONLY';
   end if;
-  return query select * from public.campaign_scores() r order by r.position;
+  return query select * from public.campaign_scores() r order by r.rank_position;
 end;
 $$;
 
 -- Posición del usuario que consulta (sin datos de nadie más).
+drop function if exists public.my_campaign_rank();
 create or replace function public.my_campaign_rank()
-returns table (position bigint, total bigint, badges int, score numeric)
+returns table (rank_position bigint, total bigint, badges int, score numeric)
 language sql
 stable
 security definer
 set search_path = public
 as $$
-  select r.position, (select count(*) from public.campaign_scores()), r.badges, r.score
+  select r.rank_position, (select count(*) from public.campaign_scores()), r.badges, r.score
   from public.campaign_scores() r
   where r.user_id = auth.uid();
 $$;
