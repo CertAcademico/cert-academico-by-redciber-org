@@ -1,5 +1,6 @@
 import { supabase } from './supabaseClient';
 import type { UserRole } from './types';
+import { POLICY_VERSION } from './platform';
 
 export interface SessionUser {
   id: string;
@@ -28,14 +29,15 @@ export async function registerUser(name: string, email: string, password: string
   const { data, error } = await supabase.auth.signUp({
     email: email.toLowerCase().trim(),
     password,
-    options: { data: { name: name.trim() } },
+    options: { data: { name: name.trim(), data_consent_version: POLICY_VERSION } },
   });
   if (error) {
     if (error.message.toLowerCase().includes('already registered')) {
       throw new Error('Este correo ya está registrado en el sistema.');
     }
-    if (error.message.includes('EMAIL_NOT_ALLOWED') || error.message.includes('Database error saving new user')) {
-      throw new Error('Este correo no está autorizado para registrarte en esta plataforma. Contacta al docente.');
+    // Supabase envuelve las excepciones del trigger handle_new_user() en un mensaje genérico.
+    if (error.message.includes('REGISTRATION_CLOSED') || error.message.includes('CONSENT_REQUIRED') || error.message.includes('Database error saving new user')) {
+      throw new Error('No fue posible completar el registro. El registro gratuito está abierto hasta el 31 de octubre y requiere aceptar la Política de Tratamiento de Datos Personales.');
     }
     throw new Error(error.message);
   }

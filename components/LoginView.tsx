@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { registerUser, loginUser } from '../authService';
 import type { SessionUser } from '../authService';
+import { isRegistrationOpen } from '../platform';
+import PrivacyPolicyView from './PrivacyPolicyView';
 
 interface LoginViewProps {
   onLogin: (user: SessionUser) => void;
@@ -31,6 +33,9 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLogin }) => {
   const [regEmail, setRegEmail] = useState('');
   const [regPassword, setRegPassword] = useState('');
   const [regConfirm, setRegConfirm] = useState('');
+  const [regConsent, setRegConsent] = useState(false);
+  const [showPolicy, setShowPolicy] = useState(false);
+  const registrationOpen = isRegistrationOpen();
 
   const switchTab = (t: Tab) => { setTab(t); setError(''); };
 
@@ -52,8 +57,9 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLogin }) => {
     e.preventDefault();
     setError('');
     if (!regName || !regEmail || !regPassword || !regConfirm) { setError('Completa todos los campos.'); return; }
-    if (regPassword.length < 6) { setError('La contraseña debe tener al menos 6 caracteres.'); return; }
+    if (regPassword.length < 8) { setError('La contraseña debe tener al menos 8 caracteres.'); return; }
     if (regPassword !== regConfirm) { setError('Las contraseñas no coinciden.'); return; }
+    if (!regConsent) { setError('Debes aceptar la Política de Tratamiento de Datos Personales para registrarte.'); return; }
     setIsLoading(true);
     try {
       onLogin(await registerUser(regName, regEmail, regPassword));
@@ -173,9 +179,15 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLogin }) => {
                 onSubmit={handleRegister}
                 className="space-y-4"
               >
-                <p className="text-xs text-slate-400 bg-slate-800/60 border border-slate-700/50 rounded-lg px-3 py-2 -mt-1">
-                  Puedes registrarte con cualquier correo. Si no formas parte de la cohorte del docente, tendrás acceso al curso CERTs y CSIRTs.
-                </p>
+                {registrationOpen ? (
+                  <p className="text-xs text-emerald-300 bg-emerald-500/10 border border-emerald-500/30 rounded-lg px-3 py-2 -mt-1">
+                    🎁 Registro gratuito hasta el 31 de octubre. Accede a la ruta completa, desde Fundamentos de Ciberseguridad hasta CERTs y CSIRTs, y obtén un badge por cada curso que termines.
+                  </p>
+                ) : (
+                  <p className="text-xs text-amber-300 bg-amber-500/10 border border-amber-500/30 rounded-lg px-3 py-2 -mt-1">
+                    El registro gratuito cerró el 31 de octubre. Si ya tienes una cuenta, inicia sesión.
+                  </p>
+                )}
                 <div>
                   <label className="text-[11px] font-bold text-slate-400 uppercase tracking-widest block mb-1.5">
                     Nombre Completo
@@ -213,7 +225,7 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLogin }) => {
                     value={regPassword}
                     onChange={e => setRegPassword(e.target.value)}
                     className={inputCls}
-                    placeholder="Mínimo 6 caracteres"
+                    placeholder="Mínimo 8 caracteres"
                     autoComplete="new-password"
                     required
                   />
@@ -232,6 +244,22 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLogin }) => {
                     required
                   />
                 </div>
+                <label className="flex items-start gap-2.5 text-xs text-slate-300 leading-relaxed cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={regConsent}
+                    onChange={e => setRegConsent(e.target.checked)}
+                    className="mt-0.5 w-4 h-4 accent-blue-500 shrink-0"
+                    required
+                  />
+                  <span>
+                    Acepto la{' '}
+                    <button type="button" onClick={() => setShowPolicy(true)} className="text-blue-400 hover:underline">
+                      Política de Tratamiento de Datos Personales
+                    </button>{' '}
+                    y autorizo el tratamiento de mis datos para las finalidades allí descritas, incluida la verificación pública de mis badges y certificados.
+                  </span>
+                </label>
 
                 {error && (
                   <motion.p
@@ -245,7 +273,7 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLogin }) => {
 
                 <button
                   type="submit"
-                  disabled={isLoading}
+                  disabled={isLoading || !registrationOpen}
                   className="w-full mt-2 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold rounded-xl transition-all text-sm"
                 >
                   {isLoading ? 'Creando cuenta...' : 'Crear mi Cuenta →'}
@@ -255,10 +283,13 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLogin }) => {
           </AnimatePresence>
         </div>
 
-        <p className="text-center text-slate-600 text-xs mt-5">
-          Los datos se almacenan localmente en tu dispositivo de forma segura.
+        <p className="text-center text-slate-500 text-xs mt-5">
+          <button type="button" onClick={() => setShowPolicy(true)} className="hover:text-slate-300 hover:underline">
+            Política de Tratamiento de Datos Personales
+          </button>
         </p>
       </motion.div>
+      {showPolicy && <PrivacyPolicyView onClose={() => setShowPolicy(false)} />}
     </div>
   );
 };

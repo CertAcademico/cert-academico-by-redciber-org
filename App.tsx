@@ -27,6 +27,12 @@ import LoginView from './components/LoginView';
 import TeacherDashboard from './components/TeacherDashboard';
 import ActivityView from './components/ActivityView';
 import ChangePasswordModal from './components/ChangePasswordModal';
+import { FREE_ROUTE } from './platform';
+import { getMyCertificates, issueCertificate, ROUTE_CERTIFICATE_ID, ROUTE_CERTIFICATE_TITLE } from './certificateService';
+import type { Certificate } from './certificateService';
+import { CredentialModal, cleanCourseTitle } from './components/Credential';
+import VerifyView from './components/VerifyView';
+import { PrivacyPolicyContent } from './components/PrivacyPolicyView';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   PlayCircleIcon,
@@ -434,6 +440,10 @@ interface LearningPathSelectorProps {
   onOpenTeacherDashboard: () => void;
   /** Cursos visibles pero no habilitados para este usuario → texto que se muestra en la tarjeta. */
   lockedPaths: Record<string, string>;
+  /** Mensaje opcional sobre el grid de cursos (p. ej. cómo funciona la ruta del registro gratuito). */
+  banner?: string;
+  /** Muestra el certificado final de la ruta gratuita cuando se completan todos los cursos. */
+  showRouteCertificate?: boolean;
 }
 
 // Cursos exclusivos de un público: solo los ve ese rol (y admin). Los demás roles no los ven,
@@ -491,26 +501,62 @@ const LearningPathSelector: React.FC<LearningPathSelectorProps> = ({
   isTeacher,
   onOpenTeacherDashboard,
   lockedPaths,
+  banner,
+  showRouteCertificate,
 }) => {
   const [stats, setStats] = useState<UserStats>(emptyStats);
   const [userProgress, setUserProgress] = useState<UserProgressMap>({});
   const [isStatsLoading, setIsStatsLoading] = useState(true);
   const [showChangePassword, setShowChangePassword] = useState(false);
+  const [certificates, setCertificates] = useState<Certificate[]>([]);
+  const [openCredential, setOpenCredential] = useState<{ cert: Certificate; title: string } | null>(null);
+  const [issuingId, setIssuingId] = useState<string | null>(null);
+  const [credentialError, setCredentialError] = useState('');
   const firstName = userName.split(' ')[0];
   const initial = userName.charAt(0).toUpperCase();
 
   useEffect(() => {
     let cancelled = false;
-    Promise.all([getUserStats(userId), getUserProgress(userId)]).then(([s, p]) => {
+    Promise.all([getUserStats(userId), getUserProgress(userId), getMyCertificates(userId)]).then(([s, p, c]) => {
       if (cancelled) return;
       setStats(s);
       setUserProgress(p);
+      setCertificates(c);
       setIsStatsLoading(false);
     });
     return () => { cancelled = true; };
   }, [userId]);
 
   if (isStatsLoading) return <LoadingSpinner message="Cargando tu panel..." />;
+
+  // Cursos terminados (todos los módulos): pueden pedir su badge.
+  const completedIds = Object.entries(paths)
+    .filter(([id, p]) => {
+      const cp = userProgress[id];
+      return !!cp?.completedAt && cp.completedModules.length >= (p as LearningPathType).modules.length;
+    })
+    .map(([id]) => id);
+  const routeDone = !!showRouteCertificate && completedIds.length === Object.keys(paths).length;
+  const achievements: { id: string; title: string }[] = [
+    ...completedIds.map(id => ({ id, title: cleanCourseTitle((paths[id] as LearningPathType).title) })),
+    ...(routeDone ? [{ id: ROUTE_CERTIFICATE_ID, title: ROUTE_CERTIFICATE_TITLE }] : []),
+  ];
+
+  const openOrIssue = async (id: string, title: string) => {
+    setCredentialError('');
+    const existing = certificates.find(c => c.pathId === id);
+    if (existing) { setOpenCredential({ cert: existing, title }); return; }
+    setIssuingId(id);
+    try {
+      const cert = await issueCertificate(id);
+      setCertificates(prev => [...prev, cert]);
+      setOpenCredential({ cert, title });
+    } catch (err) {
+      setCredentialError((err as Error).message);
+    } finally {
+      setIssuingId(null);
+    }
+  };
 
   return (
     <div className="bg-gradient-to-br from-slate-900 to-gray-800 min-h-screen text-white font-sans flex flex-col">
@@ -581,6 +627,10 @@ const LearningPathSelector: React.FC<LearningPathSelectorProps> = ({
               : 'Elige una ruta de aprendizaje para comenzar tu formación en ciberseguridad.'}
           </p>
         </div>
+
+        {banner && (
+          <p className="mb-6 text-sm text-emerald-200 bg-emerald-500/10 border border-emerald-500/30 rounded-xl px-4 py-3">{banner}</p>
+        )}
 
         {/* Course grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -668,7 +718,39 @@ const LearningPathSelector: React.FC<LearningPathSelectorProps> = ({
             );
           })}
         </div>
+
+        {/* Badges y certificados */}
+        {achievements.length > 0 && (
+          <section className="mt-12">
+            <h2 className="text-xl font-bold mb-1">🎖️ Mis badges y certificados</h2>
+            <p className="text-slate-400 text-sm mb-4">Cada curso terminado te da un badge verificable y un certificado descargable.</p>
+            {credentialError && <p className="text-rose-400 text-sm bg-rose-500/10 border border-rose-500/20 rounded-lg px-3 py-2.5 mb-4">{credentialError}</p>}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+              {achievements.map(a => {
+                const issued = certificates.some(c => c.pathId === a.id);
+                return (
+                  <button
+                    key={a.id}
+                    onClick={() => openOrIssue(a.id, a.title)}
+                    disabled={issuingId !== null}
+                    className={`text-left rounded-xl px-4 py-3 border transition-colors disabled:opacity-60 ${
+                      a.id === ROUTE_CERTIFICATE_ID
+                        ? 'bg-amber-500/15 border-amber-500/40 hover:bg-amber-500/25'
+                        : 'bg-slate-800/60 border-slate-700 hover:border-slate-500'
+                    }`}
+                  >
+                    <p className="text-sm font-semibold text-white">{a.id === ROUTE_CERTIFICATE_ID ? '🏆 ' : ''}{a.title}</p>
+                    <p className="text-xs text-slate-400 mt-1">
+                      {issuingId === a.id ? 'Emitiendo…' : issued ? 'Ver badge y certificado →' : '✨ Obtener mi badge →'}
+                    </p>
+                  </button>
+                );
+              })}
+            </div>
+          </section>
+        )}
       </main>
+      {openCredential && <CredentialModal cert={openCredential.cert} title={openCredential.title} onClose={() => setOpenCredential(null)} />}
 
       <footer className="text-center py-5 text-sm text-gray-500 border-t border-slate-800">
         CERT Académico by RedCiber.org · {new Date().getFullYear()}
@@ -695,6 +777,17 @@ const App: React.FC = () => {
     const t = setInterval(() => setNow(Date.now()), 60_000);
     return () => clearInterval(t);
   }, []);
+
+  // Registro gratuito: la ruta es secuencial, así que hace falta el progreso para saber qué curso
+  // está desbloqueado. Se recarga cada vez que se vuelve al grid de cursos.
+  const [routeProgress, setRouteProgress] = useState<UserProgressMap>({});
+  const isFreeStudent = currentUser?.role === 'free_student';
+  useEffect(() => {
+    if (!currentUser || !isFreeStudent || selectedPathId) return;
+    let cancelled = false;
+    getUserProgress(currentUser.id).then(p => { if (!cancelled) setRouteProgress(p); });
+    return () => { cancelled = true; };
+  }, [currentUser, isFreeStudent, selectedPathId]);
 
   useEffect(() => {
     getSession()
@@ -724,6 +817,20 @@ const App: React.FC = () => {
     setShowTeacherDashboard(false);
   };
 
+  // Páginas públicas (no requieren sesión): verificación de credenciales y política de datos.
+  const publicParams = new URLSearchParams(window.location.search);
+  const verifyCode = publicParams.get('verificar');
+  if (verifyCode) return <VerifyView code={verifyCode} />;
+  if (publicParams.has('politica-datos')) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-gray-900 p-4 md:p-8">
+        <div className="max-w-3xl mx-auto bg-slate-900 border border-slate-700 rounded-2xl p-6 md:p-8">
+          <PrivacyPolicyContent />
+        </div>
+      </div>
+    );
+  }
+
   if (!isAuthChecked) return <LoadingSpinner message="Verificando sesión..." />;
 
   if (!currentUser) return <LoginView onLogin={handleLogin} />;
@@ -742,11 +849,14 @@ const App: React.FC = () => {
   const hasExclusivePaths = Object.values(EXCLUSIVE_PATHS).includes(currentUser.role);
   // Se filtra acá (no solo en el grid) para que tampoco se pueda entrar por URL directa (?topic=...).
   // Admin ve todo; un rol con cursos exclusivos ve solo esos; el resto ve todo menos los exclusivos.
-  const visiblePaths: LearningPaths = Object.fromEntries(
-    (Object.entries(learningPaths) as [string, LearningPathType][]).filter(([id]) =>
-      isAdmin || (hasExclusivePaths ? EXCLUSIVE_PATHS[id] === currentUser.role : !(id in EXCLUSIVE_PATHS)),
-    ),
-  );
+  // Registro gratuito: solo la ruta FREE_ROUTE, en su orden (CERTs/CSIRTs al final).
+  const visiblePaths: LearningPaths = isFreeStudent
+    ? Object.fromEntries(FREE_ROUTE.filter(id => id in learningPaths).map(id => [id, learningPaths[id]]))
+    : Object.fromEntries(
+        (Object.entries(learningPaths) as [string, LearningPathType][]).filter(([id]) =>
+          isAdmin || (hasExclusivePaths ? EXCLUSIVE_PATHS[id] === currentUser.role : !(id in EXCLUSIVE_PATHS)),
+        ),
+      );
 
   if (showTeacherDashboard) {
     return <TeacherDashboard paths={visiblePaths} onExit={() => setShowTeacherDashboard(false)} isAdmin={isAdmin} />;
@@ -757,6 +867,17 @@ const App: React.FC = () => {
   for (const id of Object.keys(visiblePaths)) {
     const label = getCourseLockLabel(currentUser.role, id, now, currentUser.email);
     if (label) lockedPaths[id] = label;
+  }
+  // Ruta secuencial: cada curso se desbloquea al terminar el anterior.
+  if (isFreeStudent) {
+    const routeIds = Object.keys(visiblePaths);
+    routeIds.forEach((id, i) => {
+      if (i === 0) return;
+      const prevId = routeIds[i - 1];
+      const prev = routeProgress[prevId];
+      const prevDone = !!prev?.completedAt && prev.completedModules.length >= visiblePaths[prevId].modules.length;
+      if (!prevDone) lockedPaths[id] = `🔒 Termina el curso ${i} para desbloquear`;
+    });
   }
 
   if (!selectedPathId || !(selectedPathId in visiblePaths) || selectedPathId in lockedPaths) {
@@ -770,6 +891,8 @@ const App: React.FC = () => {
         isTeacher={currentUser.role === 'teacher' || currentUser.role === 'tutor' || isAdmin}
         onOpenTeacherDashboard={() => setShowTeacherDashboard(true)}
         lockedPaths={lockedPaths}
+        showRouteCertificate={isFreeStudent}
+        banner={isFreeStudent ? '🎁 Ruta gratuita: completa los cursos en orden, desde Fundamentos de Ciberseguridad hasta CERTs y CSIRTs. Cada curso terminado te da un badge verificable, y al completar toda la ruta obtienes tu certificado final.' : undefined}
       />
     );
   }
@@ -781,7 +904,7 @@ const App: React.FC = () => {
       pathId={selectedPathId}
       onExit={() => setSelectedPathId(null)}
       userId={currentUser.id}
-      unlockAll={isAdmin}
+      unlockAll={isAdmin || isFreeStudent}
     />
   );
 };

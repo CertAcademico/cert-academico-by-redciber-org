@@ -61,7 +61,7 @@ async function ensureRow(userId: string, pathId: string): Promise<Row> {
   const now = new Date().toISOString();
   const { data, error } = await supabase
     .from('course_progress')
-    .insert({ user_id: userId, path_id: pathId, started_at: now, last_accessed_at: now })
+    .insert({ user_id: userId, path_id: pathId, last_accessed_at: now }) // started_at lo pone la base de datos
     .select('*')
     .single();
   if (error || !data) throw new Error('No se pudo iniciar el progreso de la ruta.');
@@ -140,7 +140,7 @@ export async function getUserStats(userId: string): Promise<UserStats> {
 // Solo devuelve datos si el usuario que llama tiene rol 'teacher' (lo garantiza la RLS policy is_teacher()).
 export async function getAllStudentsProgress(): Promise<StudentSummary[]> {
   const [{ data: profiles, error: profilesError }, { data: rows, error: rowsError }] = await Promise.all([
-    supabase.from('profiles').select('id, name, email, role').in('role', ['student', 'auditor', 'cti_student']),
+    supabase.from('profiles').select('id, name, email, role').in('role', ['student', 'auditor', 'cti_student', 'free_student']),
     supabase.from('course_progress').select('*'),
   ]);
   if (profilesError || rowsError || !profiles) return [];

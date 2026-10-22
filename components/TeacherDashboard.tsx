@@ -35,6 +35,7 @@ const ROLE_OPTIONS: { value: UserRole; label: string }[] = [
   { value: 'cert_student', label: 'Estudiante CERTs/CSIRTs' },
   { value: 'auditor', label: 'Auditor (cooperativas)' },
   { value: 'cti_student', label: 'Estudiante CTI' },
+  { value: 'free_student', label: 'Registro gratuito (ruta completa)' },
 ];
 
 type BulkResult = { name: string; email: string; password?: string; error?: string };
