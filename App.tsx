@@ -33,6 +33,7 @@ import ChangePasswordModal from './components/ChangePasswordModal';
 import { FREE_ROUTE } from './platform';
 import { EXPERTISE_TRACKS, LEVEL_PATHS } from './expertise';
 import ExpertiseMapView from './components/ExpertiseMapView';
+import CampaignRankCard from './components/CampaignRankCard';
 import { getMyCertificates, issueCertificate, ROUTE_CERTIFICATE_ID, ROUTE_CERTIFICATE_TITLE } from './certificateService';
 import type { Certificate } from './certificateService';
 import { CredentialModal, cleanCourseTitle } from './components/Credential';
@@ -462,6 +463,10 @@ interface LearningPathSelectorProps {
   /** Niveles del mapa de expertise (no están en el grid, pero sus badges sí se muestran). */
   levelPaths?: LearningPaths;
   onOpenMap?: () => void;
+  /** Registro gratuito: muestra la posición en el ranking de la campaña y sus reglas. */
+  showCampaign?: boolean;
+  /** Texto del aviso del mapa cuando los niveles no están incluidos (registro gratuito). */
+  mapNote?: string;
 }
 
 // Cursos exclusivos de un público: solo los ve ese rol (y admin). Los demás roles no los ven,
@@ -523,6 +528,8 @@ const LearningPathSelector: React.FC<LearningPathSelectorProps> = ({
   showRouteCertificate,
   levelPaths = {},
   onOpenMap,
+  showCampaign,
+  mapNote,
 }) => {
   // Rutas del mapa con niveles publicados que este usuario puede cursar, p. ej. "Investigador Cibercriminal y Perito Forense Digital".
   const mapTracks = EXPERTISE_TRACKS.filter(t => t.levels.slice(1).some(l => l && l in levelPaths)).map(t => t.title);
@@ -655,6 +662,8 @@ const LearningPathSelector: React.FC<LearningPathSelectorProps> = ({
           <p className="mb-6 text-sm text-emerald-200 bg-emerald-500/10 border border-emerald-500/30 rounded-xl px-4 py-3">{banner}</p>
         )}
 
+        {showCampaign && <CampaignRankCard />}
+
         {onOpenMap && (
           <button
             onClick={onOpenMap}
@@ -663,7 +672,7 @@ const LearningPathSelector: React.FC<LearningPathSelectorProps> = ({
             <div>
               <p className="text-xs font-bold uppercase tracking-widest text-sky-300 mb-1">✨ Nuevo · Mapa de expertise</p>
               <p className="text-lg font-bold text-white">Avanza de Básico a Avanzado: ya disponible {mapTracksLabel}</p>
-              <p className="text-sm text-slate-300">Laboratorios prácticos, retos tipo CTF y exámenes por nivel. Cada nivel aprobado te da un badge.</p>
+              <p className="text-sm text-slate-300">{mapNote ?? 'Laboratorios prácticos, retos tipo CTF y exámenes por nivel. Cada nivel aprobado te da un badge.'}</p>
             </div>
             <span className="shrink-0 bg-sky-600 text-white font-bold text-sm rounded-xl px-4 py-2.5">🗺️ Ver mi mapa →</span>
           </button>
@@ -909,7 +918,8 @@ const App: React.FC = () => {
       .filter(([id, lv]) => id in learningPaths && lv.track.levels[0] in visiblePaths)
       .map(([id]) => [id, learningPaths[id]]),
   );
-  const isLevelUnlocked = (id: string) => isAdmin || isPathComplete(LEVEL_PATHS[id].prerequisite);
+  // El registro gratuito incluye solo los 7 Básicos: los niveles se ven en el mapa, pero bloqueados.
+  const isLevelUnlocked = (id: string) => isAdmin || (!isFreeStudent && isPathComplete(LEVEL_PATHS[id].prerequisite));
   // El mapa se ofrece solo si el usuario tiene al menos una ruta con niveles ya publicados.
   const hasMap = EXPERTISE_TRACKS.some(t => t.levels[0] in visiblePaths && t.levels.slice(1).some(l => l && l in levelPaths));
 
@@ -955,6 +965,7 @@ const App: React.FC = () => {
         baseLocks={lockedPaths}
         progress={routeProgress}
         isAdmin={isAdmin}
+        levelLockReason={isFreeStudent ? 'No incluido en el registro gratuito' : undefined}
         onSelect={setSelectedPathId}
         onClose={() => setShowMap(false)}
       />
@@ -975,7 +986,9 @@ const App: React.FC = () => {
         showRouteCertificate={isFreeStudent}
         levelPaths={levelPaths}
         onOpenMap={hasMap ? () => setShowMap(true) : undefined}
-        banner={isFreeStudent ? '🎁 Registro gratuito (22–31 de octubre): completa los 7 cursos iniciales en orden, desde Fundamentos de Ciberseguridad hasta CERTs y CSIRTs. Cada curso terminado te da un badge verificable, y al completar los 7 obtienes tu certificado final.' : undefined}
+        showCampaign={isFreeStudent}
+        mapNote={isFreeStudent ? 'Tus 7 cursos gratuitos son el Nivel Básico de cada ruta. Mira el camino completo: los niveles Intermedio y Avanzado no están incluidos en el registro gratuito.' : undefined}
+        banner={isFreeStudent ? '🎁 Registro gratuito (22–31 de octubre): completa los 7 cursos iniciales en orden, desde Fundamentos de Ciberseguridad hasta CERTs y CSIRTs. Cada curso terminado te da un badge verificable, y al completar los 7 obtienes tu certificado final. Los 50 mejores puntajes al 31 de octubre acceden gratis al curso de creación de agentes defensivos y ofensivos en ciberseguridad.' : undefined}
       />
     );
   }

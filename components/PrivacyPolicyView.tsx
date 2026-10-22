@@ -36,7 +36,7 @@ export const PrivacyPolicyContent: React.FC = () => (
     </Section>
 
     <Section title="3. Finalidades">
-      <p>Sus datos se usan para: (a) crear y administrar su cuenta; (b) registrar su avance en los cursos; (c) emitir y permitir la verificación de sus badges y certificados; (d) enviarle comunicaciones relacionadas con los cursos en los que participa; (e) elaborar estadísticas agregadas y anónimas para mejorar los cursos; y (f) proteger la seguridad de la plataforma.</p>
+      <p>Sus datos se usan para: (a) crear y administrar su cuenta; (b) registrar su avance en los cursos; (c) emitir y permitir la verificación de sus badges y certificados; (d) enviarle comunicaciones relacionadas con los cursos en los que participa; (e) elaborar estadísticas agregadas y anónimas para mejorar los cursos; (f) proteger la seguridad de la plataforma; y (g) calcular su puntaje en las convocatorias académicas en las que participe (como el ranking de la campaña de registro gratuito), seleccionar a los ganadores y contactarlos. El ranking completo no se publica: cada participante ve solo su posición.</p>
     </Section>
 
     <Section title="4. Verificación pública de badges y certificados">

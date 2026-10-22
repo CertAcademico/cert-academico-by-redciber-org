@@ -14,6 +14,8 @@ interface ExpertiseMapViewProps {
   baseLocks: Record<string, string>;
   progress: UserProgressMap;
   isAdmin: boolean;
+  /** Motivo fijo de bloqueo de Intermedio/Avanzado (p. ej. registro gratuito). */
+  levelLockReason?: string;
   onSelect: (pathId: string) => void;
   onClose: () => void;
 }
@@ -27,7 +29,7 @@ const LEVEL_STYLE = [
   { ring: 'ring-rose-400', dot: 'bg-rose-500', text: 'text-rose-300' },
 ];
 
-const ExpertiseMapView: React.FC<ExpertiseMapViewProps> = ({ allPaths, visibleBase, baseLocks, progress, isAdmin, onSelect, onClose }) => {
+const ExpertiseMapView: React.FC<ExpertiseMapViewProps> = ({ allPaths, visibleBase, baseLocks, progress, isAdmin, levelLockReason, onSelect, onClose }) => {
   const isComplete = (pathId: string) => {
     const cp = progress[pathId];
     const path = allPaths[pathId];
@@ -44,6 +46,7 @@ const ExpertiseMapView: React.FC<ExpertiseMapViewProps> = ({ allPaths, visibleBa
       levelsPublished++;
       if (isComplete(pathId)) { levelsDone++; return 'done'; }
       if (i === 0) return baseLocks[pathId] ? 'locked' : 'available';
+      if (levelLockReason && !isAdmin) return 'locked';
       const prev = track.levels[i - 1];
       return isAdmin || (prev && isComplete(prev)) ? 'available' : 'locked';
     });
@@ -124,7 +127,7 @@ const ExpertiseMapView: React.FC<ExpertiseMapViewProps> = ({ allPaths, visibleBa
                           <p className="text-xs text-slate-400 mt-0.5">
                             {state === 'done' && '✓ Completado · badge obtenido'}
                             {state === 'available' && (path ? `${path.modules.length} módulos · ${i === 0 ? 'Disponible' : 'Desbloqueado'}` : '')}
-                            {state === 'locked' && (i === 0 ? baseLocks[pathId!]?.replace(/^🔒\s*/, '') : `Aprueba el nivel ${LEVEL_NAMES[i - 1]} para desbloquear`)}
+                            {state === 'locked' && (i === 0 ? baseLocks[pathId!]?.replace(/^🔒\s*/, '') : levelLockReason ?? `Aprueba el nivel ${LEVEL_NAMES[i - 1]} para desbloquear`)}
                             {state === 'soon' && 'En preparación'}
                           </p>
                         </div>

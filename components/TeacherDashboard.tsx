@@ -8,6 +8,8 @@ import { BadgeSvg, CredentialModal, cleanCourseTitle } from './Credential';
 import { ROUTE_CERTIFICATE_ID, ROUTE_CERTIFICATE_TITLE } from '../certificateService';
 import type { Certificate } from '../certificateService';
 import { FREE_ROUTE } from '../platform';
+import { getCampaignRanking, CAMPAIGN_TOP } from '../rankingService';
+import type { RankingRow } from '../rankingService';
 
 interface TeacherDashboardProps {
   paths: LearningPaths;
@@ -232,6 +234,99 @@ const AdminPanel: React.FC<{ onUserCreated: () => void }> = ({ onUserCreated }) 
   );
 };
 
+/** Ranking de la campaña (solo admin): top 50 con datos de contacto, alerta de ritmo sospechoso y CSV. */
+const CampaignRankingPanel: React.FC = () => {
+  const [rows, setRows] = useState<RankingRow[] | null>(null);
+  const [showAll, setShowAll] = useState(false);
+
+  useEffect(() => {
+    let cancelled = false;
+    getCampaignRanking().then(r => { if (!cancelled) setRows(r); });
+    return () => { cancelled = true; };
+  }, []);
+
+  // Menos de 15 minutos por badge en promedio es inusual: conviene revisarlo a mano antes de anunciar.
+  const minutesPerBadge = (r: RankingRow) =>
+    r.badges > 0 && r.startedAt && r.lastBadgeAt ? (Date.parse(r.lastBadgeAt) - Date.parse(r.startedAt)) / 60000 / r.badges : null;
+  const suspicious = (r: RankingRow) => {
+    const m = minutesPerBadge(r);
+    return m !== null && m < 15;
+  };
+  const fmt = (iso: string | null) =>
+    iso ? new Date(iso).toLocaleString('es-CO', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit', timeZone: 'America/Bogota' }) : '—';
+
+  const ranked = (rows ?? []).filter(r => r.badges > 0);
+  const visible = showAll ? ranked : ranked.slice(0, CAMPAIGN_TOP);
+
+  const downloadCsv = () => {
+    const header = 'puesto,nombre,correo,badges,puntos,inicio,ultimo_badge,revisar';
+    const lines = ranked.slice(0, CAMPAIGN_TOP).map(r =>
+      [r.position, `"${r.name.replace(/"/g, '""')}"`, r.email, r.badges, r.score, r.startedAt ?? '', r.lastBadgeAt ?? '', suspicious(r) ? 'si' : ''].join(','),
+    );
+    const url = URL.createObjectURL(new Blob([[header, ...lines].join('\n')], { type: 'text/csv;charset=utf-8' }));
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `ranking_top${CAMPAIGN_TOP}_${new Date().toISOString().slice(0, 10)}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
+  return (
+    <div className="bg-slate-800/50 rounded-2xl p-4 md:p-6 mb-6">
+      <div className="flex flex-wrap items-center justify-between gap-3 mb-1">
+        <h2 className="text-lg font-semibold">🏆 Ranking de la campaña (registro gratuito)</h2>
+        {ranked.length > 0 && (
+          <button onClick={downloadCsv} className="text-xs bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-lg px-3 py-1.5">
+            ⬇ Top {CAMPAIGN_TOP} (CSV)
+          </button>
+        )}
+      </div>
+      <p className="text-slate-400 text-sm mb-4">
+        {rows === null
+          ? 'Cargando…'
+          : `${rows.length} participantes · ${ranked.length} con al menos un badge. Corte: 31 oct, 23:59. ⚠️ = menos de 15 min por badge: revisar antes de anunciar.`}
+      </p>
+      {ranked.length > 0 && (
+        <div className="overflow-x-auto">
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="text-left text-slate-400 border-b border-slate-700">
+                <th className="py-2 pr-3">#</th>
+                <th className="py-2 pr-3">Nombre</th>
+                <th className="py-2 pr-3">Correo</th>
+                <th className="py-2 pr-3">Badges</th>
+                <th className="py-2 pr-3">Puntos</th>
+                <th className="py-2 pr-3">Inicio</th>
+                <th className="py-2 pr-3">Último badge</th>
+                <th className="py-2"></th>
+              </tr>
+            </thead>
+            <tbody>
+              {visible.map(r => (
+                <tr key={r.userId} className={`border-b border-slate-800 ${r.position <= CAMPAIGN_TOP ? '' : 'opacity-60'}`}>
+                  <td className="py-2 pr-3 font-bold">{r.position}</td>
+                  <td className="py-2 pr-3">{r.name}</td>
+                  <td className="py-2 pr-3 text-slate-400">{r.email}</td>
+                  <td className="py-2 pr-3">{r.badges}</td>
+                  <td className="py-2 pr-3">{r.score}</td>
+                  <td className="py-2 pr-3 text-slate-400">{fmt(r.startedAt)}</td>
+                  <td className="py-2 pr-3 text-slate-400">{fmt(r.lastBadgeAt)}</td>
+                  <td className="py-2" title="Ritmo inusualmente rápido">{suspicious(r) ? '⚠️' : ''}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          {ranked.length > CAMPAIGN_TOP && (
+            <button onClick={() => setShowAll(v => !v)} className="mt-3 text-sm text-blue-400 hover:underline">
+              {showAll ? `Ver solo el top ${CAMPAIGN_TOP}` : `Ver los ${ranked.length} participantes con badges`}
+            </button>
+          )}
+        </div>
+      )}
+    </div>
+  );
+};
+
 /** Vista previa (solo admin) de todos los badges y certificados, sin emitir nada en la base de datos. */
 const BadgePreviewPanel: React.FC<{ paths: LearningPaths; viewerName: string }> = ({ paths, viewerName }) => {
   const [open, setOpen] = useState<{ cert: Certificate; title: string } | null>(null);
@@ -326,6 +421,7 @@ const TeacherDashboard: React.FC<TeacherDashboardProps> = ({ paths, onExit, isAd
 
         {isAdmin && <AdminPanel onUserCreated={loadStudents} />}
         {isAdmin && <BulkCreatePanel onUsersCreated={loadStudents} />}
+        {isAdmin && <CampaignRankingPanel />}
         {isAdmin && <BadgePreviewPanel paths={paths} viewerName={viewerName} />}
         {isAdmin && resetResult && <ResultBox email={resetResult.email} password={resetResult.password} onClose={() => setResetResult(null)} />}
         {isAdmin && resetError && <p className="text-rose-400 text-sm mb-4">{resetError}</p>}

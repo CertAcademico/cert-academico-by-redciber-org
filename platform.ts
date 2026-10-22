@@ -21,7 +21,7 @@ export const REGISTRATION_DEADLINE = '2026-10-31T23:59:59-05:00';
 export const isRegistrationOpen = (now = Date.now()) => now <= Date.parse(REGISTRATION_DEADLINE);
 
 /** Versión de la política que acepta quien se registra (se guarda con su consentimiento). */
-export const POLICY_VERSION = '2026-10-22';
+export const POLICY_VERSION = '2026-10-24';
 
 /**
  * Datos del Responsable del Tratamiento (Ley 1581 de 2012, art. 17 y Decreto 1074 de 2015).
