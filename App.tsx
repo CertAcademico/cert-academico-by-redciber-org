@@ -859,7 +859,14 @@ const App: React.FC = () => {
       );
 
   if (showTeacherDashboard) {
-    return <TeacherDashboard paths={visiblePaths} onExit={() => setShowTeacherDashboard(false)} isAdmin={isAdmin} />;
+    return (
+      <TeacherDashboard
+        paths={visiblePaths}
+        onExit={() => setShowTeacherDashboard(false)}
+        isAdmin={isAdmin}
+        viewerName={currentUser.name}
+      />
+    );
   }
 
   // Roles con calendario (ver COURSE_WINDOWS_BY_ROLE): fuera de su ventana el curso se ve con 🔒.

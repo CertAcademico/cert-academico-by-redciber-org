@@ -220,7 +220,12 @@ const PRINT_CSS = `
 }`;
 
 /** Vista del titular: badge, certificado, compartir, descargar e imprimir. */
-export const CredentialModal: React.FC<{ cert: Certificate; title: string; onClose: () => void }> = ({ cert, title, onClose }) => {
+export const CredentialModal: React.FC<{ cert: Certificate; title: string; onClose: () => void; preview?: boolean }> = ({
+  cert,
+  title,
+  onClose,
+  preview,
+}) => {
   const badgeRef = useRef<SVGSVGElement>(null);
   const [copied, setCopied] = useState(false);
   const url = verifyUrl(cert.code);
@@ -240,6 +245,11 @@ export const CredentialModal: React.FC<{ cert: Certificate; title: string; onClo
     <div className="fixed inset-0 z-50 bg-black/75 overflow-y-auto p-4" onClick={onClose}>
       <style>{PRINT_CSS}</style>
       <div className="max-w-4xl mx-auto my-6 bg-slate-900 border border-slate-700 rounded-2xl p-5 md:p-8 text-white" onClick={e => e.stopPropagation()}>
+        {preview && (
+          <p className="mb-5 text-sm text-sky-200 bg-sky-500/10 border border-sky-500/30 rounded-lg px-3 py-2.5">
+            👁️ Vista previa para administradores: así lo verá un estudiante. El código es de ejemplo y no se puede verificar ni agregar a LinkedIn.
+          </p>
+        )}
         <div className="flex justify-between items-start mb-6">
           <div>
             <p className="text-amber-300 text-sm font-semibold">🎖️ ¡Felicitaciones, {cert.recipientName.split(' ')[0]}!</p>
@@ -257,7 +267,13 @@ export const CredentialModal: React.FC<{ cert: Certificate; title: string; onClo
               <button onClick={copy} className={`${btn} bg-slate-700 hover:bg-slate-600`}>{copied ? '✓ Copiado' : 'Copiar'}</button>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
-              <a href={linkedInUrl(cert, title)} target="_blank" rel="noopener noreferrer" className={`${btn} bg-[#0a66c2] hover:bg-[#004182]`}>
+              <a
+                href={preview ? undefined : linkedInUrl(cert, title)}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-disabled={preview}
+                className={`${btn} bg-[#0a66c2] ${preview ? 'opacity-40 cursor-not-allowed' : 'hover:bg-[#004182]'}`}
+              >
                 Agregar a LinkedIn
               </a>
               <button onClick={() => badgeRef.current && downloadBadgePng(badgeRef.current, `badge-${cert.code}.png`)} className={`${btn} bg-blue-600 hover:bg-blue-500`}>

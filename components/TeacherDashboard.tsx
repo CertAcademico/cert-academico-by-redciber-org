@@ -4,11 +4,17 @@ import { getAllStudentsProgress } from '../progressService';
 import type { StudentSummary } from '../progressService';
 import { formatRelativeTime } from '../utils';
 import { supabase } from '../supabaseClient';
+import { BadgeSvg, CredentialModal, cleanCourseTitle } from './Credential';
+import { ROUTE_CERTIFICATE_ID, ROUTE_CERTIFICATE_TITLE } from '../certificateService';
+import type { Certificate } from '../certificateService';
+import { FREE_ROUTE } from '../platform';
 
 interface TeacherDashboardProps {
   paths: LearningPaths;
   onExit: () => void;
   isAdmin: boolean;
+  /** Nombre con el que se muestran los badges en la vista previa. */
+  viewerName: string;
 }
 
 const pathLabel = (title: string): string => (title.length > 20 ? `${title.slice(0, 20)}…` : title);
@@ -226,7 +232,45 @@ const AdminPanel: React.FC<{ onUserCreated: () => void }> = ({ onUserCreated }) 
   );
 };
 
-const TeacherDashboard: React.FC<TeacherDashboardProps> = ({ paths, onExit, isAdmin }) => {
+/** Vista previa (solo admin) de todos los badges y certificados, sin emitir nada en la base de datos. */
+const BadgePreviewPanel: React.FC<{ paths: LearningPaths; viewerName: string }> = ({ paths, viewerName }) => {
+  const [open, setOpen] = useState<{ cert: Certificate; title: string } | null>(null);
+  const routeIds = FREE_ROUTE.filter(id => id in paths);
+  const otherIds = Object.keys(paths).filter(id => !FREE_ROUTE.includes(id));
+  const items = [
+    ...routeIds.map(id => ({ id, title: cleanCourseTitle(paths[id].title) })),
+    { id: ROUTE_CERTIFICATE_ID, title: ROUTE_CERTIFICATE_TITLE },
+    ...otherIds.map(id => ({ id, title: cleanCourseTitle(paths[id].title) })),
+  ];
+  const year = new Date().getFullYear().toString();
+
+  return (
+    <div className="bg-slate-800/50 rounded-2xl p-4 md:p-6 mb-6">
+      <h2 className="text-lg font-semibold mb-1">🎖️ Vista previa de badges y certificados</h2>
+      <p className="text-slate-400 text-sm mb-4">Haz clic en un badge para ver el certificado y probar la descarga, tal como lo verá un estudiante. No se emite nada real.</p>
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
+        {items.map(it => (
+          <button
+            key={it.id}
+            onClick={() =>
+              setOpen({
+                cert: { code: 'VISTAPREVIA0', pathId: it.id, recipientName: viewerName, issuedAt: new Date().toISOString() },
+                title: it.title,
+              })
+            }
+            className="flex flex-col items-center gap-2 rounded-xl p-2 hover:bg-slate-700/40 transition-colors"
+          >
+            <BadgeSvg pathId={it.id} title={it.title} year={year} size={120} />
+            <span className="text-xs text-slate-300 text-center leading-tight">{it.title}</span>
+          </button>
+        ))}
+      </div>
+      {open && <CredentialModal cert={open.cert} title={open.title} onClose={() => setOpen(null)} preview />}
+    </div>
+  );
+};
+
+const TeacherDashboard: React.FC<TeacherDashboardProps> = ({ paths, onExit, isAdmin, viewerName }) => {
   const [students, setStudents] = useState<StudentSummary[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [resetResult, setResetResult] = useState<{ email: string; password: string } | null>(null);
@@ -282,6 +326,7 @@ const TeacherDashboard: React.FC<TeacherDashboardProps> = ({ paths, onExit, isAd
 
         {isAdmin && <AdminPanel onUserCreated={loadStudents} />}
         {isAdmin && <BulkCreatePanel onUsersCreated={loadStudents} />}
+        {isAdmin && <BadgePreviewPanel paths={paths} viewerName={viewerName} />}
         {isAdmin && resetResult && <ResultBox email={resetResult.email} password={resetResult.password} onClose={() => setResetResult(null)} />}
         {isAdmin && resetError && <p className="text-rose-400 text-sm mb-4">{resetError}</p>}
 
