@@ -1,5 +1,6 @@
 import React, { forwardRef, useRef, useState } from 'react';
 import { BRAND, FREE_ROUTE, appUrl } from '../platform';
+import { LEVEL_NAMES, LEVEL_PATHS } from '../expertise';
 import { ROUTE_CERTIFICATE_ID } from '../certificateService';
 import type { Certificate } from '../certificateService';
 
@@ -15,6 +16,8 @@ const BADGE_COLORS: Record<string, [string, string]> = {
   cert_csirt: ['#0d9488', '#134e4a'],
   auditoria_ciberriesgo: ['#e11d48', '#881337'],
   cti_basico: ['#8b5cf6', '#2e1065'],
+  cybercrime_intermedio: ['#b91c1c', '#431407'],
+  cybercrime_avanzado: ['#7f1d1d', '#0c0a09'],
   [ROUTE_CERTIFICATE_ID]: ['#eab308', '#713f12'],
 };
 
@@ -53,11 +56,14 @@ const BADGE_TITLES: Record<string, string> = {
   cert_csirt: 'CERTs y CSIRTs',
   auditoria_ciberriesgo: 'Auditoría del Riesgo Cibernético',
   cti_basico: 'Cyber Threat Intelligence',
+  cybercrime_intermedio: 'Investigador Cibercriminal',
+  cybercrime_avanzado: 'Investigador Cibercriminal',
   [ROUTE_CERTIFICATE_ID]: 'Ruta de Ciberseguridad',
 };
 
-/** Ícono de cada curso, dibujado en una caja de 64×64. */
-const BadgeIcon: React.FC<{ pathId: string; color: string }> = ({ pathId, color }) => {
+/** Ícono de cada curso, dibujado en una caja de 64×64. Los niveles usan el ícono de su ruta. */
+const BadgeIcon: React.FC<{ pathId: string; color: string }> = ({ pathId: rawId, color }) => {
+  const pathId = LEVEL_PATHS[rawId]?.track.levels[0] ?? rawId;
   const s = { fill: 'none', stroke: color, strokeWidth: 4, strokeLinecap: 'round' as const, strokeLinejoin: 'round' as const };
   switch (pathId) {
     case 'cybersecurity': // escudo con candado
@@ -93,9 +99,12 @@ export const BadgeSvg = forwardRef<SVGSVGElement, { pathId: string; title: strin
     const [c1, c2] = BADGE_COLORS[pathId] ?? ['#2563eb', '#1e3a8a'];
     const isRoute = pathId === ROUTE_CERTIFICATE_ID;
     const routeIndex = FREE_ROUTE.indexOf(pathId);
+    const level = LEVEL_PATHS[pathId]?.level;
     const ribbon = isRoute
       ? `RUTA COMPLETA · ${year}`
-      : routeIndex >= 0
+      : level
+        ? `NIVEL ${LEVEL_NAMES[level].toUpperCase()} · ${year}`
+        : routeIndex >= 0
         ? `CURSO ${routeIndex + 1} DE ${FREE_ROUTE.length} · ${year}`
         : `CURSO COMPLETADO · ${year}`;
     const lines = wrap((BADGE_TITLES[pathId] ?? cleanCourseTitle(title)).toUpperCase(), 17).slice(0, 3);
@@ -130,6 +139,10 @@ export const BadgeSvg = forwardRef<SVGSVGElement, { pathId: string; title: strin
         {lines.map((l, i) => (
           <text key={i} x="200" y={236 + i * 25} textAnchor="middle" fill="#ffffff" fontFamily={font} fontWeight="700" fontSize="20">{l}</text>
         ))}
+        {/* Estrellas de nivel del mapa de expertise: ★★ Intermedio, ★★★ Avanzado */}
+        {level && (
+          <text x="200" y="304" textAnchor="middle" fill="#fde68a" fontFamily={font} fontSize="20" letterSpacing="6">{'★'.repeat(level + 1)}</text>
+        )}
         {/* Cinta con extremos plegados */}
         <path d="M14 326 L44 326 L44 362 L14 362 L26 344 Z" fill={c2} />
         <path d="M386 326 L356 326 L356 362 L386 362 L374 344 Z" fill={c2} />

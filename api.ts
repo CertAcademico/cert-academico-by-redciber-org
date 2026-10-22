@@ -2657,6 +2657,561 @@ const LEARNING_PATHS_DATA: LearningPaths = {
         ]
       }
     ]
+  },
+  cybercrime_intermedio: {
+    title: "Investigador Cibercriminal · Nivel Intermedio",
+    description: "De la teoría al caso: triage y preservación, análisis de correos fraudulentos, OSINT, registros de acceso y el rastro del dinero. Laboratorios prácticos y examen con nota mínima del 70%.",
+    lastUpdated: "Octubre 2026",
+    modules: [
+      {
+        id: 'cci_intro',
+        title: "1. 🗺️ Bienvenida al Nivel Intermedio",
+        content: [
+          { type: 'text', icon: 'UserSearchIcon', text: "En el Nivel Básico aprendió qué es el cibercrimen y cómo se tipifica. Ahora va a investigar: recibirá casos ficticios inspirados en situaciones reales, analizará evidencias y tomará decisiones como lo haría un investigador." },
+          { type: 'text', icon: 'AlarmIcon', text: "Este nivel es más exigente: incluye laboratorios de simulación (sus decisiones suman o restan puntos), retos tipo CTF en los que debe encontrar la respuesta exacta en las evidencias, y un examen final que se aprueba con 70% o más." },
+          {
+            type: 'interactive',
+            title: 'Vocabulario del investigador',
+            items: [
+              { term: 'Triage', definition: 'Clasificar rápidamente un caso según su urgencia, impacto y posibilidad de recuperar evidencia o dinero.' },
+              { term: 'Preservación', definition: 'Asegurar que la evidencia no se pierda ni se altere: capturas fechadas, copias con hash, solicitudes a proveedores para que no borren datos.' },
+              { term: 'Artefacto', definition: 'Cualquier rastro digital útil: un encabezado de correo, un registro de acceso, una transacción, un dominio.' },
+              { term: 'Pivoteo', definition: 'Usar un dato conocido (un dominio, un correo, una IP) para descubrir otros relacionados con el mismo autor o campaña.' },
+              { term: 'Bandera (flag)', definition: 'En los retos tipo CTF, la respuesta exacta que se obtiene al analizar correctamente la evidencia.' },
+            ]
+          },
+        ]
+      },
+      {
+        id: 'cci_triage',
+        title: "2. Del Reporte al Caso: Triage y Preservación",
+        content: [
+          { type: 'text', icon: 'AlarmIcon', text: "Las primeras horas son las más valiosas: los delincuentes mueven el dinero en minutos, los proveedores rotan sus registros y las víctimas, por miedo o vergüenza, borran mensajes. Un buen triage decide qué preservar primero." },
+          { type: 'text', icon: 'LockIcon', text: "Regla de oro: no contaminar la evidencia. No se reenvía el correo sospechoso (se pierden los encabezados originales), no se responde al delincuente, no se borra nada y se documenta todo con fecha, hora y fuente." },
+          {
+            type: 'scenario',
+            title: 'Caso 1: la llamada del "banco"',
+            intro: "Usted atiende a Laura, asociada de una cooperativa ficticia. Hace 40 minutos recibió un SMS \"del banco\" con un enlace, ingresó sus datos y luego una persona la llamó para \"cancelar una compra\" pidiéndole un código. Ahora ve dos transferencias que no hizo. Sus decisiones suman puntos; necesita 60 de 80 para aprobar.",
+            start: 's1',
+            maxPoints: 80,
+            passPoints: 60,
+            steps: {
+              s1: {
+                text: "Laura está alterada y le muestra su celular. ¿Qué hace primero?",
+                choices: [
+                  { text: "Le pide que llame de inmediato a la línea oficial de su entidad para bloquear productos y reportar las transferencias.", next: 's2', points: 20, feedback: "Correcto. El dinero se mueve rápido: bloquear y reportar a la entidad es lo más urgente, porque puede intentar retener los fondos." },
+                  { text: "Le pide que reenvíe el SMS y los pantallazos a su correo para analizarlos con calma.", next: 's2', points: 0, feedback: "Analizar es importante, pero no es lo primero. Cada minuto cuenta para intentar retener el dinero." },
+                  { text: "Le dice que borre el SMS para que no vuelva a caer en el engaño.", next: 's2', points: -10, feedback: "Error: borrar el SMS destruye evidencia clave (remitente, enlace, hora)." },
+                ]
+              },
+              s2: {
+                text: "La entidad ya bloqueó los productos. Ahora hay que preservar la evidencia del celular. ¿Qué hace?",
+                evidence: "SMS recibido 09:12 · Remitente: 891234\n\"BancoAndino: su cuenta presenta un bloqueo. Actualice sus datos en https://bancoandino-seguro.example/validar\"\nLlamada entrante 09:31 · +57 300 000 0000 · duración 6 min",
+                choices: [
+                  { text: "Toma capturas completas del SMS y del registro de llamadas donde se vean fecha, hora, remitente y el enlace, y anota todo en un acta.", next: 's3', points: 20, feedback: "Bien. Capturas completas y fechadas, más un acta, conservan el contexto que se necesita después." },
+                  { text: "Abre el enlace en el celular de Laura para ver qué contiene la página.", next: 's3', points: -10, feedback: "No. Abrir el enlace en el equipo de la víctima puede infectarlo o alertar al delincuente. Se analiza después, en un entorno controlado." },
+                  { text: "Copia solo el texto del SMS en un documento de Word.", next: 's3', points: 5, feedback: "Insuficiente: sin fecha, hora y remitente visibles, el texto suelto pierde valor probatorio." },
+                ]
+              },
+              s3: {
+                text: "El enlace apunta a un dominio falso. ¿Qué paso sigue para que la evidencia en línea no desaparezca?",
+                choices: [
+                  { text: "Documentar la URL y solicitar, por los canales formales, la preservación de los datos al proveedor del dominio y del alojamiento, y orientar a Laura para denunciar ante la Fiscalía o el CAI Virtual.", next: 's4', points: 20, feedback: "Correcto. Preservación formal y denuncia: así la evidencia podrá obtenerse luego con orden judicial." },
+                  { text: "Intentar ingresar al panel del sitio falso para descubrir quién lo administra.", next: 's4', points: -20, feedback: "Grave: eso sería acceso abusivo a un sistema informático (Art. 269A) y anularía la prueba." },
+                  { text: "Publicar la URL en redes sociales para alertar a otros asociados.", next: 's4', points: 5, feedback: "Alertar es útil, pero sin coordinarlo puede hacer que el delincuente borre todo. Primero se preserva, luego se comunica de forma coordinada." },
+                ]
+              },
+              s4: {
+                text: "Para cerrar la atención inicial, ¿qué le recomienda a Laura?",
+                choices: [
+                  { text: "Cambiar contraseñas desde un equipo seguro, activar la verificación en dos pasos y desconfiar de llamadas que piden códigos: ninguna entidad los solicita.", next: 'fin', points: 20, feedback: "Excelente cierre: se reduce el riesgo de que vuelva a ocurrir." },
+                  { text: "Que no se preocupe porque el banco siempre devuelve el dinero.", next: 'fin', points: -10, feedback: "No es cierto en todos los casos, y crea expectativas falsas." },
+                ]
+              },
+              fin: { text: "Fin del caso. Revise su puntaje y la retroalimentación de cada decisión." },
+            }
+          },
+        ]
+      },
+      {
+        id: 'cci_email',
+        title: "3. 🚩 Laboratorio: Análisis de un Correo Fraudulento",
+        content: [
+          { type: 'text', icon: 'ClosedEnvelopeIcon', text: "Los encabezados de un correo cuentan su viaje. Las líneas \"Received\" se leen de abajo hacia arriba: la última es el primer servidor que tocó el mensaje. \"Reply-To\" revela a dónde llegarían las respuestas, y \"Authentication-Results\" muestra si pasó los controles SPF, DKIM y DMARC." },
+          { type: 'text', icon: 'ShieldCheckIcon', text: "SPF verifica que el servidor que envía esté autorizado por el dominio; DKIM, que el mensaje esté firmado por el dominio; DMARC, que el dominio visible en \"From\" coincida con los que pasaron SPF o DKIM. Un \"fail\" en DMARC es una alerta fuerte de suplantación." },
+          {
+            type: 'challenge',
+            title: 'El correo "urgente" del gerente',
+            brief: "Tesorería de una cooperativa ficticia recibió este correo pidiendo un pago urgente. Analice los encabezados y responda. Todos los datos son ficticios.",
+            artifacts: [
+              {
+                name: 'encabezados.eml',
+                content: `Return-Path: <notificaciones@pagos-rapidos.example>
+Received: from mx1.coopandina.example (mx1.coopandina.example [198.51.100.10])
+        by buzon.coopandina.example; Tue, 14 Oct 2026 08:47:12 -0500
+Received: from mail.pagos-rapidos.example (unknown [203.0.113.45])
+        by mx1.coopandina.example; Tue, 14 Oct 2026 08:47:10 -0500
+Authentication-Results: mx1.coopandina.example;
+        spf=fail (203.0.113.45 is not permitted) smtp.mailfrom=pagos-rapidos.example;
+        dkim=none;
+        dmarc=fail (p=reject) header.from=coopandina.example
+From: "Carlos Rueda - Gerente" <gerencia@coopandina.example>
+Reply-To: <carlos.rueda.gerencia@correo-seguro.example>
+To: tesoreria@coopandina.example
+Subject: URGENTE - pago a proveedor hoy antes de las 11
+Message-ID: <20261014134710.5521@pagos-rapidos.example>
+Date: Tue, 14 Oct 2026 08:47:05 -0500`,
+              },
+            ],
+            questions: [
+              { prompt: '¿Cuál es la dirección IP del servidor que originó el mensaje (el primer "Received", de abajo hacia arriba)?', answers: ['203.0.113.45'], hint: 'Lea las líneas Received de abajo hacia arriba: la de más abajo es el origen.', explanation: '203.0.113.45 es el servidor de pagos-rapidos.example que entregó el correo a la cooperativa.' },
+              { prompt: '¿A qué dirección llegarían las respuestas de Tesorería?', answers: ['carlos.rueda.gerencia@correo-seguro.example'], hint: 'Busque el encabezado Reply-To.', explanation: 'El Reply-To desvía las respuestas a un buzón externo que no es de la cooperativa: táctica clásica de fraude BEC.' },
+              { prompt: '¿Qué resultado obtuvo el control DMARC? (una palabra)', answers: ['fail'], explanation: 'DMARC = fail: el dominio visible (coopandina.example) no está respaldado por SPF ni por DKIM. Es suplantación.' },
+              { prompt: '¿Qué dominio aparece realmente como remitente técnico en el Return-Path?', answers: ['pagos-rapidos.example'], explanation: 'El Return-Path (y el Message-ID) delatan a pagos-rapidos.example, aunque el "From" muestre el dominio de la cooperativa.' },
+            ],
+          },
+        ]
+      },
+      {
+        id: 'cci_osint',
+        title: "4. 🚩 OSINT Aplicado a la Investigación",
+        content: [
+          { type: 'text', icon: 'UserSearchIcon', text: "La inteligencia de fuentes abiertas (OSINT) usa información pública: registros de dominios (WHOIS/RDAP), DNS, registros de transparencia de certificados (Certificate Transparency), archivos históricos de páginas web y perfiles públicos." },
+          { type: 'text', icon: 'LockIcon', text: "Límites: OSINT es consultar lo que ya es público. Engañar a alguien para obtener datos, entrar a cuentas ajenas o comprar bases de datos filtradas puede ser delito (Ley 1273 de 2009) o vulnerar la protección de datos (Ley 1581 de 2012). Toda consulta se documenta: qué, cuándo y desde dónde." },
+          {
+            type: 'challenge',
+            title: 'Pivoteo sobre el dominio del fraude',
+            brief: "El dominio pagos-rapidos.example apareció en el correo del laboratorio anterior. Analice su registro RDAP y los certificados emitidos para responder. Todo es ficticio.",
+            artifacts: [
+              {
+                name: 'rdap_pagos-rapidos.json',
+                content: `{
+  "ldhName": "pagos-rapidos.example",
+  "events": [
+    { "eventAction": "registration", "eventDate": "2026-10-10T22:14:05Z" },
+    { "eventAction": "expiration",   "eventDate": "2027-10-10T22:14:05Z" }
+  ],
+  "entities": [
+    { "roles": ["registrar"], "vcardArray": ["vcard", [["fn", {}, "text", "Registrador Ejemplo S.A."]]] },
+    { "roles": ["registrant"], "remarks": [{ "description": ["REDACTED FOR PRIVACY"] }] }
+  ],
+  "nameservers": [ { "ldhName": "ns1.hosting-barato.example" }, { "ldhName": "ns2.hosting-barato.example" } ]
+}`,
+              },
+              {
+                name: 'certificados_CT.txt',
+                content: `Consulta de Certificate Transparency para "%.pagos-rapidos.example" y dominios relacionados
+emitido             nombre(s) en el certificado
+2026-10-11 03:02    pagos-rapidos.example, www.pagos-rapidos.example
+2026-10-11 03:05    portal.bancoandino-seguro.example
+2026-10-12 17:40    coopandina-pagos.example, www.coopandina-pagos.example
+(Los tres certificados fueron solicitados desde la misma cuenta de hosting: hosting-barato.example)`,
+              },
+            ],
+            questions: [
+              { prompt: '¿En qué fecha se registró el dominio pagos-rapidos.example? (formato AAAA-MM-DD)', answers: ['2026-10-10'], hint: 'Busque el evento "registration".', explanation: 'Registrado el 2026-10-10, cuatro días antes del correo fraudulento: un dominio "recién nacido" es una alerta típica.' },
+              { prompt: '¿Qué otro dominio, que imita a la cooperativa, aparece en los certificados emitidos?', answers: ['coopandina-pagos.example', 'www.coopandina-pagos.example'], explanation: 'coopandina-pagos.example imita a la cooperativa. Pivotear sobre la infraestructura reveló otra pieza de la misma campaña.' },
+              { prompt: '¿Qué proveedor de hosting conecta los dominios de la campaña?', answers: ['hosting-barato.example'], explanation: 'Los servidores de nombres y la cuenta de hosting en común conectan los dominios: es un punto de pivoteo y un destinatario para solicitar preservación de datos.' },
+            ],
+          },
+        ]
+      },
+      {
+        id: 'cci_logs',
+        title: "5. 🚩 Laboratorio: Rastros en los Registros de Acceso",
+        content: [
+          { type: 'text', icon: 'ServerIcon', text: "Cuando una cuenta de correo es comprometida, los registros de inicio de sesión muestran el patrón: accesos desde ubicaciones imposibles para la misma persona (viaje imposible), nuevos dispositivos, y cambios silenciosos como reglas de reenvío que copian el correo hacia afuera." },
+          {
+            type: 'challenge',
+            title: 'La cuenta de tesorería comprometida',
+            brief: "Días después del fraude, la cooperativa ficticia revisa los registros de la cuenta tesoreria@coopandina.example. Encuentre los indicadores del compromiso.",
+            artifacts: [
+              {
+                name: 'inicios_de_sesion.log',
+                content: `fecha_hora (UTC-5)     usuario                        ip              ubicación         resultado   dispositivo
+2026-10-13 07:58:02    tesoreria@coopandina.example   198.51.100.23   Medellín, CO      éxito       Windows / Edge
+2026-10-13 12:10:44    tesoreria@coopandina.example   198.51.100.23   Medellín, CO      éxito       Windows / Edge
+2026-10-13 12:41:19    tesoreria@coopandina.example   192.0.2.77      Lagos, NG         fallo       Linux / Firefox
+2026-10-13 12:41:52    tesoreria@coopandina.example   192.0.2.77      Lagos, NG         éxito       Linux / Firefox
+2026-10-13 12:44:05    tesoreria@coopandina.example   198.51.100.23   Medellín, CO      éxito       Windows / Edge`,
+              },
+              {
+                name: 'auditoria_buzon.log',
+                content: `2026-10-13 12:43:10  usuario=tesoreria@coopandina.example  ip=192.0.2.77
+  accion=New-InboxRule  nombre="."  condición=cualquier mensaje
+  acciones: ForwardTo=archivo.tesoreria@correo-seguro.example ; MarkAsRead=true ; MoveToFolder="RSS"`,
+              },
+            ],
+            questions: [
+              { prompt: '¿Desde qué IP se accedió de forma sospechosa a la cuenta?', answers: ['192.0.2.77'], explanation: '192.0.2.77, ubicada en otro continente 31 minutos después de un acceso en Medellín: viaje imposible.' },
+              { prompt: '¿A qué dirección externa reenvía los mensajes la regla creada por el atacante?', answers: ['archivo.tesoreria@correo-seguro.example'], explanation: 'El atacante creó una regla que reenvía todo a un buzón externo del mismo dominio que vimos en el Reply-To del laboratorio 3.' },
+              { prompt: '¿Cómo se llama la regla de buzón creada? (escriba el nombre exacto)', answers: ['.'], hint: 'Es un nombre muy corto, pensado para pasar desapercibido.', explanation: 'Un nombre como "." y mover los correos a una carpeta poco revisada ("RSS") son tácticas para ocultar la regla a la víctima.' },
+            ],
+          },
+          {
+            type: 'quiz',
+            quizData: {
+              question: "Además de cambiar la contraseña de la cuenta comprometida, ¿qué es indispensable hacer?",
+              options: [
+                "Nada más: con la nueva contraseña el atacante pierde el acceso a todo.",
+                "Eliminar la regla de reenvío maliciosa, cerrar las sesiones activas y activar la verificación en dos pasos.",
+                "Borrar el registro de auditoría para empezar de cero."
+              ],
+              correctOptionIndex: 1,
+              feedback: {
+                correct: "Correcto. La regla seguiría filtrando correos aunque cambie la contraseña. Y el registro de auditoría es evidencia: nunca se borra.",
+                incorrect: "No. La regla de reenvío sigue funcionando aunque cambie la contraseña, y borrar registros destruye evidencia."
+              }
+            }
+          },
+        ]
+      },
+      {
+        id: 'cci_money',
+        title: "6. El Rastro del Dinero",
+        content: [
+          { type: 'text', icon: 'BrokenEnvelopeIcon', text: "El dinero robado rara vez va directo al delincuente: pasa por cuentas de \"mulas\" (personas que prestan o venden sus cuentas, a veces engañadas), se divide en montos pequeños, se retira en efectivo o se convierte en criptoactivos en cuestión de horas." },
+          { type: 'text', icon: 'ShieldCheckIcon', text: "Por eso la coordinación entre la víctima, su entidad financiera y las entidades receptoras es urgente. Los datos de las cuentas destino y sus titulares solo se obtienen formalmente, por orden de la Fiscalía; pero la alerta temprana entre entidades puede congelar fondos antes de que salgan." },
+          {
+            type: 'scenario',
+            title: 'Caso 2: siguiendo los 18 millones',
+            intro: "La cooperativa ficticia pagó $18.000.000 a la cuenta indicada en el correo fraudulento. Usted coordina la respuesta. Necesita 50 de 60 puntos para aprobar.",
+            start: 'm1',
+            maxPoints: 60,
+            passPoints: 50,
+            steps: {
+              m1: {
+                text: "Se detectó el fraude 3 horas después del pago. ¿Cuál es la acción más urgente?",
+                choices: [
+                  { text: "Que la cooperativa contacte de inmediato a su entidad financiera para solicitar la retención o reversión del pago y la alerta a la entidad receptora.", next: 'm2', points: 20, feedback: "Correcto: cada hora reduce la probabilidad de recuperar los fondos." },
+                  { text: "Esperar a tener el informe técnico completo antes de avisar al banco.", next: 'm2', points: -10, feedback: "Demasiado tarde: el informe puede tomar días; los fondos salen en horas." },
+                ]
+              },
+              m2: {
+                text: "La entidad receptora informa que la cuenta recibió otras 9 transferencias similares esta semana y que el titular es un joven de 19 años sin antecedentes. ¿Qué hipótesis es más razonable?",
+                choices: [
+                  { text: "Probablemente es una cuenta de mula, posiblemente reclutada con una falsa oferta de empleo; el titular puede ser una pieza menor y también una víctima de la red.", next: 'm3', points: 20, feedback: "Bien razonado. Las mulas son un eslabón de la red; identificarlas ayuda a llegar a quienes las reclutan." },
+                  { text: "Él es el cerebro de la estafa: hay que publicar su nombre.", next: 'm3', points: -10, feedback: "Conclusión apresurada y riesgosa: exponer datos personales sin proceso vulnera derechos y puede afectar la investigación." },
+                ]
+              },
+              m3: {
+                text: "Parte del dinero salió hacia una plataforma de criptoactivos. ¿Qué sabe sobre esa ruta?",
+                choices: [
+                  { text: "Las cadenas de bloques públicas dejan un registro permanente y los exchanges regulados aplican conocimiento del cliente (KYC): por vía judicial se puede solicitar información y, a veces, congelar fondos.", next: 'fin', points: 20, feedback: "Correcto. Los criptoactivos no son anónimos por definición: son seudónimos y trazables." },
+                  { text: "Con criptoactivos ya no hay nada que hacer: son completamente anónimos.", next: 'fin', points: 0, feedback: "Mito frecuente. La trazabilidad es posible; lo veremos a fondo en el Nivel Avanzado." },
+                ]
+              },
+              fin: { text: "Fin del caso. Revise su puntaje y la retroalimentación." },
+            }
+          },
+        ]
+      },
+      {
+        id: 'cci_exam',
+        title: "7. 📝 Examen del Nivel Intermedio",
+        content: [
+          { type: 'text', icon: 'CheckCircleIcon', text: "Llegó el momento de demostrar lo aprendido. El examen toma 10 preguntas al azar de un banco de 14 y se aprueba con 70%. Si no aprueba, puede reintentar con otras preguntas. Al aprobarlo obtendrá el badge de Investigador Cibercriminal · Nivel Intermedio y se desbloqueará el Nivel Avanzado." },
+          {
+            type: 'exam',
+            title: 'Examen: Investigador Cibercriminal · Intermedio',
+            description: 'Evalúa triage, preservación, análisis de encabezados, OSINT, registros de acceso y rastro del dinero.',
+            passPercent: 70,
+            questionsPerAttempt: 10,
+            questions: [
+              { question: 'Una víctima de fraude bancario acaba de ver transferencias no autorizadas. ¿Qué es lo primero?', options: [{ id: 'e1a', text: 'Contactar a su entidad por la línea oficial para bloquear productos y reportar las transferencias.', isCorrect: true, score: 10 }, { id: 'e1b', text: 'Escribirle al número que la llamó para exigir la devolución.', isCorrect: false, score: 0 }, { id: 'e1c', text: 'Esperar al día siguiente para ver si el dinero regresa solo.', isCorrect: false, score: 0 }], feedback: 'El tiempo es crítico para intentar retener los fondos.' },
+              { question: '¿Por qué no se debe reenviar un correo sospechoso como evidencia?', options: [{ id: 'e2a', text: 'Porque al reenviarlo se pierden o alteran los encabezados originales.', isCorrect: true, score: 10 }, { id: 'e2b', text: 'Porque reenviar correos es ilegal.', isCorrect: false, score: 0 }, { id: 'e2c', text: 'Porque ocupa espacio en el buzón.', isCorrect: false, score: 0 }], feedback: 'Se exporta el original (.eml) o se copian los encabezados completos.' },
+              { question: 'Las líneas "Received" de un correo se leen…', options: [{ id: 'e3a', text: 'De abajo hacia arriba: la última es el primer servidor.', isCorrect: true, score: 10 }, { id: 'e3b', text: 'De arriba hacia abajo: la primera es el origen.', isCorrect: false, score: 0 }, { id: 'e3c', text: 'En cualquier orden: todas dicen lo mismo.', isCorrect: false, score: 0 }], feedback: 'Cada servidor agrega su línea arriba de las anteriores.' },
+              { question: 'Un correo muestra "dmarc=fail" para el dominio del From. ¿Qué indica?', options: [{ id: 'e4a', text: 'Que el dominio visible no está respaldado por SPF ni DKIM: posible suplantación.', isCorrect: true, score: 10 }, { id: 'e4b', text: 'Que el correo tiene un archivo adjunto.', isCorrect: false, score: 0 }, { id: 'e4c', text: 'Que el buzón del destinatario está lleno.', isCorrect: false, score: 0 }], feedback: 'DMARC verifica la alineación del dominio del From.' },
+              { question: 'El encabezado "Reply-To" apunta a un dominio distinto al del remitente. ¿Por qué es relevante en un fraude BEC?', options: [{ id: 'e5a', text: 'Porque las respuestas de la víctima llegarían al delincuente, no al remitente legítimo.', isCorrect: true, score: 10 }, { id: 'e5b', text: 'No es relevante: siempre es así.', isCorrect: false, score: 0 }, { id: 'e5c', text: 'Porque indica que el correo está cifrado.', isCorrect: false, score: 0 }], feedback: 'El Reply-To desviado es una de las señales más claras de BEC.' },
+              { question: '¿Cuál de estas acciones es OSINT legítimo?', options: [{ id: 'e6a', text: 'Consultar el registro RDAP de un dominio y los certificados públicos emitidos.', isCorrect: true, score: 10 }, { id: 'e6b', text: 'Adivinar la contraseña de la cuenta del sospechoso.', isCorrect: false, score: 0 }, { id: 'e6c', text: 'Comprar una base de datos filtrada con datos del sospechoso.', isCorrect: false, score: 0 }], feedback: 'OSINT es consultar información pública, sin engaño ni acceso indebido.' },
+              { question: 'Un dominio usado en un fraude fue registrado 4 días antes del ataque. ¿Qué valor tiene ese dato?', options: [{ id: 'e7a', text: 'Es una alerta típica: los dominios de fraude suelen ser recién registrados.', isCorrect: true, score: 10 }, { id: 'e7b', text: 'Ninguno: la fecha de registro no importa.', isCorrect: false, score: 0 }, { id: 'e7c', text: 'Prueba quién es el autor del fraude.', isCorrect: false, score: 0 }], feedback: 'Es un indicio, no una prueba de autoría.' },
+              { question: '¿Qué permite descubrir la búsqueda en Certificate Transparency?', options: [{ id: 'e8a', text: 'Certificados emitidos para un dominio y sus subdominios, que pueden revelar otros sitios de la misma campaña.', isCorrect: true, score: 10 }, { id: 'e8b', text: 'Las contraseñas de los usuarios del sitio.', isCorrect: false, score: 0 }, { id: 'e8c', text: 'El contenido de los correos enviados por el dominio.', isCorrect: false, score: 0 }], feedback: 'Los registros CT son públicos y útiles para pivotear.' },
+              { question: 'Una cuenta inicia sesión en Medellín y 30 minutos después en otro continente. ¿Cómo se llama ese patrón?', options: [{ id: 'e9a', text: 'Viaje imposible.', isCorrect: true, score: 10 }, { id: 'e9b', text: 'Movimiento lateral.', isCorrect: false, score: 0 }, { id: 'e9c', text: 'Denegación de servicio.', isCorrect: false, score: 0 }], feedback: 'Es uno de los indicadores más usados para detectar cuentas comprometidas.' },
+              { question: 'Tras recuperar una cuenta de correo comprometida, ¿qué suele olvidarse revisar?', options: [{ id: 'e10a', text: 'Las reglas de reenvío y las sesiones activas creadas por el atacante.', isCorrect: true, score: 10 }, { id: 'e10b', text: 'El tamaño de la bandeja de entrada.', isCorrect: false, score: 0 }, { id: 'e10c', text: 'La firma del correo.', isCorrect: false, score: 0 }], feedback: 'La regla sigue filtrando información aunque se cambie la contraseña.' },
+              { question: '¿Qué es una "mula" en un fraude financiero?', options: [{ id: 'e11a', text: 'Una persona cuya cuenta se usa para recibir y mover dinero robado, a veces engañada.', isCorrect: true, score: 10 }, { id: 'e11b', text: 'Un tipo de malware bancario.', isCorrect: false, score: 0 }, { id: 'e11c', text: 'El servidor donde se aloja la página falsa.', isCorrect: false, score: 0 }], feedback: 'Las mulas son un eslabón clave para "enfriar" el dinero.' },
+              { question: '¿Cómo se obtienen legalmente los datos del titular de una cuenta que recibió dinero robado?', options: [{ id: 'e12a', text: 'Mediante solicitud formal dentro de la investigación, con orden de la autoridad competente.', isCorrect: true, score: 10 }, { id: 'e12b', text: 'Pidiéndoselos por teléfono a un empleado del banco conocido.', isCorrect: false, score: 0 }, { id: 'e12c', text: 'Buscándolos en foros donde se venden datos.', isCorrect: false, score: 0 }], feedback: 'Los datos financieros están protegidos; se obtienen por vía judicial.' },
+              { question: '¿Son anónimos los criptoactivos en una cadena de bloques pública?', options: [{ id: 'e13a', text: 'No: son seudónimos; las transacciones quedan registradas y pueden rastrearse.', isCorrect: true, score: 10 }, { id: 'e13b', text: 'Sí: es imposible seguir el dinero.', isCorrect: false, score: 0 }, { id: 'e13c', text: 'Solo si se usan de noche.', isCorrect: false, score: 0 }], feedback: 'El registro público permite la trazabilidad.' },
+              { question: 'Durante una investigación, ¿por qué se documenta cada consulta OSINT con fecha, hora y fuente?', options: [{ id: 'e14a', text: 'Para que el hallazgo sea verificable y reproducible si se presenta como prueba.', isCorrect: true, score: 10 }, { id: 'e14b', text: 'Por costumbre, no tiene utilidad.', isCorrect: false, score: 0 }, { id: 'e14c', text: 'Para cobrar por horas.', isCorrect: false, score: 0 }], feedback: 'La información en línea cambia; el registro demuestra qué se vio y cuándo.' },
+            ],
+          },
+        ]
+      },
+    ]
+  },
+  cybercrime_avanzado: {
+    title: "Investigador Cibercriminal · Nivel Avanzado",
+    description: "Del investigador al perito: reconstrucción de un ransomware, trazabilidad de criptoactivos, atribución, prueba digital y cooperación internacional, informe pericial y un caso integrador. Examen con nota mínima del 80%.",
+    lastUpdated: "Octubre 2026",
+    modules: [
+      {
+        id: 'cca_intro',
+        title: "1. 🎯 Nivel Avanzado: del Investigador al Perito",
+        content: [
+          { type: 'text', icon: 'UserSearchIcon', text: "En este nivel, sus hallazgos deben resistir el escrutinio de una audiencia: no basta con saber qué pasó, hay que demostrarlo con evidencia íntegra, una metodología reproducible y conclusiones con el nivel de confianza adecuado." },
+          { type: 'text', icon: 'AlarmIcon', text: "Los laboratorios son más largos y las decisiones más finas. El examen final toma 12 preguntas al azar de un banco de 16 y exige 80%. Al aprobarlo obtendrá el badge de Investigador Cibercriminal · Nivel Avanzado y completará el mapa de expertise." },
+        ]
+      },
+      {
+        id: 'cca_ransomware',
+        title: "2. 🚩 Laboratorio: Reconstrucción de un Ataque de Ransomware",
+        content: [
+          { type: 'text', icon: 'BugIcon', text: "El ransomware moderno opera como servicio (Ransomware-as-a-Service): los desarrolladores alquilan el malware a afiliados que entran a la red, roban datos y luego cifran (doble extorsión). Antes de cifrar, suelen crear cuentas, escalar privilegios, desactivar respaldos y borrar registros." },
+          { type: 'text', icon: 'ServerIcon', text: "Eventos de Windows útiles: 4625 (inicio de sesión fallido), 4624 (inicio de sesión exitoso; el tipo 10 es escritorio remoto), 4720 (cuenta creada), 4732 (miembro agregado a un grupo local, por ejemplo Administradores), 4688 (proceso creado), 7045 (servicio instalado) y 1102 (registro de auditoría borrado)." },
+          {
+            type: 'challenge',
+            title: 'Línea de tiempo del servidor SRV-CORE01',
+            brief: "Una cooperativa ficticia amaneció con sus archivos cifrados. Estos son los eventos extraídos del servidor antes de que se borraran los registros. Reconstruya el ataque.",
+            artifacts: [
+              {
+                name: 'eventos_SRV-CORE01.csv',
+                content: `fecha_hora (UTC-5)   id_evento  detalle
+2026-10-17 01:02:11  4625       Inicio fallido · cuenta=admin · origen=203.0.113.88 · tipo=10
+2026-10-17 01:02:13  4625       Inicio fallido · cuenta=administrador · origen=203.0.113.88 · tipo=10
+2026-10-17 01:03:40  4625       Inicio fallido · cuenta=soporte · origen=203.0.113.88 · tipo=10
+2026-10-17 01:04:02  4624       Inicio exitoso · cuenta=soporte · origen=203.0.113.88 · tipo=10
+2026-10-17 01:09:55  4720       Cuenta creada · nueva=svc_backup2 · por=soporte
+2026-10-17 01:10:21  4732       Agregado a grupo · cuenta=svc_backup2 · grupo=Administradores
+2026-10-17 02:15:37  4688       Proceso · rclone.exe copy D:\\Asociados remoto:bkp --transfers 8
+2026-10-17 03:30:02  4688       Proceso · vssadmin.exe delete shadows /all /quiet
+2026-10-17 03:31:10  7045       Servicio instalado · nombre=WinUpdSvc · ruta=C:\\ProgramData\\wus.exe
+2026-10-17 03:33:48  1102       Registro de auditoría borrado · por=svc_backup2`,
+              },
+            ],
+            questions: [
+              { prompt: '¿Con qué cuenta logró entrar el atacante?', answers: ['soporte'], explanation: 'Tras varios intentos fallidos por escritorio remoto (tipo 10), entró con la cuenta "soporte": contraseña débil y RDP expuesto a internet.' },
+              { prompt: '¿Qué cuenta creó para mantener el acceso con privilegios?', answers: ['svc_backup2'], explanation: 'Creó svc_backup2 (evento 4720) y la agregó a Administradores (4732). El nombre imita una cuenta de servicio legítima para pasar desapercibida.' },
+              { prompt: '¿Qué herramienta usó para exfiltrar los datos de asociados? (nombre del ejecutable)', answers: ['rclone.exe', 'rclone'], explanation: 'rclone es una herramienta legítima de sincronización que los atacantes usan para copiar datos a la nube antes de cifrar: la base de la doble extorsión.' },
+              { prompt: '¿Qué ID de evento revela que se borraron los registros de auditoría?', answers: ['1102'], explanation: 'El 1102 marca el borrado del registro de seguridad. Por eso importa enviar los registros a un sistema central: lo que queda en el servidor puede desaparecer.' },
+              { prompt: '¿Qué comando eliminó las copias de seguridad locales (instantáneas)? Escriba el ejecutable.', answers: ['vssadmin.exe', 'vssadmin'], explanation: '"vssadmin delete shadows" borra las instantáneas de volumen para impedir la recuperación sin pagar.' },
+            ],
+          },
+        ]
+      },
+      {
+        id: 'cca_crypto',
+        title: "3. 🚩 Trazabilidad de Criptoactivos",
+        content: [
+          { type: 'text', icon: 'BrainCircuitIcon', text: "En redes como Bitcoin, el análisis usa heurísticas. La de propiedad común de entradas: cuando una transacción gasta varias direcciones a la vez, probablemente todas son del mismo dueño. La de cambio: el sobrante vuelve a una dirección nueva del mismo dueño." },
+          { type: 'text', icon: 'ShieldCheckIcon', text: "El punto de control suele estar en los exchanges regulados, que aplican conocimiento del cliente (KYC) y pueden entregar información o congelar fondos por orden judicial. Los mezcladores (mixers) y los puentes entre cadenas buscan romper el rastro, pero dejan patrones." },
+          {
+            type: 'challenge',
+            title: 'El rescate pagado',
+            brief: "La cooperativa del laboratorio anterior no pagó, pero otra víctima ficticia sí. Siga el pago del rescate. Todas las direcciones son ficticias.",
+            artifacts: [
+              {
+                name: 'transacciones.txt',
+                content: `TX-01  entradas: [VICTIMA-1]                       salidas: RESCATE-A (0.50 BTC)
+TX-02  entradas: [RESCATE-A, RESCATE-B, RESCATE-C]  salidas: AGRUPA-9 (1.48 BTC)
+TX-03  entradas: [AGRUPA-9]                        salidas: AFILIADO-7 (1.18 BTC), DESARROLLADOR-2 (0.30 BTC)
+TX-04  entradas: [AFILIADO-7]                      salidas: EXCHANGE-COL-DEP-551 (1.17 BTC)
+
+Etiquetas conocidas:
+  EXCHANGE-COL-DEP-551  → dirección de depósito de un exchange regulado (aplica KYC)
+  RESCATE-B, RESCATE-C  → aparecen en notas de rescate de otras víctimas`,
+              },
+            ],
+            questions: [
+              { prompt: 'Por la heurística de propiedad común de entradas, ¿qué dirección agrupa los rescates de las tres víctimas?', answers: ['AGRUPA-9', 'agrupa9'], explanation: 'TX-02 gasta RESCATE-A, B y C juntas: probablemente las controla el mismo actor, que las consolida en AGRUPA-9.' },
+              { prompt: '¿Qué porcentaje aproximado se queda el desarrollador del ransomware en TX-03? (número entero)', answers: ['20', '20%'], hint: 'Divida la parte del desarrollador entre el total que entra a TX-03.', explanation: '0,30 de 1,48 BTC ≈ 20%: el reparto típico entre desarrollador y afiliado en el modelo de ransomware como servicio.' },
+              { prompt: '¿A qué dirección se debe dirigir la solicitud judicial para identificar al titular?', answers: ['EXCHANGE-COL-DEP-551'], explanation: 'El depósito en un exchange regulado es el punto donde el seudónimo se puede vincular a una identidad (KYC) mediante orden judicial.' },
+            ],
+          },
+        ]
+      },
+      {
+        id: 'cca_attribution',
+        title: "4. Atribución y Análisis de Hipótesis",
+        content: [
+          { type: 'text', icon: 'QuestionMarkCircleIcon', text: "Atribuir es explicar quién está detrás con base en evidencia. Los errores más comunes son sesgos: quedarse con la primera hipótesis, buscar solo lo que la confirma o confiar en pistas fáciles de falsificar, como el idioma de un comentario en el código." },
+          { type: 'text', icon: 'DocumentTextIcon', text: "El Análisis de Hipótesis en Competencia (ACH) obliga a listar varias explicaciones y evaluar cada evidencia contra todas: gana la hipótesis con menos evidencia en contra, no la que tiene más a favor. Y la conclusión se comunica con un nivel de confianza: bajo, moderado o alto." },
+          {
+            type: 'scenario',
+            title: 'Caso 3: ¿quién está detrás de la campaña?',
+            intro: "Dirige el análisis de una campaña de fraude BEC contra varias cooperativas ficticias. El comité le pide una conclusión. Necesita 50 de 60 puntos.",
+            start: 'a1',
+            maxPoints: 60,
+            passPoints: 50,
+            steps: {
+              a1: {
+                text: "Un analista de su equipo afirma: \"El malware tiene comentarios en portugués, así que el grupo es de Brasil\". ¿Cómo responde?",
+                choices: [
+                  { text: "Lo registro como un indicio débil y fácil de falsificar; planteo varias hipótesis y busco evidencia más sólida (infraestructura, rastro del dinero, patrones de operación).", next: 'a2', points: 20, feedback: "Correcto: es una pista que puede ser una bandera falsa. Se contrasta con otras evidencias." },
+                  { text: "Acepto la conclusión: el idioma del código es prueba suficiente.", next: 'a2', points: -10, feedback: "Sesgo de confirmación: el idioma se puede imitar fácilmente." },
+                ]
+              },
+              a2: {
+                text: "Tiene tres hipótesis: H1 grupo criminal local, H2 grupo internacional con mulas locales, H3 un insider de una de las cooperativas. Las cuentas receptoras son locales, los dominios se registraron con un proveedor extranjero y los ataques afectaron a cooperativas sin relación entre sí. ¿Qué hipótesis tiene menos evidencia en contra?",
+                choices: [
+                  { text: "H2: es coherente con las cuentas locales (mulas), la infraestructura extranjera y las víctimas dispersas.", next: 'a3', points: 20, feedback: "Bien aplicado el ACH: H3 choca con víctimas sin relación entre sí, y H1 explica peor la infraestructura extranjera." },
+                  { text: "H3: siempre hay un insider.", next: 'a3', points: -10, feedback: "La evidencia (víctimas sin relación entre sí) va en contra de un único insider." },
+                ]
+              },
+              a3: {
+                text: "¿Cómo redacta la conclusión para el comité?",
+                choices: [
+                  { text: "\"Con confianza moderada, la campaña es obra de un grupo internacional que usa mulas locales. Evidencia principal: … Vacíos: … Lo que cambiaría la conclusión: …\"", next: 'fin', points: 20, feedback: "Excelente: conclusión, nivel de confianza, evidencia y vacíos. Así se comunica la inteligencia de forma honesta." },
+                  { text: "\"Es un grupo internacional, sin duda alguna.\"", next: 'fin', points: 0, feedback: "Afirmar certeza absoluta sin pruebas definitivas expone al equipo y a la organización." },
+                ]
+              },
+              fin: { text: "Fin del caso. Revise su puntaje y la retroalimentación." },
+            }
+          },
+        ]
+      },
+      {
+        id: 'cca_law',
+        title: "5. Prueba Digital y Cooperación Internacional",
+        content: [
+          { type: 'text', icon: 'DocumentTextIcon', text: "En Colombia, el Código de Procedimiento Penal (Ley 906 de 2004) regula la cadena de custodia desde su artículo 254 e incluye los mensajes de datos entre los elementos materiales probatorios (artículo 275). La Ley 527 de 1999 reconoce la admisibilidad y la fuerza probatoria de los mensajes de datos." },
+          { type: 'text', icon: 'ClosedEnvelopeIcon', text: "Cuando la evidencia está en otro país, el Convenio de Budapest ofrece la preservación expedita de datos (artículo 29) y una red de contacto disponible 24/7 (artículo 35), mientras se tramita la asistencia judicial mutua (MLAT) para obtenerlos formalmente." },
+          {
+            type: 'memory',
+            title: 'Asocie cada norma con lo que aporta',
+            pairs: [
+              { term: 'Ley 906 de 2004', definition: 'Cadena de custodia y elementos materiales probatorios.' },
+              { term: 'Ley 527 de 1999', definition: 'Valor probatorio de los mensajes de datos.' },
+              { term: 'Convenio de Budapest, art. 29', definition: 'Preservación expedita de datos en otro país.' },
+              { term: 'Convenio de Budapest, art. 35', definition: 'Red de puntos de contacto 24/7.' },
+            ]
+          },
+          {
+            type: 'quiz',
+            quizData: {
+              question: "Una imagen forense del disco tiene un hash SHA-256 distinto al registrado en el acta de adquisición. ¿Qué implica?",
+              options: [
+                "Nada: los hashes cambian solos con el tiempo.",
+                "Que no se puede demostrar la integridad de la evidencia: la defensa puede cuestionarla y perder valor probatorio.",
+                "Que hay que recalcular el hash hasta que coincida."
+              ],
+              correctOptionIndex: 1,
+              feedback: {
+                correct: "Correcto. El hash es la prueba de integridad: si no coincide, la cadena de custodia queda en entredicho.",
+                incorrect: "No. Un hash no cambia si los datos no cambian: una diferencia indica alteración o error en la adquisición."
+              }
+            }
+          },
+        ]
+      },
+      {
+        id: 'cca_report',
+        title: "6. El Informe Pericial y la Audiencia",
+        content: [
+          { type: 'text', icon: 'DocumentTextIcon', text: "Un buen informe pericial tiene: objeto de la pericia, evidencia recibida (con sus hashes), metodología y herramientas (con versión), hallazgos, conclusiones con su grado de certeza y limitaciones. Otro perito, con el mismo material, debe poder reproducir el resultado." },
+          { type: 'text', icon: 'HappyUsersIcon', text: "En la audiencia, el perito explica en lenguaje claro, se limita a lo que su evidencia demuestra y reconoce lo que no sabe. Exagerar una conclusión es la forma más rápida de perder credibilidad." },
+          {
+            type: 'scenario',
+            title: 'Caso 4: el contrainterrogatorio',
+            intro: "Usted presentó el informe del ransomware en una audiencia ficticia. La defensa lo contrainterroga. Necesita 40 de 50 puntos.",
+            start: 'r1',
+            maxPoints: 50,
+            passPoints: 40,
+            steps: {
+              r1: {
+                text: "Defensa: \"¿Puede afirmar que mi cliente fue quien escribió el comando para borrar las copias de seguridad?\"",
+                choices: [
+                  { text: "\"Mi análisis demuestra que el comando se ejecutó desde la cuenta svc_backup2 a las 03:30. Identificar a la persona detrás de esa cuenta no es objeto de mi pericia.\"", next: 'r2', points: 25, feedback: "Excelente: responde con precisión y respeta los límites de su evidencia." },
+                  { text: "\"Sí, sin duda fue él.\"", next: 'r2', points: -10, feedback: "Su evidencia muestra una cuenta, no una persona. Exagerar le resta credibilidad a todo el informe." },
+                ]
+              },
+              r2: {
+                text: "Defensa: \"Los registros del servidor fueron borrados. ¿Cómo sabe que los que usted analizó son auténticos?\"",
+                choices: [
+                  { text: "\"Los eventos se obtuvieron del sistema central de registros antes del borrado; la copia se adquirió con hash SHA-256, registrado en el acta y verificado en mi laboratorio.\"", next: 'fin', points: 25, feedback: "Correcto: la integridad se demuestra con la cadena de custodia y el hash." },
+                  { text: "\"Porque yo los revisé y se veían bien.\"", next: 'fin', points: -10, feedback: "Una opinión no demuestra integridad; el hash y la cadena de custodia sí." },
+                ]
+              },
+              fin: { text: "Fin del contrainterrogatorio." },
+            }
+          },
+        ]
+      },
+      {
+        id: 'cca_capstone',
+        title: "7. 🧩 Caso Integrador: Fraude BEC Transnacional",
+        content: [
+          { type: 'text', icon: 'SpyIcon', text: "Este caso integra todo el recorrido: triage, preservación, análisis de correos y registros, rastro del dinero, cooperación internacional y comunicación de resultados. Tómese su tiempo: cada decisión cuenta." },
+          {
+            type: 'scenario',
+            title: 'Caso integrador: la cooperativa y el proveedor suplantado',
+            intro: "Una cooperativa ficticia pagó $95.000.000 a un \"proveedor\" tras un correo con datos bancarios cambiados. La cuenta destino está en otro país. Usted lidera la investigación. Necesita 80 de 100 puntos.",
+            start: 'c1',
+            maxPoints: 100,
+            passPoints: 80,
+            steps: {
+              c1: {
+                text: "Hora cero. ¿Qué tres acciones prioriza?",
+                choices: [
+                  { text: "Alerta a la entidad financiera para intentar retener el pago, preservación de buzones y registros, y denuncia formal.", next: 'c2', points: 20, feedback: "Correcto: dinero, evidencia y proceso legal, en ese orden de urgencia." },
+                  { text: "Reunión de comité para decidir responsables internos.", next: 'c2', points: 0, feedback: "La rendición de cuentas importa, pero después de las acciones urgentes." },
+                ]
+              },
+              c2: {
+                text: "El correo con los datos bancarios cambiados vino del dominio real del proveedor, con DMARC aprobado. ¿Qué significa?",
+                evidence: "Authentication-Results: spf=pass dkim=pass dmarc=pass header.from=proveedor-real.example",
+                choices: [
+                  { text: "Que probablemente la cuenta de correo del proveedor fue comprometida: el correo es auténtico técnicamente pero el contenido es fraudulento. Hay que avisarle al proveedor.", next: 'c3', points: 20, feedback: "Exacto: DMARC aprobado no significa mensaje legítimo, solo que salió de un servidor autorizado. Es un BEC por cuenta comprometida." },
+                  { text: "Que el correo es legítimo y la cooperativa no tiene de qué preocuparse.", next: 'c3', points: -10, feedback: "DMARC verifica el origen, no la intención. Una cuenta comprometida envía correos que pasan todos los controles." },
+                ]
+              },
+              c3: {
+                text: "El proveedor confirma accesos extraños a su correo desde una IP extranjera y una regla de reenvío. ¿Qué pide?",
+                choices: [
+                  { text: "Que preserve y entregue los registros de acceso y auditoría del buzón, sin borrar la regla hasta documentarla.", next: 'c4', points: 20, feedback: "Bien: primero se documenta la evidencia, luego se remedia." },
+                  { text: "Que borre la regla y cambie la contraseña de inmediato, sin guardar nada.", next: 'c4', points: 5, feedback: "Remediar es necesario, pero sin documentar se pierde evidencia clave." },
+                ]
+              },
+              c4: {
+                text: "La cuenta que recibió el dinero está en otro país y el banco extranjero no responde a solicitudes informales. ¿Qué camino sigue?",
+                choices: [
+                  { text: "A través de la Fiscalía: solicitud de preservación por la red 24/7 del Convenio de Budapest y asistencia judicial mutua para obtener los datos.", next: 'c5', points: 20, feedback: "Correcto: es el canal formal que produce evidencia válida." },
+                  { text: "Contratar a alguien que \"consiga\" los datos del titular en el exterior.", next: 'c5', points: -20, feedback: "Ilegal e inútil como prueba: puede invalidar el caso y exponer a la cooperativa." },
+                ]
+              },
+              c5: {
+                text: "El consejo de la cooperativa pide un informe. ¿Qué incluye?",
+                choices: [
+                  { text: "Línea de tiempo, monto y estado de recuperación, causa raíz (cuenta del proveedor comprometida y falta de verificación por otro canal), acciones legales y recomendaciones con responsables y fechas.", next: 'fin', points: 20, feedback: "Excelente: hechos, impacto, causa y plan. Así se cierra un caso con aprendizaje." },
+                  { text: "Un resumen técnico con los encabezados del correo y los registros.", next: 'fin', points: 5, feedback: "Útil como anexo, pero el consejo necesita impacto, causa y decisiones." },
+                ]
+              },
+              fin: { text: "Fin del caso integrador. Revise su puntaje: si aprobó, está listo para el examen final." },
+            }
+          },
+        ]
+      },
+      {
+        id: 'cca_exam',
+        title: "8. 📝 Examen del Nivel Avanzado",
+        content: [
+          { type: 'text', icon: 'CheckCircleIcon', text: "Examen final del mapa de expertise: 12 preguntas al azar de un banco de 16, con 80% para aprobar. Al aprobarlo obtendrá el badge de Investigador Cibercriminal · Nivel Avanzado." },
+          {
+            type: 'exam',
+            title: 'Examen: Investigador Cibercriminal · Avanzado',
+            description: 'Evalúa ransomware y eventos de Windows, criptoactivos, atribución, prueba digital, cooperación internacional e informe pericial.',
+            passPercent: 80,
+            questionsPerAttempt: 12,
+            questions: [
+              { question: '¿Qué significa "doble extorsión" en ransomware?', options: [{ id: 'a1a', text: 'Robar los datos antes de cifrarlos y amenazar con publicarlos, además de exigir pago por descifrar.', isCorrect: true, score: 10 }, { id: 'a1b', text: 'Cifrar los datos dos veces.', isCorrect: false, score: 0 }, { id: 'a1c', text: 'Atacar a dos empresas al mismo tiempo.', isCorrect: false, score: 0 }], feedback: 'Por eso tener respaldos no basta: también hay que evitar la exfiltración.' },
+              { question: 'El evento 4624 con tipo de inicio de sesión 10 indica…', options: [{ id: 'a2a', text: 'Un inicio de sesión exitoso por escritorio remoto.', isCorrect: true, score: 10 }, { id: 'a2b', text: 'Un inicio de sesión fallido en consola.', isCorrect: false, score: 0 }, { id: 'a2c', text: 'La creación de una cuenta.', isCorrect: false, score: 0 }], feedback: 'El tipo 10 (RemoteInteractive) corresponde a RDP.' },
+              { question: '¿Qué indica el evento 1102 de Windows?', options: [{ id: 'a3a', text: 'Que se borró el registro de auditoría de seguridad.', isCorrect: true, score: 10 }, { id: 'a3b', text: 'Que se instaló un servicio.', isCorrect: false, score: 0 }, { id: 'a3c', text: 'Que se cambió una contraseña.', isCorrect: false, score: 0 }], feedback: 'Es una señal de intento de ocultar rastros.' },
+              { question: '¿Para qué ejecuta un atacante "vssadmin delete shadows" antes de cifrar?', options: [{ id: 'a4a', text: 'Para borrar las instantáneas de volumen e impedir la recuperación sin pagar.', isCorrect: true, score: 10 }, { id: 'a4b', text: 'Para acelerar el disco.', isCorrect: false, score: 0 }, { id: 'a4c', text: 'Para crear una copia de seguridad propia.', isCorrect: false, score: 0 }], feedback: 'Es un paso típico previo al cifrado.' },
+              { question: 'La heurística de propiedad común de entradas sostiene que…', options: [{ id: 'a5a', text: 'Las direcciones gastadas juntas en una misma transacción probablemente pertenecen al mismo dueño.', isCorrect: true, score: 10 }, { id: 'a5b', text: 'Todas las direcciones de un exchange son del mismo cliente.', isCorrect: false, score: 0 }, { id: 'a5c', text: 'Cada dirección pertenece a una persona distinta.', isCorrect: false, score: 0 }], feedback: 'Es la base del agrupamiento (clustering) de direcciones.' },
+              { question: '¿Dónde suele ser posible vincular una dirección de criptoactivos con una identidad?', options: [{ id: 'a6a', text: 'En un exchange regulado que aplica KYC, mediante orden judicial.', isCorrect: true, score: 10 }, { id: 'a6b', text: 'En la propia cadena de bloques, que guarda nombres y cédulas.', isCorrect: false, score: 0 }, { id: 'a6c', text: 'En ningún lugar: es imposible.', isCorrect: false, score: 0 }], feedback: 'La cadena es seudónima; el KYC del exchange conecta el seudónimo con la persona.' },
+              { question: 'En el Análisis de Hipótesis en Competencia (ACH), la hipótesis preferida es…', options: [{ id: 'a7a', text: 'La que tiene menos evidencia en contra.', isCorrect: true, score: 10 }, { id: 'a7b', text: 'La que se propuso primero.', isCorrect: false, score: 0 }, { id: 'a7c', text: 'La que prefiere el jefe del equipo.', isCorrect: false, score: 0 }], feedback: 'Así se reduce el sesgo de confirmación.' },
+              { question: 'Los comentarios en otro idioma dentro de un malware son…', options: [{ id: 'a8a', text: 'Un indicio débil y fácil de falsificar para atribuir.', isCorrect: true, score: 10 }, { id: 'a8b', text: 'Prueba definitiva del país del autor.', isCorrect: false, score: 0 }, { id: 'a8c', text: 'Irrelevantes siempre.', isCorrect: false, score: 0 }], feedback: 'Pueden ser banderas falsas; se contrastan con otras evidencias.' },
+              { question: '¿Qué norma colombiana regula la cadena de custodia en el proceso penal?', options: [{ id: 'a9a', text: 'La Ley 906 de 2004 (Código de Procedimiento Penal).', isCorrect: true, score: 10 }, { id: 'a9b', text: 'La Ley 1581 de 2012.', isCorrect: false, score: 0 }, { id: 'a9c', text: 'La Ley 1273 de 2009.', isCorrect: false, score: 0 }], feedback: 'La cadena de custodia se regula desde su artículo 254.' },
+              { question: '¿Qué reconoce la Ley 527 de 1999?', options: [{ id: 'a10a', text: 'La admisibilidad y la fuerza probatoria de los mensajes de datos.', isCorrect: true, score: 10 }, { id: 'a10b', text: 'Los delitos informáticos.', isCorrect: false, score: 0 }, { id: 'a10c', text: 'La protección de datos personales.', isCorrect: false, score: 0 }], feedback: 'Es la base del valor probatorio de la evidencia digital.' },
+              { question: 'El artículo 29 del Convenio de Budapest permite…', options: [{ id: 'a11a', text: 'Solicitar a otro país la preservación expedita de datos almacenados.', isCorrect: true, score: 10 }, { id: 'a11b', text: 'Extraditar automáticamente a cualquier sospechoso.', isCorrect: false, score: 0 }, { id: 'a11c', text: 'Acceder sin autorización a servidores extranjeros.', isCorrect: false, score: 0 }], feedback: 'Se preserva primero; se obtiene después por asistencia judicial mutua.' },
+              { question: 'Si el hash de una imagen forense no coincide con el del acta de adquisición…', options: [{ id: 'a12a', text: 'No se puede demostrar la integridad de la evidencia.', isCorrect: true, score: 10 }, { id: 'a12b', text: 'Se ajusta el acta con el nuevo hash.', isCorrect: false, score: 0 }, { id: 'a12c', text: 'No tiene importancia.', isCorrect: false, score: 0 }], feedback: 'El hash demuestra que la evidencia no fue alterada.' },
+              { question: '¿Qué debe permitir la sección de metodología de un informe pericial?', options: [{ id: 'a13a', text: 'Que otro perito reproduzca el análisis y llegue al mismo resultado.', isCorrect: true, score: 10 }, { id: 'a13b', text: 'Ocultar las herramientas usadas.', isCorrect: false, score: 0 }, { id: 'a13c', text: 'Convencer al juez sin necesidad de evidencia.', isCorrect: false, score: 0 }], feedback: 'La reproducibilidad es lo que da solidez científica al peritaje.' },
+              { question: 'En la audiencia le preguntan algo que su evidencia no permite responder. ¿Qué hace?', options: [{ id: 'a14a', text: 'Lo dice claramente y se limita a lo que su análisis demuestra.', isCorrect: true, score: 10 }, { id: 'a14b', text: 'Responde lo que cree más probable, como si fuera un hecho.', isCorrect: false, score: 0 }, { id: 'a14c', text: 'Evita la pregunta cambiando de tema.', isCorrect: false, score: 0 }], feedback: 'Reconocer límites protege la credibilidad del informe.' },
+              { question: 'Un correo fraudulento pasó SPF, DKIM y DMARC. ¿Cuál es la explicación más probable?', options: [{ id: 'a15a', text: 'Se envió desde una cuenta legítima comprometida.', isCorrect: true, score: 10 }, { id: 'a15b', text: 'No puede ser fraudulento si pasó los controles.', isCorrect: false, score: 0 }, { id: 'a15c', text: 'Los controles no funcionan nunca.', isCorrect: false, score: 0 }], feedback: 'Los controles validan el origen técnico, no la intención del mensaje.' },
+              { question: 'En un fraude BEC transnacional, ¿cuál es el canal correcto para obtener datos de una cuenta en el exterior?', options: [{ id: 'a16a', text: 'La Fiscalía, mediante preservación por la red 24/7 y asistencia judicial mutua.', isCorrect: true, score: 10 }, { id: 'a16b', text: 'Un contacto informal en el banco extranjero.', isCorrect: false, score: 0 }, { id: 'a16c', text: 'Un servicio que vende datos bancarios.', isCorrect: false, score: 0 }], feedback: 'Solo el canal formal produce evidencia válida.' },
+            ],
+          },
+        ]
+      },
+    ]
   }
 };
 

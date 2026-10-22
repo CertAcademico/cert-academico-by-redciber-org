@@ -96,6 +96,56 @@ export interface ActivityContent {
   closing?: string;
 }
 
+/** Laboratorio de escenario: una historia con decisiones ramificadas y puntaje. */
+export interface ScenarioChoice {
+  text: string;
+  next: string; // id del siguiente paso
+  points?: number;
+  feedback?: string;
+}
+
+export interface ScenarioStep {
+  text: string;
+  evidence?: string; // texto en monoespaciado: logs, correos, registros…
+  choices?: ScenarioChoice[]; // sin choices = final
+}
+
+export interface ScenarioContent {
+  type: 'scenario';
+  title: string;
+  intro: string;
+  start: string;
+  steps: Record<string, ScenarioStep>;
+  passPoints: number;
+  maxPoints: number;
+}
+
+/** Reto tipo CTF: analizar evidencias y responder con la "bandera" exacta. */
+export interface ChallengeQuestion {
+  prompt: string;
+  answers: string[]; // respuestas aceptadas (se comparan sin mayúsculas, tildes ni espacios extra)
+  hint?: string;
+  explanation: string;
+}
+
+export interface ChallengeContent {
+  type: 'challenge';
+  title: string;
+  brief: string;
+  artifacts: { name: string; content: string }[];
+  questions: ChallengeQuestion[];
+}
+
+/** Examen con banco de preguntas: cada intento toma una muestra aleatoria y exige nota mínima. */
+export interface ExamContent {
+  type: 'exam';
+  title: string;
+  description: string;
+  passPercent: number;
+  questionsPerAttempt: number;
+  questions: H5PQuestion[];
+}
+
 export type ContentBlock = 
   | TextContent 
   | VideoContent 
@@ -104,7 +154,10 @@ export type ContentBlock =
   | FlashcardsContent 
   | MemoryContent 
   | H5PCheckContent
-  | ActivityContent;
+  | ActivityContent
+  | ScenarioContent
+  | ChallengeContent
+  | ExamContent;
 
 export interface Module {
   id: string;

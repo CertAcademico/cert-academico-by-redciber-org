@@ -39,7 +39,10 @@ export async function issueCertificate(pathId: string): Promise<Certificate> {
   if (error || !data) {
     const msg = error?.message ?? '';
     if (msg.includes('COURSE_NOT_COMPLETED') || msg.includes('ROUTE_NOT_COMPLETED')) {
-      throw new Error('Aún no se puede emitir: completa todos los módulos y dedica al menos 10 minutos a cada curso.');
+      throw new Error('Aún no se puede emitir: completa todos los módulos, aprueba el examen del nivel (si lo tiene) y dedica al menos 10 minutos a cada curso.');
+    }
+    if (msg.includes('PREREQUISITE_NOT_COMPLETED')) {
+      throw new Error('Aún no se puede emitir: primero debes completar el nivel anterior de esta ruta.');
     }
     if (msg.includes('issue_certificate')) {
       throw new Error('Los certificados todavía no están habilitados en la plataforma. Intenta más tarde.');

@@ -26,8 +26,13 @@ import AICourseCompanion from './components/AICourseCompanion';
 import LoginView from './components/LoginView';
 import TeacherDashboard from './components/TeacherDashboard';
 import ActivityView from './components/ActivityView';
+import ScenarioLabView from './components/ScenarioLabView';
+import ChallengeLabView from './components/ChallengeLabView';
+import ExamView from './components/ExamView';
 import ChangePasswordModal from './components/ChangePasswordModal';
 import { FREE_ROUTE } from './platform';
+import { EXPERTISE_TRACKS, LEVEL_PATHS } from './expertise';
+import ExpertiseMapView from './components/ExpertiseMapView';
 import { getMyCertificates, issueCertificate, ROUTE_CERTIFICATE_ID, ROUTE_CERTIFICATE_TITLE } from './certificateService';
 import type { Certificate } from './certificateService';
 import { CredentialModal, cleanCourseTitle } from './components/Credential';
@@ -52,6 +57,9 @@ import { formatRelativeTime } from './utils';
 // ---------------------------------------------------------------------------
 // Content renderer
 // ---------------------------------------------------------------------------
+
+// Bloques que el estudiante debe completar (o aprobar) antes de avanzar al siguiente módulo.
+const INTERACTIVE_TYPES: ContentBlock['type'][] = ['quiz', 'flashcards', 'memory', 'h5p_check', 'scenario', 'challenge', 'exam'];
 
 const renderContentBlock = (
   block: ContentBlock,
@@ -86,6 +94,12 @@ const renderContentBlock = (
       return <H5PCheckView data={block} onComplete={onH5PComplete} />;
     case 'activity':
       return <ActivityView data={block} />;
+    case 'scenario':
+      return <ScenarioLabView data={block} onComplete={onComplete} />;
+    case 'challenge':
+      return <ChallengeLabView data={block} onComplete={onComplete} />;
+    case 'exam':
+      return <ExamView data={block} onPassed={onH5PComplete} />;
     default:
       return null;
   }
@@ -133,7 +147,7 @@ const LearningPathView: React.FC<LearningPathViewProps> = ({ path, pathId, onExi
     const mod = path.modules[currentModuleIndex];
     if (!mod) return;
     const hasInteractive = mod.content.some(
-      c => c.type === 'quiz' || c.type === 'flashcards' || c.type === 'memory' || c.type === 'h5p_check',
+      c => INTERACTIVE_TYPES.includes(c.type),
     );
     if (!hasInteractive) {
       setCompletedModules(prev => {
@@ -148,7 +162,7 @@ const LearningPathView: React.FC<LearningPathViewProps> = ({ path, pathId, onExi
     if (path.modules[index]?.locked && !unlockAll) return true;
     const checkInteractive = (m: Module) =>
       m.content.some(
-        c => c.type === 'quiz' || c.type === 'flashcards' || c.type === 'memory' || c.type === 'h5p_check',
+        c => INTERACTIVE_TYPES.includes(c.type),
       );
     const firstQuizIndex = path.modules.findIndex(checkInteractive);
     if (firstQuizIndex === -1) return false;
@@ -196,7 +210,8 @@ const LearningPathView: React.FC<LearningPathViewProps> = ({ path, pathId, onExi
     switch (module.content[0]?.type) {
       case 'video': return <PlayCircleIcon />;
       case 'quiz':
-      case 'h5p_check': return <QuestionMarkCircleIcon />;
+      case 'h5p_check':
+      case 'exam': return <QuestionMarkCircleIcon />;
       case 'interactive':
       case 'flashcards':
       case 'memory': return <PointerIcon />;
@@ -206,7 +221,7 @@ const LearningPathView: React.FC<LearningPathViewProps> = ({ path, pathId, onExi
 
   const currentModule = path.modules[currentModuleIndex];
   const isCurrentInteractive = currentModule.content.some(
-    c => c.type === 'quiz' || c.type === 'flashcards' || c.type === 'memory' || c.type === 'h5p_check',
+    c => INTERACTIVE_TYPES.includes(c.type),
   );
   const isCurrentCompleted = completedModules.includes(currentModuleIndex);
   const canGoNext =
@@ -444,6 +459,9 @@ interface LearningPathSelectorProps {
   banner?: string;
   /** Muestra el certificado final de la ruta gratuita cuando se completan todos los cursos. */
   showRouteCertificate?: boolean;
+  /** Niveles del mapa de expertise (no están en el grid, pero sus badges sí se muestran). */
+  levelPaths?: LearningPaths;
+  onOpenMap?: () => void;
 }
 
 // Cursos exclusivos de un público: solo los ve ese rol (y admin). Los demás roles no los ven,
@@ -503,6 +521,8 @@ const LearningPathSelector: React.FC<LearningPathSelectorProps> = ({
   lockedPaths,
   banner,
   showRouteCertificate,
+  levelPaths = {},
+  onOpenMap,
 }) => {
   const [stats, setStats] = useState<UserStats>(emptyStats);
   const [userProgress, setUserProgress] = useState<UserProgressMap>({});
@@ -530,15 +550,15 @@ const LearningPathSelector: React.FC<LearningPathSelectorProps> = ({
   if (isStatsLoading) return <LoadingSpinner message="Cargando tu panel..." />;
 
   // Cursos terminados (todos los módulos): pueden pedir su badge.
-  const completedIds = Object.entries(paths)
+  const completedIds = Object.entries({ ...paths, ...levelPaths })
     .filter(([id, p]) => {
       const cp = userProgress[id];
       return !!cp?.completedAt && cp.completedModules.length >= (p as LearningPathType).modules.length;
     })
     .map(([id]) => id);
-  const routeDone = !!showRouteCertificate && completedIds.length === Object.keys(paths).length;
+  const routeDone = !!showRouteCertificate && Object.keys(paths).every(id => completedIds.includes(id));
   const achievements: { id: string; title: string }[] = [
-    ...completedIds.map(id => ({ id, title: cleanCourseTitle((paths[id] as LearningPathType).title) })),
+    ...completedIds.map(id => ({ id, title: cleanCourseTitle(((paths[id] ?? levelPaths[id]) as LearningPathType).title) })),
     ...(routeDone ? [{ id: ROUTE_CERTIFICATE_ID, title: ROUTE_CERTIFICATE_TITLE }] : []),
   ];
 
@@ -630,6 +650,20 @@ const LearningPathSelector: React.FC<LearningPathSelectorProps> = ({
 
         {banner && (
           <p className="mb-6 text-sm text-emerald-200 bg-emerald-500/10 border border-emerald-500/30 rounded-xl px-4 py-3">{banner}</p>
+        )}
+
+        {onOpenMap && (
+          <button
+            onClick={onOpenMap}
+            className="w-full mb-8 text-left rounded-2xl p-5 bg-gradient-to-r from-sky-900/60 via-indigo-900/50 to-rose-900/40 border border-sky-500/30 hover:border-sky-400 transition-colors flex flex-col md:flex-row md:items-center justify-between gap-3"
+          >
+            <div>
+              <p className="text-xs font-bold uppercase tracking-widest text-sky-300 mb-1">✨ Nuevo · Mapa de expertise</p>
+              <p className="text-lg font-bold text-white">Avanza de Básico a Avanzado y conviértete en Investigador Cibercriminal</p>
+              <p className="text-sm text-slate-300">Laboratorios prácticos, retos tipo CTF y exámenes por nivel. Cada nivel aprobado te da un badge.</p>
+            </div>
+            <span className="shrink-0 bg-sky-600 text-white font-bold text-sm rounded-xl px-4 py-2.5">🗺️ Ver mi mapa →</span>
+          </button>
         )}
 
         {/* Course grid */}
@@ -778,16 +812,17 @@ const App: React.FC = () => {
     return () => clearInterval(t);
   }, []);
 
-  // Registro gratuito: la ruta es secuencial, así que hace falta el progreso para saber qué curso
-  // está desbloqueado. Se recarga cada vez que se vuelve al grid de cursos.
+  // Progreso del usuario para los desbloqueos (ruta gratuita secuencial y niveles del mapa de
+  // expertise). Se recarga cada vez que se vuelve al grid o al mapa.
   const [routeProgress, setRouteProgress] = useState<UserProgressMap>({});
+  const [showMap, setShowMap] = useState(false);
   const isFreeStudent = currentUser?.role === 'free_student';
   useEffect(() => {
-    if (!currentUser || !isFreeStudent || selectedPathId) return;
+    if (!currentUser || selectedPathId) return;
     let cancelled = false;
     getUserProgress(currentUser.id).then(p => { if (!cancelled) setRouteProgress(p); });
     return () => { cancelled = true; };
-  }, [currentUser, isFreeStudent, selectedPathId]);
+  }, [currentUser, selectedPathId]);
 
   useEffect(() => {
     getSession()
@@ -850,18 +885,35 @@ const App: React.FC = () => {
   // Se filtra acá (no solo en el grid) para que tampoco se pueda entrar por URL directa (?topic=...).
   // Admin ve todo; un rol con cursos exclusivos ve solo esos; el resto ve todo menos los exclusivos.
   // Registro gratuito: solo la ruta FREE_ROUTE, en su orden (CERTs/CSIRTs al final).
+  // Los niveles Intermedio/Avanzado del mapa de expertise no van en el grid: se abren desde el mapa.
   const visiblePaths: LearningPaths = isFreeStudent
     ? Object.fromEntries(FREE_ROUTE.filter(id => id in learningPaths).map(id => [id, learningPaths[id]]))
     : Object.fromEntries(
         (Object.entries(learningPaths) as [string, LearningPathType][]).filter(([id]) =>
-          isAdmin || (hasExclusivePaths ? EXCLUSIVE_PATHS[id] === currentUser.role : !(id in EXCLUSIVE_PATHS)),
+          !(id in LEVEL_PATHS) &&
+          (isAdmin || (hasExclusivePaths ? EXCLUSIVE_PATHS[id] === currentUser.role : !(id in EXCLUSIVE_PATHS))),
         ),
       );
+
+  const isPathComplete = (id: string) => {
+    const cp = routeProgress[id];
+    const p = learningPaths[id];
+    return !!cp?.completedAt && !!p && cp.completedModules.length >= p.modules.length;
+  };
+  // Niveles del mapa visibles para este usuario (su Básico es visible) y si están desbloqueados.
+  const levelPaths: LearningPaths = Object.fromEntries(
+    Object.entries(LEVEL_PATHS)
+      .filter(([id, lv]) => id in learningPaths && lv.track.levels[0] in visiblePaths)
+      .map(([id]) => [id, learningPaths[id]]),
+  );
+  const isLevelUnlocked = (id: string) => isAdmin || isPathComplete(LEVEL_PATHS[id].prerequisite);
+  // El mapa se ofrece solo si el usuario tiene al menos una ruta con niveles ya publicados.
+  const hasMap = EXPERTISE_TRACKS.some(t => t.levels[0] in visiblePaths && t.levels.slice(1).some(l => l && l in levelPaths));
 
   if (showTeacherDashboard) {
     return (
       <TeacherDashboard
-        paths={visiblePaths}
+        paths={{ ...visiblePaths, ...levelPaths }}
         onExit={() => setShowTeacherDashboard(false)}
         isAdmin={isAdmin}
         viewerName={currentUser.name}
@@ -887,7 +939,26 @@ const App: React.FC = () => {
     });
   }
 
-  if (!selectedPathId || !(selectedPathId in visiblePaths) || selectedPathId in lockedPaths) {
+  const canOpenSelected =
+    !!selectedPathId &&
+    ((selectedPathId in visiblePaths && !(selectedPathId in lockedPaths)) ||
+      (selectedPathId in levelPaths && isLevelUnlocked(selectedPathId)));
+
+  if (!canOpenSelected && showMap && hasMap) {
+    return (
+      <ExpertiseMapView
+        allPaths={learningPaths}
+        visibleBase={new Set(Object.keys(visiblePaths))}
+        baseLocks={lockedPaths}
+        progress={routeProgress}
+        isAdmin={isAdmin}
+        onSelect={setSelectedPathId}
+        onClose={() => setShowMap(false)}
+      />
+    );
+  }
+
+  if (!canOpenSelected) {
     return (
       <LearningPathSelector
         paths={visiblePaths}
@@ -899,16 +970,18 @@ const App: React.FC = () => {
         onOpenTeacherDashboard={() => setShowTeacherDashboard(true)}
         lockedPaths={lockedPaths}
         showRouteCertificate={isFreeStudent}
+        levelPaths={levelPaths}
+        onOpenMap={hasMap ? () => setShowMap(true) : undefined}
         banner={isFreeStudent ? '🎁 Registro gratuito (22–31 de octubre): completa los 7 cursos iniciales en orden, desde Fundamentos de Ciberseguridad hasta CERTs y CSIRTs. Cada curso terminado te da un badge verificable, y al completar los 7 obtienes tu certificado final.' : undefined}
       />
     );
   }
 
-  const selectedPath = visiblePaths[selectedPathId];
+  const selectedPath = visiblePaths[selectedPathId!] ?? levelPaths[selectedPathId!];
   return (
     <LearningPathView
       path={selectedPath}
-      pathId={selectedPathId}
+      pathId={selectedPathId!}
       onExit={() => setSelectedPathId(null)}
       userId={currentUser.id}
       unlockAll={isAdmin || isFreeStudent}
