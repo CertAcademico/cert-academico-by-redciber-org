@@ -4,7 +4,7 @@
 
 export const BRAND = 'CERT Académico by RedCiber.org';
 
-/** Ruta del registro gratuito, en orden: cada curso se desbloquea al terminar el anterior. */
+/** Campaña de registro gratuito (22–31 oct 2026): los 7 cursos iniciales, en orden; cada uno se desbloquea al terminar el anterior. */
 export const FREE_ROUTE = [
   'cybersecurity',
   'cybercrime',
@@ -12,7 +12,6 @@ export const FREE_ROUTE = [
   'quantum_computing',
   'forensic_auditing',
   'artificial_intelligence',
-  'ia_ofensiva_insider',
   'cert_csirt',
 ];
 

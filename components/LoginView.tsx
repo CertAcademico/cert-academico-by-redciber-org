@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { registerUser, loginUser } from '../authService';
+import { registerUser, loginUser, resendConfirmation, EmailNotConfirmedError } from '../authService';
 import type { SessionUser } from '../authService';
 import { isRegistrationOpen } from '../platform';
 import PrivacyPolicyView from './PrivacyPolicyView';
+import Turnstile, { CAPTCHA_ENABLED } from './Turnstile';
 
 interface LoginViewProps {
   onLogin: (user: SessionUser) => void;
@@ -37,17 +38,33 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLogin }) => {
   const [showPolicy, setShowPolicy] = useState(false);
   const registrationOpen = isRegistrationOpen();
 
-  const switchTab = (t: Tab) => { setTab(t); setError(''); };
+  // CAPTCHA: cada token sirve una vez, así que tras cada intento se monta un widget nuevo.
+  const [captchaToken, setCaptchaToken] = useState<string | null>(null);
+  const [captchaKey, setCaptchaKey] = useState(0);
+  const renewCaptcha = () => setCaptchaKey(k => k + 1);
+  const captchaMissing = CAPTCHA_ENABLED && !captchaToken;
+
+  // Correo pendiente de confirmar (tras registrarse, o al intentar entrar sin haberlo confirmado).
+  const [pendingEmail, setPendingEmail] = useState<string | null>(null);
+  const [resendMsg, setResendMsg] = useState('');
+
+  const switchTab = (t: Tab) => { setTab(t); setError(''); setPendingEmail(null); };
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
     if (!loginEmail || !loginPassword) { setError('Completa todos los campos.'); return; }
+    if (captchaMissing) { setError('Completa la verificación de seguridad.'); return; }
     setIsLoading(true);
     try {
-      onLogin(await loginUser(loginEmail, loginPassword));
+      onLogin(await loginUser(loginEmail, loginPassword, captchaToken ?? undefined));
     } catch (err) {
+      if (err instanceof EmailNotConfirmedError) {
+        setPendingEmail(loginEmail.toLowerCase().trim());
+        setResendMsg('');
+      }
       setError((err as Error).message);
+      renewCaptcha();
     } finally {
       setIsLoading(false);
     }
@@ -60,13 +77,36 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLogin }) => {
     if (regPassword.length < 8) { setError('La contraseña debe tener al menos 8 caracteres.'); return; }
     if (regPassword !== regConfirm) { setError('Las contraseñas no coinciden.'); return; }
     if (!regConsent) { setError('Debes aceptar la Política de Tratamiento de Datos Personales para registrarte.'); return; }
+    if (captchaMissing) { setError('Completa la verificación de seguridad.'); return; }
     setIsLoading(true);
     try {
-      onLogin(await registerUser(regName, regEmail, regPassword));
+      const result = await registerUser(regName, regEmail, regPassword, captchaToken ?? undefined);
+      if ('user' in result) {
+        onLogin(result.user);
+      } else {
+        setPendingEmail(result.email);
+        setResendMsg('');
+      }
     } catch (err) {
       setError((err as Error).message);
+      renewCaptcha();
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const handleResend = async () => {
+    if (!pendingEmail) return;
+    if (captchaMissing) { setResendMsg('Completa la verificación de seguridad.'); return; }
+    setIsLoading(true);
+    try {
+      await resendConfirmation(pendingEmail, captchaToken ?? undefined);
+      setResendMsg('✓ Te enviamos un correo nuevo. Revisa también la carpeta de spam.');
+    } catch (err) {
+      setResendMsg((err as Error).message);
+    } finally {
+      setIsLoading(false);
+      renewCaptcha();
     }
   };
 
@@ -111,6 +151,30 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLogin }) => {
             ))}
           </div>
 
+          {pendingEmail && tab === 'register' ? (
+            <div className="text-center space-y-4">
+              <p className="text-4xl">📧</p>
+              <h2 className="text-lg font-bold text-white">Confirma tu correo</h2>
+              <p className="text-sm text-slate-300">
+                Enviamos un enlace a <span className="font-semibold text-white">{pendingEmail}</span>. Ábrelo para activar tu cuenta y empezar tu ruta gratuita.
+              </p>
+              <p className="text-xs text-slate-500">Si no lo ves en unos minutos, revisa la carpeta de spam o promociones.</p>
+              <Turnstile key={`resend-${captchaKey}`} onToken={setCaptchaToken} />
+              {resendMsg && <p className="text-xs text-slate-300">{resendMsg}</p>}
+              <div className="flex flex-col gap-2">
+                <button
+                  onClick={handleResend}
+                  disabled={isLoading}
+                  className="w-full py-2.5 border border-slate-600 hover:border-slate-400 text-slate-200 rounded-xl text-sm disabled:opacity-50"
+                >
+                  {isLoading ? 'Enviando…' : 'Reenviar correo'}
+                </button>
+                <button onClick={() => switchTab('login')} className="text-sm text-blue-400 hover:underline">
+                  Ya lo confirmé → Iniciar sesión
+                </button>
+              </div>
+            </div>
+          ) : (
           <AnimatePresence mode="wait">
             {tab === 'login' ? (
               <motion.form
@@ -161,6 +225,17 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLogin }) => {
                   </motion.p>
                 )}
 
+                {pendingEmail && (
+                  <div className="text-xs text-slate-300 bg-slate-800/60 border border-slate-700/50 rounded-lg px-3 py-2.5 space-y-1">
+                    <button type="button" onClick={handleResend} disabled={isLoading} className="text-blue-400 hover:underline disabled:opacity-50">
+                      Reenviar el correo de confirmación a {pendingEmail}
+                    </button>
+                    {resendMsg && <p>{resendMsg}</p>}
+                  </div>
+                )}
+
+                <Turnstile key={`login-${captchaKey}`} onToken={setCaptchaToken} />
+
                 <button
                   type="submit"
                   disabled={isLoading}
@@ -181,7 +256,7 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLogin }) => {
               >
                 {registrationOpen ? (
                   <p className="text-xs text-emerald-300 bg-emerald-500/10 border border-emerald-500/30 rounded-lg px-3 py-2 -mt-1">
-                    🎁 Registro gratuito hasta el 31 de octubre. Accede a la ruta completa, desde Fundamentos de Ciberseguridad hasta CERTs y CSIRTs, y obtén un badge por cada curso que termines.
+                    🎁 Registro gratuito del 22 al 31 de octubre: accede a los 7 cursos iniciales, desde Fundamentos de Ciberseguridad hasta CERTs y CSIRTs. Gana un badge verificable por cada curso y tu certificado al completar la ruta.
                   </p>
                 ) : (
                   <p className="text-xs text-amber-300 bg-amber-500/10 border border-amber-500/30 rounded-lg px-3 py-2 -mt-1">
@@ -271,6 +346,8 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLogin }) => {
                   </motion.p>
                 )}
 
+                <Turnstile key={`register-${captchaKey}`} onToken={setCaptchaToken} />
+
                 <button
                   type="submit"
                   disabled={isLoading || !registrationOpen}
@@ -281,6 +358,7 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLogin }) => {
               </motion.form>
             )}
           </AnimatePresence>
+          )}
         </div>
 
         <p className="text-center text-slate-500 text-xs mt-5">

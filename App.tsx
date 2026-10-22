@@ -892,7 +892,7 @@ const App: React.FC = () => {
         onOpenTeacherDashboard={() => setShowTeacherDashboard(true)}
         lockedPaths={lockedPaths}
         showRouteCertificate={isFreeStudent}
-        banner={isFreeStudent ? '🎁 Ruta gratuita: completa los cursos en orden, desde Fundamentos de Ciberseguridad hasta CERTs y CSIRTs. Cada curso terminado te da un badge verificable, y al completar toda la ruta obtienes tu certificado final.' : undefined}
+        banner={isFreeStudent ? '🎁 Registro gratuito (22–31 de octubre): completa los 7 cursos iniciales en orden, desde Fundamentos de Ciberseguridad hasta CERTs y CSIRTs. Cada curso terminado te da un badge verificable, y al completar los 7 obtienes tu certificado final.' : undefined}
       />
     );
   }

@@ -107,14 +107,14 @@ as $$
   }'::jsonb;
 $$;
 
--- Ruta del registro gratuito, en orden (CERTs/CSIRTs al final).
+-- Ruta del registro gratuito: los 7 cursos iniciales, en orden (CERTs/CSIRTs al final).
 create or replace function public.free_route()
 returns text[]
 language sql
 immutable
 as $$
   select array['cybersecurity', 'cybercrime', 'cybercriminology', 'quantum_computing',
-               'forensic_auditing', 'artificial_intelligence', 'ia_ofensiva_insider', 'cert_csirt'];
+               'forensic_auditing', 'artificial_intelligence', 'cert_csirt'];
 $$;
 
 create or replace function public.course_is_complete(p_user uuid, p_path text)

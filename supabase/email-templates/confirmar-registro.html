@@ -1,0 +1,28 @@
+<!-- Supabase → Authentication → Emails → "Confirm signup".
+     Asunto sugerido: Confirma tu correo · CERT Académico by RedCiber.org -->
+<div style="margin:0;padding:32px 16px;background:#0f172a;font-family:Arial,Helvetica,sans-serif;">
+  <div style="max-width:520px;margin:0 auto;background:#111827;border:1px solid #334155;border-radius:16px;padding:32px;color:#e2e8f0;">
+    <p style="margin:0 0 4px;font-size:22px;font-weight:bold;color:#ffffff;">CERT Académico</p>
+    <p style="margin:0 0 24px;font-size:13px;color:#60a5fa;">by RedCiber.org</p>
+
+    <p style="margin:0 0 16px;font-size:16px;color:#ffffff;">¡Bienvenido a tu ruta gratuita de ciberseguridad! 🎁</p>
+    <p style="margin:0 0 24px;font-size:14px;line-height:1.6;">
+      Para activar tu cuenta y empezar los 7 cursos iniciales, confirma tu correo con el siguiente botón:
+    </p>
+
+    <p style="text-align:center;margin:0 0 24px;">
+      <a href="{{ .ConfirmationURL }}"
+         style="display:inline-block;background:#2563eb;color:#ffffff;text-decoration:none;font-weight:bold;font-size:15px;padding:14px 28px;border-radius:10px;">
+        Confirmar mi correo
+      </a>
+    </p>
+
+    <p style="margin:0 0 8px;font-size:12px;color:#94a3b8;line-height:1.6;">
+      Si el botón no funciona, copia y pega este enlace en tu navegador:<br>
+      <span style="color:#cbd5e1;word-break:break-all;">{{ .ConfirmationURL }}</span>
+    </p>
+    <p style="margin:16px 0 0;font-size:12px;color:#94a3b8;line-height:1.6;">
+      Si no te registraste en CERT Académico, ignora este mensaje: sin confirmación no se crea ninguna cuenta activa.
+    </p>
+  </div>
+</div>
