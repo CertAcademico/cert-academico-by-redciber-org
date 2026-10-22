@@ -4757,6 +4757,522 @@ Cadena demostrada: H2 → H3 → H5  (acceso al portal → control del servidor 
         ]
       },
     ]
+  },
+  cybercriminology_intermedio: {
+    title: "Analista en Cibercriminología · Nivel Intermedio",
+    description: "Teorías criminológicas aplicadas al ciberespacio: actividades rutinarias, elección racional, aprendizaje social, neutralización y espacio transicional; victimología digital y prevención situacional. Laboratorios prácticos y examen con nota mínima del 70%.",
+    lastUpdated: "Octubre 2026",
+    modules: [
+      {
+        id: 'cri_intro',
+        title: "1. 🗺️ Bienvenida al Nivel Intermedio",
+        content: [
+          { type: 'text', icon: 'BrainCircuitIcon', text: "En el Nivel Básico se preguntó por qué ocurre el cibercrimen. Ahora usará las teorías de la criminología para explicar casos concretos, entender a las víctimas y diseñar prevención. El objetivo: pasar de la intuición al análisis." },
+          { type: 'text', icon: 'AlarmIcon', text: "Este nivel incluye laboratorios de decisión, retos de análisis y un examen que se aprueba con 70%. Todos los casos y personas son ficticios." },
+        ]
+      },
+      {
+        id: 'cri_theories',
+        title: "2. Teorías Criminológicas en el Ciberespacio",
+        content: [
+          { type: 'text', icon: 'DocumentTextIcon', text: "Ninguna teoría explica todo el cibercrimen, pero cada una ilumina una parte: por qué ocurre en cierto momento y lugar, cómo decide el delincuente, cómo aprende, cómo justifica su conducta y por qué el ciberespacio cambia el comportamiento." },
+          {
+            type: 'interactive',
+            title: 'Las teorías clave',
+            items: [
+              { term: 'Actividades rutinarias (Cohen y Felson, 1979)', definition: 'El delito ocurre cuando coinciden un delincuente motivado, un objetivo adecuado y la ausencia de un guardián capaz. En línea, el "guardián" puede ser un antivirus, el doble factor o un moderador.' },
+              { term: 'Elección racional (Cornish y Clarke)', definition: 'El delincuente sopesa costos, beneficios y riesgos. Si el esfuerzo sube o la recompensa baja, el delito pierde atractivo.' },
+              { term: 'Aprendizaje social (Akers)', definition: 'La conducta delictiva se aprende de otros: técnicas, motivos y justificaciones, hoy a menudo en foros y comunidades en línea.' },
+              { term: 'Autocontrol (Gottfredson y Hirschi, 1990)', definition: 'El bajo autocontrol, sumado a la oportunidad, aumenta la probabilidad de delinquir; también se ha estudiado en víctimas que toman riesgos en línea.' },
+              { term: 'Neutralización (Sykes y Matza, 1957)', definition: 'Los delincuentes usan justificaciones para acallar su culpa: "no le hice daño a nadie", "el banco se lo merecía".' },
+              { term: 'Espacio transicional (Jaishankar, 2008)', definition: 'Teoría propia del cibercrimen: las personas se comportan distinto en línea por el anonimato, la falta de disuasión y la facilidad de moverse entre el espacio físico y el virtual.' },
+            ]
+          },
+          {
+            type: 'memory',
+            title: 'Asocie cada teoría con su idea central',
+            pairs: [
+              { term: 'Actividades rutinarias', definition: 'Delincuente motivado + objetivo adecuado + sin guardián capaz.' },
+              { term: 'Elección racional', definition: 'Costos, beneficios y riesgos.' },
+              { term: 'Aprendizaje social', definition: 'Se aprende de otros, también en foros.' },
+              { term: 'Neutralización', definition: 'Justificaciones para acallar la culpa.' },
+              { term: 'Espacio transicional', definition: 'El anonimato cambia la conducta en línea.' },
+            ]
+          },
+        ]
+      },
+      {
+        id: 'cri_rat',
+        title: "3. 🧪 Laboratorio: Actividades Rutinarias en un Caso Real",
+        content: [
+          { type: 'text', icon: 'UserSearchIcon', text: "La teoría de las actividades rutinarias es muy útil para prevenir: si se elimina cualquiera de los tres elementos, el delito se vuelve menos probable. Aplíquela a un caso." },
+          {
+            type: 'scenario',
+            title: 'Caso 1: las cuentas de los adultos mayores',
+            intro: "En una ciudad ficticia, se multiplican los robos a cuentas bancarias de adultos mayores mediante llamadas que piden códigos de verificación. Analice el caso con la teoría. Necesita 40 de 60 puntos.",
+            start: 't1',
+            maxPoints: 60,
+            passPoints: 40,
+            steps: {
+              t1: {
+                text: "¿Qué hace que los adultos mayores sean un \"objetivo adecuado\" para estos delincuentes?",
+                choices: [
+                  { text: "Tienen ahorros, suelen ser menos familiares con las tácticas digitales y responden con confianza a quien dice ser del banco.", next: 't2', points: 20, feedback: "Correcto: valor, vulnerabilidad y accesibilidad hacen al objetivo atractivo." },
+                  { text: "Que usan más internet que los jóvenes.", next: 't2', points: 0, feedback: "No es lo que los convierte en objetivo; lo es la combinación de valor y menor familiaridad con estos engaños." },
+                ]
+              },
+              t2: {
+                text: "¿Qué \"guardián capaz\" falta en estos casos?",
+                choices: [
+                  { text: "Un familiar o la entidad que valide operaciones inusuales, alertas del banco ante transferencias atípicas y el conocimiento de que el banco nunca pide códigos.", next: 't3', points: 20, feedback: "Bien: el guardián puede ser una persona, una tecnología o un conocimiento." },
+                  { text: "Un policía en cada casa.", next: 't3', points: 0, feedback: "Poco realista: el guardián en línea suele ser tecnológico o social, no un agente presente." },
+                ]
+              },
+              t3: {
+                text: "¿Qué intervención actúa sobre el elemento más fácil de modificar?",
+                choices: [
+                  { text: "Fortalecer los guardianes: alertas bancarias y límites a transferencias nuevas, más campañas dirigidas a adultos mayores y sus familias.", next: 'fin', points: 20, feedback: "Correcto: eliminar la motivación del delincuente es difícil; reforzar al guardián es viable y efectivo." },
+                  { text: "Convencer a los delincuentes de que cambien de actividad.", next: 'fin', points: 0, feedback: "La motivación del delincuente es el elemento más difícil de modificar a corto plazo." },
+                ]
+              },
+              fin: { text: "Fin del caso. Revise su puntaje y la retroalimentación." },
+            }
+          },
+        ]
+      },
+      {
+        id: 'cri_neutralization',
+        title: "4. 🚩 Laboratorio: Técnicas de Neutralización",
+        content: [
+          { type: 'text', icon: 'SpyIcon', text: "Sykes y Matza describieron cinco técnicas: negación de la responsabilidad (\"no fue mi culpa\"), negación del daño (\"nadie salió herido\"), negación de la víctima (\"se lo merecía\"), condena de quienes condenan (\"ellos son peores\") y apelación a lealtades superiores (\"lo hice por mi grupo\")." },
+          {
+            type: 'challenge',
+            title: 'Lo que dicen en el foro',
+            brief: "Fragmentos ficticios de un foro donde se venden datos robados. Identifique la técnica de neutralización de cada uno. Responda con: responsabilidad, daño, víctima, condenadores o lealtades.",
+            artifacts: [
+              {
+                name: 'foro_extractos.txt',
+                content: `[A] "Los bancos tienen seguro, la gente recupera su plata. Nadie pierde nada de verdad."
+[B] "Esa empresa vendía nuestros datos sin permiso; que ahora les pase a ellos es justicia."
+[C] "Los políticos roban millones y nadie dice nada. ¿Y me van a juzgar a mí?"
+[D] "Yo solo vendo las listas, lo que haga el comprador no es mi problema."
+[E] "Lo hago por el colectivo; si yo no consigo el acceso, otro del grupo queda mal."`,
+              },
+            ],
+            questions: [
+              { prompt: '¿Qué técnica usa el fragmento [A]?', answers: ['daño', 'negacion del daño', 'negación del daño', 'dano'], explanation: '[A] niega el daño: "nadie pierde nada" minimiza el perjuicio real a las víctimas.' },
+              { prompt: '¿Qué técnica usa el fragmento [B]?', answers: ['víctima', 'victima', 'negacion de la victima', 'negación de la víctima'], explanation: '[B] niega a la víctima: la empresa "se lo merecía".' },
+              { prompt: '¿Qué técnica usa el fragmento [C]?', answers: ['condenadores', 'condena de los condenadores', 'condena de quienes condenan'], explanation: '[C] condena a quienes condenan: desvía la atención hacia la conducta de otros.' },
+              { prompt: '¿Qué técnica usa el fragmento [D]?', answers: ['responsabilidad', 'negacion de la responsabilidad', 'negación de la responsabilidad'], explanation: '[D] niega la responsabilidad: atribuye el daño al comprador.' },
+              { prompt: '¿Qué técnica usa el fragmento [E]?', answers: ['lealtades', 'lealtades superiores', 'apelacion a lealtades superiores', 'apelación a lealtades superiores'], explanation: '[E] apela a lealtades superiores: el grupo pesa más que la norma.' },
+            ],
+          },
+          {
+            type: 'quiz',
+            quizData: {
+              question: "¿Para qué sirve identificar estas justificaciones en prevención?",
+              options: [
+                "Para nada: son solo excusas.",
+                "Para diseñar mensajes que las desmonten (por ejemplo, mostrar el daño real a las víctimas) y \"eliminar excusas\" antes de que alguien delinca.",
+                "Para justificar los delitos."
+              ],
+              correctOptionIndex: 1,
+              feedback: {
+                correct: "Correcto: las campañas que muestran el daño real y la responsabilidad individual atacan directamente estas justificaciones.",
+                incorrect: "Entender las justificaciones permite desmontarlas: es una herramienta de prevención."
+              }
+            }
+          },
+        ]
+      },
+      {
+        id: 'cri_victims',
+        title: "5. Victimología Digital",
+        content: [
+          { type: 'text', icon: 'HappyUsersIcon', text: "La victimología estudia a las víctimas: por qué algunas personas o grupos son victimizados más, cómo las afecta y cómo atenderlas sin revictimizarlas. En línea, la vergüenza hace que muchas víctimas no denuncien, sobre todo en fraudes afectivos y sextorsión." },
+          { type: 'text', icon: 'LockIcon', text: "Revictimizar es dañar de nuevo: culpar a la víctima (\"¿cómo fue tan ingenua?\"), hacerla repetir su historia muchas veces o difundir su caso. Una buena atención cree, orienta, protege la evidencia y deriva a apoyo." },
+          {
+            type: 'scenario',
+            title: 'Caso 2: Andrés y la sextorsión',
+            intro: "Andrés, de 17 años, le cuenta a un docente ficticio que alguien con quien chateaba amenaza con difundir imágenes íntimas si no paga. Usted orienta al docente. Necesita 60 de 80 puntos.",
+            start: 'v1',
+            maxPoints: 80,
+            passPoints: 60,
+            steps: {
+              v1: {
+                text: "¿Cuál es la primera reacción adecuada del docente?",
+                choices: [
+                  { text: "Creerle, decirle que no es su culpa y que hizo bien en contarlo, y que no está solo.", next: 'v2', points: 20, feedback: "Correcto: la primera respuesta define si la víctima sigue pidiendo ayuda." },
+                  { text: "Regañarlo por haber enviado las imágenes.", next: 'v2', points: -10, feedback: "Es revictimización: aumenta la vergüenza y puede llevarlo a ceder ante el extorsionador." },
+                ]
+              },
+              v2: {
+                text: "¿Debe Andrés pagar para que no difundan las imágenes?",
+                choices: [
+                  { text: "No: pagar no garantiza nada y suele traer más exigencias. Lo recomendable es no responder más, no borrar la conversación y bloquear después de preservarla.", next: 'v3', points: 20, feedback: "Correcto: el pago alimenta la extorsión." },
+                  { text: "Sí, para terminar rápido.", next: 'v3', points: -10, feedback: "En la mayoría de los casos, pagar lleva a nuevas exigencias." },
+                ]
+              },
+              v3: {
+                text: "Andrés es menor de edad. ¿Qué se hace con el caso?",
+                choices: [
+                  { text: "Informar a su familia o acudientes y a las rutas de protección, reportar por canales como Te Protejo y el CAI Virtual, y denunciar ante la Fiscalía.", next: 'v4', points: 20, feedback: "Bien: con menores, la protección y la denuncia son obligatorias." },
+                  { text: "Manejarlo en secreto entre el docente y Andrés.", next: 'v4', points: -10, feedback: "El caso involucra a un menor: debe activarse la ruta de protección." },
+                ]
+              },
+              v4: {
+                text: "En el colegio otros estudiantes empiezan a hablar del caso. ¿Qué hace la institución?",
+                choices: [
+                  { text: "Protege la identidad de Andrés, frena la difusión y ofrece acompañamiento psicológico.", next: 'fin', points: 20, feedback: "Excelente: evita la revictimización en su entorno." },
+                  { text: "Usa el caso con nombre propio en una charla de prevención.", next: 'fin', points: -10, feedback: "Exponerlo lo revictimiza; los casos se usan anonimizados." },
+                ]
+              },
+              fin: { text: "Fin del caso. Revise su puntaje y la retroalimentación." },
+            }
+          },
+        ]
+      },
+      {
+        id: 'cri_prevention',
+        title: "6. Prevención Situacional del Delito",
+        content: [
+          { type: 'text', icon: 'ShieldCheckIcon', text: "La prevención situacional (Clarke) no busca cambiar a los delincuentes sino las situaciones. Sus técnicas se agrupan en cinco estrategias: aumentar el esfuerzo, aumentar el riesgo, reducir la recompensa, reducir las provocaciones y eliminar las excusas." },
+          {
+            type: 'flashcards',
+            title: 'Las 5 estrategias aplicadas al ciberespacio',
+            cards: [
+              { front: 'Aumentar el esfuerzo', back: 'Doble factor, contraseñas robustas, cifrado: robar una cuenta cuesta más.' },
+              { front: 'Aumentar el riesgo', back: 'Registro de actividad, alertas, monitoreo y colaboración con autoridades: más probabilidad de ser detectado.' },
+              { front: 'Reducir la recompensa', back: 'Cifrar los datos (robarlos sirve de poco), límites a transferencias nuevas, bloqueo rápido de tarjetas.' },
+              { front: 'Reducir las provocaciones', back: 'Moderar comunidades, evitar exhibir públicamente vulnerabilidades o datos sensibles.' },
+              { front: 'Eliminar las excusas', back: 'Avisos claros ("el acceso no autorizado es delito"), términos de uso y campañas que muestran el daño real.' },
+            ]
+          },
+          {
+            type: 'quiz',
+            quizData: {
+              question: "Una cooperativa limita las transferencias a cuentas nuevas durante las primeras 24 horas. ¿Qué estrategia aplica?",
+              options: ["Reducir la recompensa.", "Reducir las provocaciones.", "Eliminar las excusas."],
+              correctOptionIndex: 0,
+              feedback: {
+                correct: "Correcto: aunque el delincuente robe el acceso, obtiene menos (o nada) en la ventana en que suele actuar.",
+                incorrect: "Limitar lo que se puede sacar reduce la recompensa del delito."
+              }
+            }
+          },
+        ]
+      },
+      {
+        id: 'cri_exam',
+        title: "7. 📝 Examen del Nivel Intermedio",
+        content: [
+          { type: 'text', icon: 'CheckCircleIcon', text: "El examen toma 10 preguntas al azar de un banco de 14 y se aprueba con 70%. Al aprobarlo obtendrá el badge de Analista en Cibercriminología · Nivel Intermedio." },
+          {
+            type: 'exam',
+            title: 'Examen: Analista en Cibercriminología · Intermedio',
+            description: 'Evalúa teorías criminológicas, neutralización, victimología y prevención situacional.',
+            passPercent: 70,
+            questionsPerAttempt: 10,
+            questions: [
+              { question: 'Según la teoría de las actividades rutinarias, ¿qué tres elementos coinciden en un delito?', options: [{ id: 'q1a', text: 'Delincuente motivado, objetivo adecuado y ausencia de guardián capaz.', isCorrect: true, score: 10 }, { id: 'q1b', text: 'Arma, motivo y coartada.', isCorrect: false, score: 0 }, { id: 'q1c', text: 'Víctima, testigo y juez.', isCorrect: false, score: 0 }], feedback: 'Cohen y Felson, 1979.' },
+              { question: 'En línea, ¿qué puede funcionar como "guardián capaz"?', options: [{ id: 'q2a', text: 'El doble factor, un antivirus, un moderador o una alerta del banco.', isCorrect: true, score: 10 }, { id: 'q2b', text: 'Solo un policía presente.', isCorrect: false, score: 0 }, { id: 'q2c', text: 'Nada.', isCorrect: false, score: 0 }], feedback: 'El guardián puede ser tecnológico o social.' },
+              { question: '¿Qué plantea la teoría de la elección racional?', options: [{ id: 'q3a', text: 'Que el delincuente sopesa costos, beneficios y riesgos.', isCorrect: true, score: 10 }, { id: 'q3b', text: 'Que el delito es siempre impulsivo.', isCorrect: false, score: 0 }, { id: 'q3c', text: 'Que el delito se hereda.', isCorrect: false, score: 0 }], feedback: 'Base de la prevención situacional.' },
+              { question: 'La teoría del aprendizaje social explica el cibercrimen porque…', options: [{ id: 'q4a', text: 'Las técnicas y justificaciones se aprenden de otros, también en foros.', isCorrect: true, score: 10 }, { id: 'q4b', text: 'Todos nacen sabiendo programar.', isCorrect: false, score: 0 }, { id: 'q4c', text: 'Nadie aprende de nadie.', isCorrect: false, score: 0 }], feedback: 'Akers.' },
+              { question: '¿Qué teoría fue formulada específicamente para el cibercrimen?', options: [{ id: 'q5a', text: 'La del espacio transicional (Jaishankar).', isCorrect: true, score: 10 }, { id: 'q5b', text: 'La de las actividades rutinarias.', isCorrect: false, score: 0 }, { id: 'q5c', text: 'La del autocontrol.', isCorrect: false, score: 0 }], feedback: 'Las demás se adaptaron al ciberespacio.' },
+              { question: '"Nadie salió perjudicado, el banco tiene seguro." ¿Qué técnica de neutralización es?', options: [{ id: 'q6a', text: 'Negación del daño.', isCorrect: true, score: 10 }, { id: 'q6b', text: 'Negación de la víctima.', isCorrect: false, score: 0 }, { id: 'q6c', text: 'Lealtades superiores.', isCorrect: false, score: 0 }], feedback: 'Minimiza el perjuicio.' },
+              { question: '"Esa empresa se lo merecía." ¿Qué técnica es?', options: [{ id: 'q7a', text: 'Negación de la víctima.', isCorrect: true, score: 10 }, { id: 'q7b', text: 'Negación de la responsabilidad.', isCorrect: false, score: 0 }, { id: 'q7c', text: 'Condena de los condenadores.', isCorrect: false, score: 0 }], feedback: 'Convierte a la víctima en culpable.' },
+              { question: '"Yo solo vendo los datos, lo que haga el comprador no es mi problema." ¿Qué técnica es?', options: [{ id: 'q8a', text: 'Negación de la responsabilidad.', isCorrect: true, score: 10 }, { id: 'q8b', text: 'Negación del daño.', isCorrect: false, score: 0 }, { id: 'q8c', text: 'Lealtades superiores.', isCorrect: false, score: 0 }], feedback: 'Atribuye el daño a otro.' },
+              { question: '¿Qué es revictimizar?', options: [{ id: 'q9a', text: 'Dañar de nuevo a la víctima, por ejemplo culpándola o exponiendo su caso.', isCorrect: true, score: 10 }, { id: 'q9b', text: 'Denunciar el delito.', isCorrect: false, score: 0 }, { id: 'q9c', text: 'Preservar la evidencia.', isCorrect: false, score: 0 }], feedback: 'La atención debe creer, orientar y proteger.' },
+              { question: 'Una víctima de sextorsión pregunta si debe pagar. ¿Qué se recomienda?', options: [{ id: 'q10a', text: 'No pagar, no borrar la conversación, preservarla, bloquear y denunciar.', isCorrect: true, score: 10 }, { id: 'q10b', text: 'Pagar para terminar rápido.', isCorrect: false, score: 0 }, { id: 'q10c', text: 'Borrar todo y olvidarlo.', isCorrect: false, score: 0 }], feedback: 'Pagar suele traer más exigencias.' },
+              { question: 'Si la víctima es menor de edad, ¿qué se activa?', options: [{ id: 'q11a', text: 'La ruta de protección, el aviso a su familia y la denuncia.', isCorrect: true, score: 10 }, { id: 'q11b', text: 'Nada, se maneja en secreto.', isCorrect: false, score: 0 }, { id: 'q11c', text: 'Una sanción al menor.', isCorrect: false, score: 0 }], feedback: 'La protección del menor es prioritaria.' },
+              { question: 'El doble factor, en la prevención situacional, sirve para…', options: [{ id: 'q12a', text: 'Aumentar el esfuerzo.', isCorrect: true, score: 10 }, { id: 'q12b', text: 'Reducir las provocaciones.', isCorrect: false, score: 0 }, { id: 'q12c', text: 'Eliminar las excusas.', isCorrect: false, score: 0 }], feedback: 'Robar la cuenta cuesta más.' },
+              { question: 'Un aviso que dice "el acceso no autorizado es delito" busca…', options: [{ id: 'q13a', text: 'Eliminar las excusas.', isCorrect: true, score: 10 }, { id: 'q13b', text: 'Reducir la recompensa.', isCorrect: false, score: 0 }, { id: 'q13c', text: 'Aumentar el esfuerzo.', isCorrect: false, score: 0 }], feedback: 'Nadie puede decir que no sabía.' },
+              { question: '¿Por qué muchas víctimas de fraude en línea no denuncian?', options: [{ id: 'q14a', text: 'Por vergüenza, culpa o porque creen que no servirá.', isCorrect: true, score: 10 }, { id: 'q14b', text: 'Porque no hay delitos en línea.', isCorrect: false, score: 0 }, { id: 'q14c', text: 'Porque denunciar es ilegal.', isCorrect: false, score: 0 }], feedback: 'Esto genera una gran cifra negra.' },
+            ],
+          },
+        ]
+      },
+    ]
+  },
+  cybercriminology_avanzado: {
+    title: "Analista en Cibercriminología · Nivel Avanzado",
+    description: "Economía del cibercrimen, métodos de investigación y cifra negra, trayectorias e intervención temprana, prevención basada en evidencia, desplazamiento del delito y un informe criminológico integrador. Examen con nota mínima del 80%.",
+    lastUpdated: "Octubre 2026",
+    modules: [
+      {
+        id: 'cra_intro',
+        title: "1. 🎯 Nivel Avanzado: del Análisis a la Política",
+        content: [
+          { type: 'text', icon: 'BrainCircuitIcon', text: "En este nivel estudiará el cibercrimen como fenómeno social: cómo se organiza, cómo medirlo cuando la mayoría de los casos no se denuncian, por qué caminos llegan las personas a delinquir y cómo diseñar y evaluar políticas de prevención." },
+          { type: 'text', icon: 'AlarmIcon', text: "El examen final toma 12 preguntas al azar de un banco de 16 y exige 80%. Al aprobarlo obtendrá el badge de Analista en Cibercriminología · Nivel Avanzado." },
+        ]
+      },
+      {
+        id: 'cra_economy',
+        title: "2. La Economía del Cibercrimen",
+        content: [
+          { type: 'text', icon: 'BrokenEnvelopeIcon', text: "El cibercrimen actual funciona como una economía especializada: distintos actores cumplen funciones distintas y se necesitan entre sí. Para la criminología esto importa porque cada función es un punto de intervención: desarticular a quienes lavan el dinero o reclutan mulas afecta a toda la cadena." },
+          { type: 'text', icon: 'LockIcon', text: "Entre delincuentes no hay contratos ni tribunales, así que la confianza es frágil. Los estudios muestran que estos entornos dependen de la reputación y de intermediarios; por eso las operaciones policiales que siembran desconfianza (por ejemplo, revelando que un mercado estaba infiltrado) pueden tener efectos más duraderos que un cierre." },
+          {
+            type: 'interactive',
+            title: 'Funciones dentro del ecosistema (visión criminológica)',
+            items: [
+              { term: 'Desarrolladores', definition: 'Crean las herramientas maliciosas. Suelen ser pocos y especializados.' },
+              { term: 'Operadores o afiliados', definition: 'Usan esas herramientas contra las víctimas, a menudo a cambio de un porcentaje de lo obtenido.' },
+              { term: 'Intermediarios', definition: 'Conectan a las partes y administran la confianza entre ellas.' },
+              { term: 'Mulas y lavado', definition: 'Mueven y "enfrían" el dinero. Muchas mulas son personas reclutadas con engaños, que también terminan siendo víctimas.' },
+              { term: 'Reclutadores', definition: 'Atraen a jóvenes o personas en situación vulnerable con promesas de dinero fácil.' },
+            ]
+          },
+          {
+            type: 'quiz',
+            quizData: {
+              question: "Desde la criminología, ¿por qué es útil ver el cibercrimen como una economía de funciones especializadas?",
+              options: [
+                "Porque muestra que es imposible de combatir.",
+                "Porque cada función es un punto de intervención: afectar a los intermediarios, el lavado o el reclutamiento puede debilitar toda la cadena.",
+                "Porque así se puede calcular el salario de los delincuentes."
+              ],
+              correctOptionIndex: 1,
+              feedback: {
+                correct: "Correcto: entender la división del trabajo ayuda a elegir dónde intervenir con mayor impacto.",
+                incorrect: "La utilidad está en identificar puntos de intervención que debiliten toda la cadena."
+              }
+            }
+          },
+        ]
+      },
+      {
+        id: 'cra_methods',
+        title: "3. 🚩 Medir el Cibercrimen: Datos y Cifra Negra",
+        content: [
+          { type: 'text', icon: 'DocumentTextIcon', text: "Las denuncias muestran solo una parte del fenómeno: la cifra negra es todo lo que ocurre y nunca se registra. Por eso la cibercriminología combina fuentes: registros oficiales, encuestas de victimización, datos de empresas y estudios cualitativos." },
+          { type: 'text', icon: 'LockIcon', text: "Investigar personas exige ética: consentimiento informado, protección de identidades, no engañar sin aprobación de un comité de ética y cuidado al estudiar comunidades en línea." },
+          {
+            type: 'challenge',
+            title: 'Interprete los datos de una ciudad',
+            brief: "Datos ficticios de denuncias y de una encuesta de victimización en una ciudad. Interprételos.",
+            artifacts: [
+              {
+                name: 'datos_ciudad.txt',
+                content: `DENUNCIAS POR DELITOS INFORMÁTICOS
+                       2025     2026
+Fraude en línea        2.000    2.600
+Suplantación           1.000    1.100
+Sextorsión               100      100
+
+ENCUESTA DE VICTIMIZACIÓN 2026 (muestra representativa)
+Personas que dicen haber sido víctimas de fraude en línea en el último año: 20.000
+De ellas, cuántas denunciaron: 13 %`,
+              },
+            ],
+            questions: [
+              { prompt: '¿En qué porcentaje aumentaron las denuncias de fraude en línea entre 2025 y 2026? (número entero)', answers: ['30', '30%'], explanation: 'De 2.000 a 2.600: un aumento del 30 %. Ojo: más denuncias puede significar más delitos o más confianza para denunciar.' },
+              { prompt: 'Según la encuesta, ¿qué porcentaje de víctimas de fraude NO denunció? (número entero)', answers: ['87', '87%'], explanation: 'Si denunció el 13 %, no denunció el 87 %: esa es la cifra negra.' },
+              { prompt: 'Las denuncias de sextorsión no cambiaron. ¿Prueba eso que el delito no creció? (sí/no)', answers: ['no'], explanation: 'No: la sextorsión tiene una cifra negra muy alta por vergüenza y miedo. Las denuncias estables no prueban nada sobre la incidencia real.' },
+            ],
+          },
+        ]
+      },
+      {
+        id: 'cra_pathways',
+        title: "4. Trayectorias e Intervención Temprana",
+        content: [
+          { type: 'text', icon: 'UserSearchIcon', text: "Muchas personas no llegan al cibercrimen de golpe: los estudios describen trayectorias graduales, a veces desde comunidades de videojuegos o foros, donde la curiosidad técnica, el reconocimiento entre pares y el dinero fácil empujan poco a poco hacia conductas ilegales." },
+          { type: 'text', icon: 'HappyUsersIcon', text: "Por eso existen programas de intervención temprana que redirigen a jóvenes con talento técnico hacia caminos legales: formación, competencias de ciberseguridad y empleo. Un ejemplo conocido es el programa Cyber Choices de la Agencia Nacional contra el Crimen del Reino Unido." },
+          {
+            type: 'scenario',
+            title: 'Caso 1: el joven con talento',
+            intro: "Un joven ficticio de 16 años fue identificado usando herramientas para tumbar los servidores de juego de otros jugadores. No tiene antecedentes. Usted asesora la respuesta. Necesita 40 de 60 puntos.",
+            start: 'j1',
+            maxPoints: 60,
+            passPoints: 40,
+            steps: {
+              j1: {
+                text: "¿Qué enfoque recomienda como punto de partida?",
+                choices: [
+                  { text: "Una intervención que le muestre las consecuencias legales y el daño causado, junto con caminos legales para su talento técnico, con participación de su familia.", next: 'j2', points: 20, feedback: "Correcto: intervenir temprano y redirigir el talento reduce la probabilidad de escalar." },
+                  { text: "La sanción más dura posible para dar ejemplo.", next: 'j2', points: 0, feedback: "Con un joven sin antecedentes, la sanción aislada puede empujarlo más hacia esas comunidades." },
+                ]
+              },
+              j2: {
+                text: "¿Qué factor de su trayectoria conviene abordar?",
+                choices: [
+                  { text: "El reconocimiento que obtenía de su grupo: ofrecerle espacios legales donde ese talento también se reconozca, como competencias de ciberseguridad.", next: 'j3', points: 20, feedback: "Bien: se reemplaza la recompensa social que lo motivaba." },
+                  { text: "Prohibirle usar computadores para siempre.", next: 'j3', points: -10, feedback: "Poco realista y contraproducente: cierra el camino legal de su talento." },
+                ]
+              },
+              j3: {
+                text: "¿Cómo sabría si la intervención funcionó?",
+                choices: [
+                  { text: "Con seguimiento en el tiempo: si no reincide y si participa en actividades legales relacionadas con su interés.", next: 'fin', points: 20, feedback: "Correcto: una política se evalúa por sus resultados, no por sus intenciones." },
+                  { text: "Si él dice que aprendió la lección.", next: 'fin', points: 0, feedback: "La declaración no es un indicador confiable de resultado." },
+                ]
+              },
+              fin: { text: "Fin del caso. Revise su puntaje y la retroalimentación." },
+            }
+          },
+        ]
+      },
+      {
+        id: 'cra_policy',
+        title: "5. Prevención Basada en Evidencia y Desplazamiento",
+        content: [
+          { type: 'text', icon: 'ShieldCheckIcon', text: "Una campaña de prevención no se evalúa por cuántas personas la vieron, sino por si cambió conductas o redujo victimización. Los mensajes que solo asustan suelen funcionar peor que los que dicen exactamente qué hacer (por ejemplo: \"tu banco nunca te pedirá un código por teléfono: cuelga y llama tú\")." },
+          { type: 'text', icon: 'ServerIcon', text: "Cuando se bloquea un delito, puede desplazarse: a otro momento, a otro lugar o plataforma, a otra táctica, a otro objetivo o a otro tipo de delito. Pero la investigación también muestra lo contrario, la difusión de beneficios: la protección de un objetivo a veces reduce el delito en objetivos cercanos." },
+          {
+            type: 'memory',
+            title: 'Tipos de desplazamiento',
+            pairs: [
+              { term: 'Desplazamiento táctico', definition: 'Del SMS falso a la llamada falsa.' },
+              { term: 'Desplazamiento de objetivo', definition: 'Del banco grande protegido a la cooperativa pequeña.' },
+              { term: 'Desplazamiento de plataforma', definition: 'Del foro cerrado a una aplicación de mensajería.' },
+              { term: 'Difusión de beneficios', definition: 'Proteger un objetivo reduce el delito también en otros cercanos.' },
+            ]
+          },
+          {
+            type: 'quiz',
+            quizData: {
+              question: "Tras una campaña contra el fraude por SMS, bajan esos casos pero suben los fraudes por llamada telefónica. ¿Cómo se interpreta?",
+              options: [
+                "La campaña fracasó por completo.",
+                "Hubo desplazamiento táctico: hay que extender la prevención a la nueva táctica y medir el efecto neto.",
+                "Es una coincidencia sin relación."
+              ],
+              correctOptionIndex: 1,
+              feedback: {
+                correct: "Correcto: el desplazamiento es esperable; se mide el efecto neto y se adapta la prevención.",
+                incorrect: "Es un desplazamiento táctico: se mide el efecto total y se adapta la estrategia."
+              }
+            }
+          },
+        ]
+      },
+      {
+        id: 'cra_ethics',
+        title: "6. Ética y Derechos en la Respuesta al Cibercrimen",
+        content: [
+          { type: 'text', icon: 'LockIcon', text: "Responder al cibercrimen implica tensiones: vigilancia frente a privacidad, prevención frente a estigmatización, eficacia frente a debido proceso. La criminología crítica recuerda que las políticas también pueden causar daño, por ejemplo cuando estigmatizan a grupos enteros o recogen más datos de los necesarios." },
+          {
+            type: 'scenario',
+            title: 'Caso 2: la propuesta de monitoreo',
+            intro: "Una entidad ficticia propone monitorear todos los chats de sus usuarios jóvenes para detectar sextorsión. Usted debe emitir un concepto. Necesita 40 de 60 puntos.",
+            start: 'e1',
+            maxPoints: 60,
+            passPoints: 40,
+            steps: {
+              e1: {
+                text: "¿Qué evalúa primero?",
+                choices: [
+                  { text: "Si la medida es necesaria y proporcional: si hay alternativas menos invasivas, qué datos se recogerían y con qué base legal.", next: 'e2', points: 20, feedback: "Correcto: necesidad y proporcionalidad son el punto de partida." },
+                  { text: "Solo si la tecnología funciona.", next: 'e2', points: 0, feedback: "La eficacia técnica no basta: también deben respetarse los derechos." },
+                ]
+              },
+              e2: {
+                text: "¿Qué alternativa menos invasiva propone?",
+                choices: [
+                  { text: "Educación a jóvenes y familias, canales de reporte fáciles y confidenciales, y herramientas que el propio usuario controle para bloquear y reportar.", next: 'e3', points: 20, feedback: "Bien: protege sin vigilancia masiva." },
+                  { text: "Ninguna: hay que leer todo.", next: 'e3', points: -10, feedback: "La vigilancia masiva sin necesidad demostrada vulnera la privacidad (Ley 1581 y derechos fundamentales)." },
+                ]
+              },
+              e3: {
+                text: "¿Qué garantía exige si se adopta alguna medida técnica?",
+                choices: [
+                  { text: "Minimizar los datos, limitar quién accede y por cuánto tiempo, informar a los usuarios y evaluar periódicamente si la medida sigue siendo necesaria.", next: 'fin', points: 20, feedback: "Excelente: garantías proporcionales y revisión." },
+                  { text: "Ninguna: si es por seguridad, todo vale.", next: 'fin', points: -10, feedback: "La seguridad no anula los derechos; las garantías son obligatorias." },
+                ]
+              },
+              fin: { text: "Fin del caso. Revise su puntaje y la retroalimentación." },
+            }
+          },
+        ]
+      },
+      {
+        id: 'cra_capstone',
+        title: "7. 🧩 Caso Integrador: el Informe Criminológico",
+        content: [
+          { type: 'text', icon: 'DocumentTextIcon', text: "Caso final: la alcaldía de una ciudad ficticia le pide un informe sobre el aumento de fraudes contra adultos mayores y una propuesta de prevención. Integre teoría, datos, victimología, prevención y ética." },
+          {
+            type: 'scenario',
+            title: 'Caso integrador: fraudes contra adultos mayores',
+            intro: "Debe entregar un diagnóstico y una propuesta a la alcaldía. Necesita 80 de 100 puntos.",
+            start: 'i1',
+            maxPoints: 100,
+            passPoints: 80,
+            steps: {
+              i1: {
+                text: "¿Con qué datos empieza el diagnóstico?",
+                choices: [
+                  { text: "Denuncias, más una encuesta de victimización o datos de entidades financieras, porque las denuncias subestiman el fenómeno.", next: 'i2', points: 20, feedback: "Correcto: combinar fuentes reduce el sesgo de la cifra negra." },
+                  { text: "Solo las denuncias oficiales.", next: 'i2', points: 0, feedback: "Subestimaría el fenómeno, sobre todo en una población que denuncia poco." },
+                ]
+              },
+              i2: {
+                text: "¿Qué teoría usa para estructurar el análisis?",
+                choices: [
+                  { text: "Actividades rutinarias: objetivo adecuado (ahorros, menor familiaridad digital), delincuentes motivados y falta de guardianes (alertas, familia, conocimiento).", next: 'i3', points: 20, feedback: "Bien: orienta directamente a dónde intervenir." },
+                  { text: "Ninguna: basta con describir los casos.", next: 'i3', points: 0, feedback: "Sin teoría, el informe describe pero no explica ni orienta." },
+                ]
+              },
+              i3: {
+                text: "¿Cómo se presenta a las víctimas en el informe?",
+                choices: [
+                  { text: "Sin culpabilizarlas: como personas a las que les faltaron guardianes, con propuestas de apoyo y de canales de denuncia accesibles.", next: 'i4', points: 20, feedback: "Correcto: evita la revictimización y fomenta la denuncia." },
+                  { text: "Como personas ingenuas que no se cuidan.", next: 'i4', points: -10, feedback: "Culpabilizar reduce la denuncia y la confianza." },
+                ]
+              },
+              i4: {
+                text: "¿Qué propuesta de prevención prioriza?",
+                choices: [
+                  { text: "Alertas y límites en las entidades financieras, mensajes concretos para adultos mayores y sus familias, y una línea de orientación, con indicadores para evaluar el efecto.", next: 'i5', points: 20, feedback: "Excelente: refuerza guardianes, da instrucciones claras y es medible." },
+                  { text: "Una campaña con mensajes de miedo en televisión.", next: 'i5', points: 0, feedback: "Los mensajes que solo asustan suelen cambiar poco las conductas." },
+                ]
+              },
+              i5: {
+                text: "¿Qué advierte sobre los posibles efectos?",
+                choices: [
+                  { text: "Que puede haber desplazamiento hacia otras tácticas o víctimas, por lo que se medirá el efecto neto y se ajustará la estrategia.", next: 'fin', points: 20, feedback: "Correcto: una propuesta madura anticipa el desplazamiento." },
+                  { text: "Que el problema desaparecerá por completo.", next: 'fin', points: 0, feedback: "Prometer eliminar el fenómeno no es realista." },
+                ]
+              },
+              fin: { text: "Fin del caso integrador. Si aprobó, está listo para el examen final." },
+            }
+          },
+        ]
+      },
+      {
+        id: 'cra_exam',
+        title: "8. 📝 Examen del Nivel Avanzado",
+        content: [
+          { type: 'text', icon: 'CheckCircleIcon', text: "Examen final de la ruta Analista en Cibercriminología: 12 preguntas al azar de un banco de 16, con 80% para aprobar." },
+          {
+            type: 'exam',
+            title: 'Examen: Analista en Cibercriminología · Avanzado',
+            description: 'Evalúa economía del cibercrimen, medición y cifra negra, trayectorias, prevención basada en evidencia, desplazamiento y ética.',
+            passPercent: 80,
+            questionsPerAttempt: 12,
+            questions: [
+              { question: '¿Por qué es útil ver el cibercrimen como una economía de funciones especializadas?', options: [{ id: 'w1a', text: 'Porque cada función es un punto de intervención.', isCorrect: true, score: 10 }, { id: 'w1b', text: 'Porque lo hace imposible de combatir.', isCorrect: false, score: 0 }, { id: 'w1c', text: 'No es útil.', isCorrect: false, score: 0 }], feedback: 'Permite elegir dónde intervenir.' },
+              { question: 'En entornos delictivos en línea, ¿qué sostiene la confianza entre las partes?', options: [{ id: 'w2a', text: 'La reputación y los intermediarios.', isCorrect: true, score: 10 }, { id: 'w2b', text: 'Los contratos y tribunales.', isCorrect: false, score: 0 }, { id: 'w2c', text: 'Nada.', isCorrect: false, score: 0 }], feedback: 'Por eso sembrar desconfianza los debilita.' },
+              { question: '¿Qué es la cifra negra?', options: [{ id: 'w3a', text: 'Los delitos que ocurren pero nunca se registran.', isCorrect: true, score: 10 }, { id: 'w3b', text: 'El dinero robado.', isCorrect: false, score: 0 }, { id: 'w3c', text: 'Los delitos resueltos.', isCorrect: false, score: 0 }], feedback: 'Las denuncias son solo una parte.' },
+              { question: 'Si el 13 % de las víctimas denuncia, ¿qué porcentaje queda en la cifra negra?', options: [{ id: 'w4a', text: '87 %.', isCorrect: true, score: 10 }, { id: 'w4b', text: '13 %.', isCorrect: false, score: 0 }, { id: 'w4c', text: '50 %.', isCorrect: false, score: 0 }], feedback: '100 − 13 = 87.' },
+              { question: 'Las denuncias de un delito aumentan un 30 %. ¿Qué se puede concluir con certeza?', options: [{ id: 'w5a', text: 'Que hay más denuncias; puede deberse a más delitos o a más confianza para denunciar.', isCorrect: true, score: 10 }, { id: 'w5b', text: 'Que el delito aumentó exactamente un 30 %.', isCorrect: false, score: 0 }, { id: 'w5c', text: 'Que la policía trabaja peor.', isCorrect: false, score: 0 }], feedback: 'Las denuncias reflejan también la disposición a denunciar.' },
+              { question: '¿Qué fuente complementa las denuncias para medir la victimización?', options: [{ id: 'w6a', text: 'Las encuestas de victimización.', isCorrect: true, score: 10 }, { id: 'w6b', text: 'Las redes sociales del delincuente.', isCorrect: false, score: 0 }, { id: 'w6c', text: 'Ninguna.', isCorrect: false, score: 0 }], feedback: 'Capturan casos no denunciados.' },
+              { question: '¿Qué exige la ética al investigar a personas en comunidades en línea?', options: [{ id: 'w7a', text: 'Consentimiento, protección de identidades y aprobación de un comité de ética si hay engaño.', isCorrect: true, score: 10 }, { id: 'w7b', text: 'Nada, porque es público.', isCorrect: false, score: 0 }, { id: 'w7c', text: 'Publicar los nombres.', isCorrect: false, score: 0 }], feedback: 'Los participantes tienen derechos.' },
+              { question: '¿Qué buscan los programas de intervención temprana con jóvenes con talento técnico?', options: [{ id: 'w8a', text: 'Redirigir ese talento hacia caminos legales.', isCorrect: true, score: 10 }, { id: 'w8b', text: 'Prohibirles usar tecnología.', isCorrect: false, score: 0 }, { id: 'w8c', text: 'Sancionarlos siempre al máximo.', isCorrect: false, score: 0 }], feedback: 'Ejemplo: Cyber Choices en el Reino Unido.' },
+              { question: '¿Cómo se evalúa una política de prevención?', options: [{ id: 'w9a', text: 'Por sus resultados: cambios de conducta o reducción de la victimización.', isCorrect: true, score: 10 }, { id: 'w9b', text: 'Por cuántas personas vieron la campaña.', isCorrect: false, score: 0 }, { id: 'w9c', text: 'Por su presupuesto.', isCorrect: false, score: 0 }], feedback: 'Alcance no es impacto.' },
+              { question: '¿Qué tipo de mensaje de prevención suele funcionar mejor?', options: [{ id: 'w10a', text: 'Uno que dice exactamente qué hacer.', isCorrect: true, score: 10 }, { id: 'w10b', text: 'Uno que solo genera miedo.', isCorrect: false, score: 0 }, { id: 'w10c', text: 'Uno muy técnico.', isCorrect: false, score: 0 }], feedback: 'Por ejemplo: "cuelga y llama tú al banco".' },
+              { question: 'Tras bloquear el fraude por SMS, sube el fraude por llamada. ¿Qué tipo de desplazamiento es?', options: [{ id: 'w11a', text: 'Táctico.', isCorrect: true, score: 10 }, { id: 'w11b', text: 'De objetivo.', isCorrect: false, score: 0 }, { id: 'w11c', text: 'Temporal.', isCorrect: false, score: 0 }], feedback: 'Cambió la táctica, no el objetivo.' },
+              { question: '¿Qué es la difusión de beneficios?', options: [{ id: 'w12a', text: 'Que proteger un objetivo reduce el delito también en otros cercanos.', isCorrect: true, score: 10 }, { id: 'w12b', text: 'Que el delito se mueve a otro lugar.', isCorrect: false, score: 0 }, { id: 'w12c', text: 'Que los delincuentes comparten ganancias.', isCorrect: false, score: 0 }], feedback: 'Es lo opuesto al desplazamiento.' },
+              { question: 'Ante una propuesta de vigilancia masiva para prevenir un delito, ¿qué se evalúa primero?', options: [{ id: 'w13a', text: 'Necesidad y proporcionalidad, y si hay alternativas menos invasivas.', isCorrect: true, score: 10 }, { id: 'w13b', text: 'Solo si la tecnología funciona.', isCorrect: false, score: 0 }, { id: 'w13c', text: 'Nada: la seguridad justifica todo.', isCorrect: false, score: 0 }], feedback: 'La seguridad no anula los derechos.' },
+              { question: '¿Qué riesgo tiene culpabilizar a las víctimas en un informe?', options: [{ id: 'w14a', text: 'Reduce la denuncia y revictimiza.', isCorrect: true, score: 10 }, { id: 'w14b', text: 'Ninguno.', isCorrect: false, score: 0 }, { id: 'w14c', text: 'Aumenta la denuncia.', isCorrect: false, score: 0 }], feedback: 'La cifra negra crece.' },
+              { question: 'En un informe criminológico, ¿para qué sirve una teoría?', options: [{ id: 'w15a', text: 'Para explicar el fenómeno y orientar dónde intervenir.', isCorrect: true, score: 10 }, { id: 'w15b', text: 'Para alargar el texto.', isCorrect: false, score: 0 }, { id: 'w15c', text: 'No sirve.', isCorrect: false, score: 0 }], feedback: 'Sin teoría, solo se describe.' },
+              { question: 'Una propuesta de prevención madura debe advertir…', options: [{ id: 'w16a', text: 'El posible desplazamiento, y cómo se medirá el efecto neto.', isCorrect: true, score: 10 }, { id: 'w16b', text: 'Que el delito desaparecerá.', isCorrect: false, score: 0 }, { id: 'w16c', text: 'Nada.', isCorrect: false, score: 0 }], feedback: 'Anticipar efectos es parte del diseño.' },
+            ],
+          },
+        ]
+      },
+    ]
   }
 };
 
