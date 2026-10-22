@@ -18,6 +18,8 @@ const BADGE_COLORS: Record<string, [string, string]> = {
   cti_basico: ['#8b5cf6', '#2e1065'],
   cybercrime_intermedio: ['#b91c1c', '#431407'],
   cybercrime_avanzado: ['#7f1d1d', '#0c0a09'],
+  forensic_intermedio: ['#15803d', '#052e16'],
+  forensic_avanzado: ['#14532d', '#0c0a09'],
   [ROUTE_CERTIFICATE_ID]: ['#eab308', '#713f12'],
 };
 
@@ -58,6 +60,8 @@ const BADGE_TITLES: Record<string, string> = {
   cti_basico: 'Cyber Threat Intelligence',
   cybercrime_intermedio: 'Investigador Cibercriminal',
   cybercrime_avanzado: 'Investigador Cibercriminal',
+  forensic_intermedio: 'Perito Forense Digital',
+  forensic_avanzado: 'Perito Forense Digital',
   [ROUTE_CERTIFICATE_ID]: 'Ruta de Ciberseguridad',
 };
 

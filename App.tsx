@@ -524,6 +524,9 @@ const LearningPathSelector: React.FC<LearningPathSelectorProps> = ({
   levelPaths = {},
   onOpenMap,
 }) => {
+  // Rutas del mapa con niveles publicados que este usuario puede cursar, p. ej. "Investigador Cibercriminal y Perito Forense Digital".
+  const mapTracks = EXPERTISE_TRACKS.filter(t => t.levels.slice(1).some(l => l && l in levelPaths)).map(t => t.title);
+  const mapTracksLabel = mapTracks.length > 1 ? `${mapTracks.slice(0, -1).join(', ')} y ${mapTracks[mapTracks.length - 1]}` : mapTracks[0] ?? '';
   const [stats, setStats] = useState<UserStats>(emptyStats);
   const [userProgress, setUserProgress] = useState<UserProgressMap>({});
   const [isStatsLoading, setIsStatsLoading] = useState(true);
@@ -659,7 +662,7 @@ const LearningPathSelector: React.FC<LearningPathSelectorProps> = ({
           >
             <div>
               <p className="text-xs font-bold uppercase tracking-widest text-sky-300 mb-1">✨ Nuevo · Mapa de expertise</p>
-              <p className="text-lg font-bold text-white">Avanza de Básico a Avanzado y conviértete en Investigador Cibercriminal</p>
+              <p className="text-lg font-bold text-white">Avanza de Básico a Avanzado: ya disponible {mapTracksLabel}</p>
               <p className="text-sm text-slate-300">Laboratorios prácticos, retos tipo CTF y exámenes por nivel. Cada nivel aprobado te da un badge.</p>
             </div>
             <span className="shrink-0 bg-sky-600 text-white font-bold text-sm rounded-xl px-4 py-2.5">🗺️ Ver mi mapa →</span>

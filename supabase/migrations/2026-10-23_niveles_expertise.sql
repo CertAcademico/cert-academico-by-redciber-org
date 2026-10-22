@@ -14,7 +14,8 @@ as $$
     "cybersecurity": 10, "cybercrime": 10, "cybercriminology": 5, "quantum_computing": 6,
     "forensic_auditing": 6, "artificial_intelligence": 9, "ia_ofensiva_insider": 6, "cert_csirt": 8,
     "auditoria_ciberriesgo": 11, "cti_basico": 11,
-    "cybercrime_intermedio": 7, "cybercrime_avanzado": 8
+    "cybercrime_intermedio": 7, "cybercrime_avanzado": 8,
+    "forensic_intermedio": 7, "forensic_avanzado": 8
   }'::jsonb;
 $$;
 
@@ -26,7 +27,9 @@ immutable
 as $$
   select '{
     "cybercrime_intermedio": { "exam_module": "cci_exam", "min_ratio": 0.7 },
-    "cybercrime_avanzado":   { "exam_module": "cca_exam", "min_ratio": 0.8 }
+    "cybercrime_avanzado":   { "exam_module": "cca_exam", "min_ratio": 0.8 },
+    "forensic_intermedio":   { "exam_module": "fdi_exam", "min_ratio": 0.7 },
+    "forensic_avanzado":     { "exam_module": "fda_exam", "min_ratio": 0.8 }
   }'::jsonb;
 $$;
 
@@ -38,7 +41,9 @@ immutable
 as $$
   select '{
     "cybercrime_intermedio": "cybercrime",
-    "cybercrime_avanzado": "cybercrime_intermedio"
+    "cybercrime_avanzado": "cybercrime_intermedio",
+    "forensic_intermedio": "forensic_auditing",
+    "forensic_avanzado": "forensic_intermedio"
   }'::jsonb;
 $$;
 

@@ -3212,6 +3212,521 @@ Etiquetas conocidas:
         ]
       },
     ]
+  },
+  forensic_intermedio: {
+    title: "Perito Forense Digital · Nivel Intermedio",
+    description: "Manos a la evidencia: adquisición y preservación, cadena de custodia, sistemas de archivos y firmas, artefactos de Windows y dispositivos móviles. Laboratorios prácticos y examen con nota mínima del 70%.",
+    lastUpdated: "Octubre 2026",
+    modules: [
+      {
+        id: 'fdi_intro',
+        title: "1. 🗺️ Bienvenida al Nivel Intermedio",
+        content: [
+          { type: 'text', icon: 'UserSearchIcon', text: "En el Nivel Básico conoció qué es la forensia digital y por qué importa la cadena de custodia. Ahora trabajará con evidencia: formularios de custodia, listados de archivos, registros de Windows y artefactos que revelan qué pasó en un equipo." },
+          { type: 'text', icon: 'AlarmIcon', text: "Este nivel incluye laboratorios de decisión, retos tipo CTF y un examen que se aprueba con 70%. Todos los casos y datos son ficticios." },
+          {
+            type: 'interactive',
+            title: 'Vocabulario del perito',
+            items: [
+              { term: 'Imagen forense', definition: 'Copia bit a bit de un medio de almacenamiento, incluido el espacio libre y lo borrado. Se analiza la copia, nunca el original.' },
+              { term: 'Bloqueador de escritura', definition: 'Dispositivo o software que permite leer un disco sin modificarlo en absoluto.' },
+              { term: 'Hash', definition: 'Huella matemática del contenido (por ejemplo SHA-256). Si cambia un solo bit, cambia el hash: así se demuestra la integridad.' },
+              { term: 'Artefacto', definition: 'Rastro que deja el sistema o el usuario: un acceso directo, una entrada de registro, un archivo de prefetch, un historial.' },
+              { term: 'Línea de tiempo', definition: 'Ordenar cronológicamente los eventos de distintas fuentes para reconstruir lo ocurrido.' },
+            ]
+          },
+        ]
+      },
+      {
+        id: 'fdi_acquisition',
+        title: "2. Adquisición y Preservación",
+        content: [
+          { type: 'text', icon: 'LockIcon', text: "Se recolecta primero lo más volátil (RFC 3227): memoria RAM, conexiones de red y procesos se pierden al apagar. El disco se adquiere después, con bloqueador de escritura, generando una imagen y calculando su hash en el mismo momento." },
+          { type: 'text', icon: 'AlarmIcon', text: "Atención al cifrado: si un equipo encendido tiene el disco cifrado (por ejemplo con BitLocker), apagarlo puede dejar la información inaccesible. En ese caso se evalúa capturar la memoria o hacer una adquisición en vivo antes de apagar." },
+          {
+            type: 'scenario',
+            title: 'Caso 1: la diligencia en la oficina',
+            intro: "Acompaña una diligencia autorizada en la oficina de un empleado ficticio sospechoso de filtrar información. El portátil está encendido y desbloqueado. Necesita 60 de 80 puntos.",
+            start: 'd1',
+            maxPoints: 80,
+            passPoints: 60,
+            steps: {
+              d1: {
+                text: "Lo primero que observa es el portátil encendido, con una sesión abierta. ¿Qué hace?",
+                choices: [
+                  { text: "Fotografío la pantalla y el entorno, documento la hora y evito tocar el teclado mientras evalúo qué recolectar.", next: 'd2', points: 20, feedback: "Correcto: documentar el estado inicial antes de intervenir es la base de todo." },
+                  { text: "Lo apago de inmediato para que nadie lo manipule.", next: 'd2', points: -10, feedback: "Riesgoso: perdería la RAM y, si el disco está cifrado, quizá el acceso a todo." },
+                  { text: "Reviso las carpetas del usuario para ver si hay algo interesante.", next: 'd2', points: -10, feedback: "Navegar modifica fechas de acceso y contamina la evidencia." },
+                ]
+              },
+              d2: {
+                text: "Nota un ícono que indica que el disco está cifrado con BitLocker. ¿Cuál es la prioridad?",
+                choices: [
+                  { text: "Capturar la memoria RAM con una herramienta forense desde un medio externo y, si es posible, una adquisición lógica en vivo antes de apagar.", next: 'd3', points: 20, feedback: "Exacto: con el equipo encendido, el contenido es accesible; al apagar podría quedar cifrado." },
+                  { text: "Apagar y llevar el disco al laboratorio: allá se descifra.", next: 'd3', points: -10, feedback: "Sin la clave de recuperación, el disco cifrado puede ser imposible de analizar." },
+                ]
+              },
+              d3: {
+                text: "Terminada la captura en vivo, ¿cómo procede con el disco?",
+                choices: [
+                  { text: "Apago, retiro el disco, lo conecto con bloqueador de escritura, genero la imagen y calculo su SHA-256, registrándolo todo en el formato de cadena de custodia.", next: 'd4', points: 20, feedback: "Correcto: imagen, hash y documentación en el mismo acto." },
+                  { text: "Copio los archivos del usuario a una memoria USB, arrastrándolos con el explorador.", next: 'd4', points: 0, feedback: "Una copia lógica pierde lo borrado y los metadatos, y no deja un hash del original." },
+                ]
+              },
+              d4: {
+                text: "¿Cómo embala y entrega la evidencia?",
+                choices: [
+                  { text: "En bolsa antiestática sellada, rotulada, con el formato de cadena de custodia firmado por quien entrega y quien recibe, con fecha y hora.", next: 'fin', points: 20, feedback: "Bien: cada traspaso queda registrado." },
+                  { text: "En mi maletín personal; lo registro al llegar a la oficina.", next: 'fin', points: -10, feedback: "Un tramo sin registro rompe la cadena de custodia." },
+                ]
+              },
+              fin: { text: "Fin de la diligencia. Revise su puntaje y la retroalimentación." },
+            }
+          },
+        ]
+      },
+      {
+        id: 'fdi_custody',
+        title: "3. 🚩 Laboratorio: Integridad y Cadena de Custodia",
+        content: [
+          { type: 'text', icon: 'DocumentTextIcon', text: "El formato de cadena de custodia registra cada persona que tuvo la evidencia, cuándo y para qué. Junto con el hash, es lo que permite afirmar en juicio que la evidencia analizada es la misma que se recolectó." },
+          {
+            type: 'challenge',
+            title: 'Revise el expediente EV-2026-114',
+            brief: "Usted debe revisar la cadena de custodia y la verificación de hashes de una evidencia ficticia antes de emitir su informe. Encuentre los problemas.",
+            artifacts: [
+              {
+                name: 'cadena_custodia.txt',
+                content: `EVIDENCIA: EV-2026-114 · Disco SSD 512 GB · Serie S4EVNX0R112233
+#  fecha/hora          entrega              recibe               motivo
+1  2026-10-05 10:40    Téc. J. Morales      Téc. J. Morales      Recolección en sitio
+2  2026-10-05 15:10    Téc. J. Morales      Custodia A. Pérez    Ingreso a almacén
+3  2026-10-08 09:00    Custodia A. Pérez    Perito L. Gómez      Análisis
+4  2026-10-12 17:30    Perito L. Gómez      Custodia A. Pérez    Devolución a almacén
+5  2026-10-14 08:15    Perito R. Díaz       Custodia A. Pérez    Devolución a almacén`,
+              },
+              {
+                name: 'verificacion_hash.txt',
+                content: `Imagen: EV-2026-114.E01
+SHA-256 registrado al adquirir (2026-10-05): 9f2c...a71e
+SHA-256 verificado (2026-10-08, L. Gómez):   9f2c...a71e   COINCIDE
+SHA-256 verificado (2026-10-14, A. Pérez):   4b07...19cd   NO COINCIDE`,
+              },
+            ],
+            questions: [
+              { prompt: '¿Qué perito aparece devolviendo la evidencia sin haber registrado nunca que la recibió?', answers: ['R. Díaz', 'R Diaz', 'Díaz', 'Diaz', 'Perito R. Díaz'], hint: 'Compare quién recibe y quién entrega en cada fila.', explanation: 'R. Díaz entrega en la fila 5, pero ninguna fila registra que la haya recibido: hay un traspaso sin documentar entre el 12 y el 14 de octubre.' },
+              { prompt: '¿En qué fecha se detectó que el hash ya no coincide? (AAAA-MM-DD)', answers: ['2026-10-14'], explanation: 'El 14 de octubre el hash no coincide con el de adquisición: la imagen fue alterada o reemplazada.' },
+              { prompt: '¿Entre qué número de fila de la cadena y cuál otro está el tramo sin registro? (escriba "4-5")', answers: ['4-5', '4 - 5', '4 y 5'], explanation: 'Entre la devolución del 12 de octubre (fila 4) y la del 14 (fila 5) la evidencia salió del almacén sin registro. Ese tramo, sumado al hash distinto, compromete la evidencia.' },
+            ],
+          },
+        ]
+      },
+      {
+        id: 'fdi_filesystem',
+        title: "4. 🚩 Sistemas de Archivos, Metadatos y Firmas",
+        content: [
+          { type: 'text', icon: 'ServerIcon', text: "Un archivo borrado no desaparece de inmediato: el sistema marca su espacio como libre y el contenido permanece hasta que se sobrescribe. Por eso la imagen forense incluye el espacio libre." },
+          { type: 'text', icon: 'BugIcon', text: "La extensión de un archivo se cambia con un clic; su firma (los primeros bytes, o \"número mágico\") no. Algunas firmas: PDF empieza por 25 50 44 46 (\"%PDF\"), JPEG por FF D8 FF, PNG por 89 50 4E 47, ZIP y DOCX por 50 4B 03 04, y los ejecutables de Windows por 4D 5A (\"MZ\")." },
+          {
+            type: 'challenge',
+            title: 'Archivos que no son lo que dicen',
+            brief: "Del portátil del caso anterior se extrajo este listado con los primeros bytes de cada archivo. Encuentre las inconsistencias.",
+            artifacts: [
+              {
+                name: 'listado_archivos.txt',
+                content: `ruta                                         primeros bytes   modificado            estado
+C:\\Users\\cvargas\\Documents\\informe_q3.pdf      25 50 44 46      2026-09-30 16:02      activo
+C:\\Users\\cvargas\\Documents\\factura_0921.pdf    4D 5A 90 00      2026-10-02 23:47      activo
+C:\\Users\\cvargas\\Pictures\\vacaciones.jpg       50 4B 03 04      2026-10-03 00:12      activo
+C:\\Users\\cvargas\\Pictures\\perfil.png           89 50 4E 47      2026-08-11 09:20      activo
+C:\\Users\\cvargas\\Desktop\\clientes_2026.xlsx    50 4B 03 04      2026-10-03 00:05      BORRADO (recuperable)`,
+              },
+            ],
+            questions: [
+              { prompt: '¿Qué archivo con extensión .pdf es en realidad un ejecutable de Windows? (nombre del archivo)', answers: ['factura_0921.pdf'], hint: 'Busque la firma 4D 5A ("MZ").', explanation: 'factura_0921.pdf empieza por 4D 5A: es un ejecutable disfrazado de PDF, una técnica común para engañar al usuario.' },
+              { prompt: '¿Qué "imagen" es en realidad un archivo comprimido (ZIP)?', answers: ['vacaciones.jpg'], explanation: 'vacaciones.jpg tiene la firma 50 4B 03 04 (ZIP): puede ocultar documentos dentro de un archivo con nombre inocente.' },
+              { prompt: '¿Qué archivo borrado se puede recuperar porque su espacio no se ha sobrescrito?', answers: ['clientes_2026.xlsx'], explanation: 'clientes_2026.xlsx fue borrado poco antes de crear el ZIP disfrazado: un indicio de que la base de clientes pudo empaquetarse para sacarla.' },
+            ],
+          },
+        ]
+      },
+      {
+        id: 'fdi_windows',
+        title: "5. 🚩 Artefactos de Windows",
+        content: [
+          { type: 'text', icon: 'DocumentTextIcon', text: "Windows guarda rastros de lo que hace el usuario. Prefetch registra programas ejecutados y cuándo; los accesos directos (.lnk) y las Jump Lists recuerdan archivos abiertos, incluso desde memorias USB; y el registro guarda los dispositivos USB conectados (clave USBSTOR)." },
+          {
+            type: 'challenge',
+            title: '¿Salió la información en una memoria USB?',
+            brief: "Siga el rastro en el registro y en los accesos directos del portátil ficticio para determinar si la base de clientes se copió a una USB.",
+            artifacts: [
+              {
+                name: 'registro_USBSTOR.txt',
+                content: `HKLM\\SYSTEM\\CurrentControlSet\\Enum\\USBSTOR
+  Disk&Ven_Kingston&Prod_DataTraveler_3.0&Rev_PMAP
+    Serie: 60A44C4136A2F1B0&0
+    FriendlyName: Kingston DataTraveler 3.0 USB Device
+    Primera conexión: 2026-10-03 00:14:51
+    Última conexión:  2026-10-03 00:22:09
+MountedDevices:  \\DosDevices\\E:  →  Kingston DataTraveler (60A44C4136A2F1B0)`,
+              },
+              {
+                name: 'accesos_directos_lnk.txt',
+                content: `Archivo LNK                         Destino                          Volumen      Abierto
+vacaciones.lnk                      E:\\vacaciones.jpg                USB (E:)     2026-10-03 00:16:40
+clientes_2026.lnk                   C:\\Users\\cvargas\\Desktop\\...   Disco (C:)   2026-10-02 23:58:12`,
+              },
+              {
+                name: 'prefetch.txt',
+                content: `Programa              Ejecuciones   Última ejecución
+7Z.EXE-6A19B3C2.pf    1             2026-10-03 00:11:58
+EXPLORER.EXE-...pf    —             —`,
+              },
+            ],
+            questions: [
+              { prompt: '¿Cuál es el número de serie de la memoria USB conectada?', answers: ['60A44C4136A2F1B0', '60A44C4136A2F1B0&0'], explanation: 'El serial 60A44C4136A2F1B0 identifica la memoria Kingston: si se incauta, puede compararse con este registro.' },
+              { prompt: '¿Qué letra de unidad tuvo la USB?', answers: ['E', 'E:'], explanation: 'MountedDevices asocia E: a la Kingston; el acceso directo muestra vacaciones.jpg abierto desde E:.' },
+              { prompt: '¿Qué programa de compresión se ejecutó minutos antes de conectar la USB? (nombre del ejecutable)', answers: ['7z.exe', '7z', '7-zip'], explanation: '7z.exe se ejecutó a las 00:11, se conectó la USB a las 00:14 y vacaciones.jpg (un ZIP disfrazado) se abrió desde E: a las 00:16. La secuencia apunta a que la base se comprimió, se disfrazó y se copió.' },
+            ],
+          },
+        ]
+      },
+      {
+        id: 'fdi_mobile',
+        title: "6. Evidencia en Dispositivos Móviles",
+        content: [
+          { type: 'text', icon: 'AlarmIcon', text: "Un celular incautado debe aislarse de la red (modo avión o bolsa Faraday) para evitar borrados remotos o la llegada de datos nuevos. Su adquisición puede ser lógica (lo que expone el sistema), de sistema de archivos o física (copia completa, cuando el modelo lo permite)." },
+          { type: 'text', icon: 'UserSearchIcon', text: "Las fotos suelen tener metadatos EXIF: fecha, modelo del equipo y, a veces, coordenadas GPS. Las copias de seguridad de aplicaciones de mensajería y los servicios en la nube pueden contener información que ya no está en el teléfono." },
+          {
+            type: 'memory',
+            title: 'Asocie cada concepto móvil',
+            pairs: [
+              { term: 'Bolsa Faraday', definition: 'Aísla el teléfono de redes para evitar borrados remotos.' },
+              { term: 'Adquisición lógica', definition: 'Extrae lo que el sistema operativo expone: contactos, mensajes, fotos.' },
+              { term: 'Adquisición física', definition: 'Copia completa de la memoria, incluido lo borrado, cuando el modelo lo permite.' },
+              { term: 'EXIF', definition: 'Metadatos de una foto: fecha, equipo y a veces ubicación GPS.' },
+            ]
+          },
+          {
+            type: 'quiz',
+            quizData: {
+              question: "Llega un celular incautado y encendido. ¿Qué se hace primero?",
+              options: [
+                "Revisar los chats para ver si hay algo urgente.",
+                "Aislarlo de las redes (modo avión o bolsa Faraday) y documentar su estado, para evitar borrados remotos.",
+                "Reiniciarlo para que funcione más rápido durante el análisis."
+              ],
+              correctOptionIndex: 1,
+              feedback: {
+                correct: "Correcto: aislar evita borrados remotos y que lleguen datos nuevos que alteren la evidencia.",
+                incorrect: "No. Navegar o reiniciar altera la evidencia; lo primero es aislarlo de la red y documentar su estado."
+              }
+            }
+          },
+        ]
+      },
+      {
+        id: 'fdi_exam',
+        title: "7. 📝 Examen del Nivel Intermedio",
+        content: [
+          { type: 'text', icon: 'CheckCircleIcon', text: "El examen toma 10 preguntas al azar de un banco de 14 y se aprueba con 70%. Al aprobarlo obtendrá el badge de Perito Forense Digital · Nivel Intermedio y se desbloqueará el Nivel Avanzado." },
+          {
+            type: 'exam',
+            title: 'Examen: Perito Forense Digital · Intermedio',
+            description: 'Evalúa adquisición, cadena de custodia, sistemas de archivos y firmas, artefactos de Windows y móviles.',
+            passPercent: 70,
+            questionsPerAttempt: 10,
+            questions: [
+              { question: 'Según el orden de volatilidad, ¿qué se recolecta antes?', options: [{ id: 'f1a', text: 'La memoria RAM.', isCorrect: true, score: 10 }, { id: 'f1b', text: 'El disco duro.', isCorrect: false, score: 0 }, { id: 'f1c', text: 'Las copias de seguridad.', isCorrect: false, score: 0 }], feedback: 'La RAM se pierde al apagar.' },
+              { question: '¿Para qué sirve un bloqueador de escritura?', options: [{ id: 'f2a', text: 'Para leer un disco sin modificarlo.', isCorrect: true, score: 10 }, { id: 'f2b', text: 'Para borrar un disco de forma segura.', isCorrect: false, score: 0 }, { id: 'f2c', text: 'Para cifrar la evidencia.', isCorrect: false, score: 0 }], feedback: 'Garantiza que el original no cambie.' },
+              { question: 'Un portátil encendido tiene el disco cifrado. ¿Qué riesgo hay si se apaga?', options: [{ id: 'f3a', text: 'Que el contenido quede inaccesible sin la clave.', isCorrect: true, score: 10 }, { id: 'f3b', text: 'Ninguno: el cifrado se quita al apagar.', isCorrect: false, score: 0 }, { id: 'f3c', text: 'Que el disco se borre solo.', isCorrect: false, score: 0 }], feedback: 'Encendido, el contenido está descifrado y accesible.' },
+              { question: '¿Qué diferencia una imagen forense de copiar archivos con el explorador?', options: [{ id: 'f4a', text: 'La imagen copia bit a bit, incluido lo borrado y el espacio libre.', isCorrect: true, score: 10 }, { id: 'f4b', text: 'Ninguna: son iguales.', isCorrect: false, score: 0 }, { id: 'f4c', text: 'La imagen solo copia los documentos.', isCorrect: false, score: 0 }], feedback: 'La copia lógica pierde lo borrado y metadatos.' },
+              { question: 'En la cadena de custodia, una persona entrega la evidencia sin que conste que la recibió. ¿Qué significa?', options: [{ id: 'f5a', text: 'Hay un tramo sin documentar que compromete la evidencia.', isCorrect: true, score: 10 }, { id: 'f5b', text: 'Es un error menor sin consecuencias.', isCorrect: false, score: 0 }, { id: 'f5c', text: 'Que la evidencia está más segura.', isCorrect: false, score: 0 }], feedback: 'Cada traspaso debe quedar registrado.' },
+              { question: 'El hash de una imagen no coincide con el registrado al adquirirla. ¿Qué indica?', options: [{ id: 'f6a', text: 'Que la imagen fue alterada o no es la misma.', isCorrect: true, score: 10 }, { id: 'f6b', text: 'Que el hash caducó.', isCorrect: false, score: 0 }, { id: 'f6c', text: 'Que hay que usar otro algoritmo hasta que coincida.', isCorrect: false, score: 0 }], feedback: 'El hash solo cambia si cambian los datos.' },
+              { question: '¿Por qué se puede recuperar un archivo borrado?', options: [{ id: 'f7a', text: 'Porque su espacio se marca como libre pero el contenido sigue hasta que se sobrescribe.', isCorrect: true, score: 10 }, { id: 'f7b', text: 'Porque Windows nunca borra nada.', isCorrect: false, score: 0 }, { id: 'f7c', text: 'Porque la papelera guarda todo para siempre.', isCorrect: false, score: 0 }], feedback: 'Por eso importa adquirir cuanto antes.' },
+              { question: 'Un archivo "informe.pdf" empieza por los bytes 4D 5A. ¿Qué es?', options: [{ id: 'f8a', text: 'Un ejecutable de Windows disfrazado.', isCorrect: true, score: 10 }, { id: 'f8b', text: 'Un PDF normal.', isCorrect: false, score: 0 }, { id: 'f8c', text: 'Una imagen JPEG.', isCorrect: false, score: 0 }], feedback: 'MZ (4D 5A) es la firma de los ejecutables.' },
+              { question: '¿Qué firma tienen los archivos ZIP y los documentos DOCX/XLSX?', options: [{ id: 'f9a', text: '50 4B 03 04 ("PK").', isCorrect: true, score: 10 }, { id: 'f9b', text: 'FF D8 FF.', isCorrect: false, score: 0 }, { id: 'f9c', text: '25 50 44 46.', isCorrect: false, score: 0 }], feedback: 'Los documentos de Office modernos son contenedores ZIP.' },
+              { question: '¿Qué artefacto de Windows registra los programas ejecutados y su última ejecución?', options: [{ id: 'f10a', text: 'Prefetch.', isCorrect: true, score: 10 }, { id: 'f10b', text: 'La papelera de reciclaje.', isCorrect: false, score: 0 }, { id: 'f10c', text: 'El fondo de pantalla.', isCorrect: false, score: 0 }], feedback: 'Prefetch ayuda a demostrar ejecución de programas.' },
+              { question: '¿Dónde quedan registradas las memorias USB conectadas a un equipo Windows?', options: [{ id: 'f11a', text: 'En el registro, en la clave USBSTOR.', isCorrect: true, score: 10 }, { id: 'f11b', text: 'En el historial del navegador.', isCorrect: false, score: 0 }, { id: 'f11c', text: 'En ningún lado.', isCorrect: false, score: 0 }], feedback: 'USBSTOR guarda fabricante, modelo y número de serie.' },
+              { question: 'Un acceso directo (.lnk) apunta a un archivo en la unidad E:. ¿Qué puede demostrar?', options: [{ id: 'f12a', text: 'Que ese archivo se abrió desde un medio externo, aunque ya no esté conectado.', isCorrect: true, score: 10 }, { id: 'f12b', text: 'Nada: los accesos directos no guardan rutas.', isCorrect: false, score: 0 }, { id: 'f12c', text: 'Que el archivo fue borrado.', isCorrect: false, score: 0 }], feedback: 'Los LNK conservan la ruta y datos del volumen.' },
+              { question: '¿Qué se hace primero con un celular incautado encendido?', options: [{ id: 'f13a', text: 'Aislarlo de las redes y documentar su estado.', isCorrect: true, score: 10 }, { id: 'f13b', text: 'Revisar los chats.', isCorrect: false, score: 0 }, { id: 'f13c', text: 'Restablecerlo de fábrica.', isCorrect: false, score: 0 }], feedback: 'Evita borrados remotos y cambios.' },
+              { question: '¿Qué pueden revelar los metadatos EXIF de una foto?', options: [{ id: 'f14a', text: 'Fecha, modelo del equipo y, a veces, ubicación GPS.', isCorrect: true, score: 10 }, { id: 'f14b', text: 'La contraseña del teléfono.', isCorrect: false, score: 0 }, { id: 'f14c', text: 'Los mensajes de WhatsApp.', isCorrect: false, score: 0 }], feedback: 'EXIF puede ubicar una foto en tiempo y lugar.' },
+            ],
+          },
+        ]
+      },
+    ]
+  },
+  forensic_avanzado: {
+    title: "Perito Forense Digital · Nivel Avanzado",
+    description: "Análisis de memoria RAM, líneas de tiempo, técnicas antiforenses, evidencia en la nube y el dictamen pericial, con un caso integrador de fuga de información. Examen con nota mínima del 80%.",
+    lastUpdated: "Octubre 2026",
+    modules: [
+      {
+        id: 'fda_intro',
+        title: "1. 🎯 Nivel Avanzado: Análisis Profundo y Dictamen",
+        content: [
+          { type: 'text', icon: 'UserSearchIcon', text: "En este nivel analizará lo que no se ve a simple vista: procesos en memoria, rastros que el sospechoso intentó borrar y eventos dispersos en la nube. Y aprenderá a convertir el análisis en un dictamen que resista el juicio." },
+          { type: 'text', icon: 'AlarmIcon', text: "El examen final toma 12 preguntas al azar de un banco de 16 y exige 80%. Al aprobarlo obtendrá el badge de Perito Forense Digital · Nivel Avanzado." },
+        ]
+      },
+      {
+        id: 'fda_memory',
+        title: "2. 🚩 Laboratorio: Análisis de Memoria RAM",
+        content: [
+          { type: 'text', icon: 'BrainCircuitIcon', text: "La memoria muestra el sistema \"en vivo\": procesos, conexiones de red, comandos ejecutados y código inyectado que quizá nunca tocó el disco. Volatility 3 es la herramienta abierta de referencia; sus complementos windows.pslist, windows.pstree, windows.netscan, windows.cmdline y windows.malfind son el punto de partida." },
+          { type: 'text', icon: 'BugIcon', text: "Una pista clásica: en Windows, el proceso svchost.exe legítimo es hijo de services.exe. Un svchost.exe con otro padre, o ejecutándose desde una carpeta distinta de System32, merece atención." },
+          {
+            type: 'challenge',
+            title: 'El proceso impostor',
+            brief: "Se capturó la memoria del portátil ficticio del caso de fuga de información. Analice la salida de Volatility y encuentre el proceso malicioso.",
+            artifacts: [
+              {
+                name: 'windows.pstree.txt',
+                content: `PID    PPID   Proceso          Ruta
+4      0      System
+612    4      smss.exe         \\SystemRoot\\System32\\smss.exe
+788    680    services.exe     C:\\Windows\\System32\\services.exe
+904    788    svchost.exe      C:\\Windows\\System32\\svchost.exe
+1180   788    svchost.exe      C:\\Windows\\System32\\svchost.exe
+3320   3108   explorer.exe     C:\\Windows\\explorer.exe
+5112   3320   svchost.exe      C:\\Users\\cvargas\\AppData\\Roaming\\svchost.exe
+5208   5112   powershell.exe   C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe`,
+              },
+              {
+                name: 'windows.netscan.txt',
+                content: `Proto  Local                 Remota               Estado        PID   Proceso
+TCPv4  10.0.0.15:49812       198.51.100.10:443    ESTABLISHED   1180  svchost.exe
+TCPv4  10.0.0.15:49855       203.0.113.200:8443   ESTABLISHED   5112  svchost.exe`,
+              },
+              {
+                name: 'windows.cmdline.txt',
+                content: `PID   Línea de comandos
+5112  "C:\\Users\\cvargas\\AppData\\Roaming\\svchost.exe" -k netsvc
+5208  powershell.exe -NoP -W Hidden -EncodedCommand SQBFAFgAIAAoAE4AZQB3AC0ATwBiAGoA...`,
+              },
+            ],
+            questions: [
+              { prompt: '¿Cuál es el PID del svchost.exe malicioso?', answers: ['5112'], hint: 'Fíjese en el padre (PPID) y en la ruta de cada svchost.exe.', explanation: 'El PID 5112 es hijo de explorer.exe (no de services.exe) y corre desde AppData\\Roaming: es un impostor.' },
+              { prompt: '¿A qué dirección IP remota se conecta el proceso malicioso?', answers: ['203.0.113.200', '203.0.113.200:8443'], explanation: 'El PID 5112 mantiene una conexión con 203.0.113.200:8443, probablemente su servidor de comando y control.' },
+              { prompt: '¿Qué proceso hijo lanzó el impostor? (nombre del ejecutable)', answers: ['powershell.exe', 'powershell'], explanation: 'Lanzó powershell.exe oculto (-W Hidden) con un comando codificado (-EncodedCommand): técnica típica para ejecutar código sin dejar rastro en disco.' },
+            ],
+          },
+        ]
+      },
+      {
+        id: 'fda_timeline',
+        title: "3. 🚩 Laboratorio: La Súper Línea de Tiempo",
+        content: [
+          { type: 'text', icon: 'ServerIcon', text: "Una súper línea de tiempo (por ejemplo, con plaso/log2timeline) une en una sola cronología los eventos del sistema de archivos, el registro, los navegadores, los registros de eventos y la nube. Es la forma más clara de contar qué pasó, en orden y con su fuente." },
+          {
+            type: 'challenge',
+            title: 'Reconstruya la noche del 2 de octubre',
+            brief: "Esta es la línea de tiempo consolidada del caso ficticio de fuga de información. Responda con base en ella.",
+            artifacts: [
+              {
+                name: 'supertimeline.csv',
+                content: `fecha_hora (UTC-5)    fuente        evento
+2026-10-02 23:41:05   Seguridad     Inicio de sesión · usuario=cvargas · tipo=2 (consola)
+2026-10-02 23:47:30   Navegador     Descarga · factura_0921.pdf desde http://descargas.example/f.pdf
+2026-10-02 23:48:02   Prefetch      Ejecución · FACTURA_0921.PDF (ejecutable)
+2026-10-02 23:58:12   LNK           Apertura · C:\\Users\\cvargas\\Desktop\\clientes_2026.xlsx
+2026-10-03 00:11:58   Prefetch      Ejecución · 7Z.EXE
+2026-10-03 00:12:20   Sist. arch.   Creación · C:\\Users\\cvargas\\Pictures\\vacaciones.jpg (firma ZIP)
+2026-10-03 00:14:51   USBSTOR       Conexión · Kingston DataTraveler (60A44C4136A2F1B0)
+2026-10-03 00:16:40   LNK           Apertura · E:\\vacaciones.jpg
+2026-10-03 00:19:33   Sist. arch.   Borrado · C:\\Users\\cvargas\\Desktop\\clientes_2026.xlsx
+2026-10-03 00:21:02   Prefetch      Ejecución · CCLEANER64.EXE
+2026-10-03 00:22:09   USBSTOR       Desconexión · Kingston DataTraveler`,
+              },
+            ],
+            questions: [
+              { prompt: '¿A qué hora se conectó la memoria USB? (HH:MM:SS)', answers: ['00:14:51'], explanation: 'La USB se conectó a las 00:14:51, después de crear el ZIP disfrazado y antes de abrirlo desde E:.' },
+              { prompt: '¿Qué programa de limpieza se ejecutó para borrar rastros? (nombre del ejecutable)', answers: ['ccleaner64.exe', 'ccleaner64', 'ccleaner'], explanation: 'CCleaner a las 00:21: intento de borrar rastros. Aun así, Prefetch, LNK y USBSTOR conservaron la secuencia.' },
+              { prompt: 'El tipo de inicio de sesión fue 2 (consola). ¿Qué sugiere: acceso presencial o remoto? (una palabra)', answers: ['presencial', 'local', 'fisico', 'físico'], explanation: 'El tipo 2 es un inicio interactivo en la consola: alguien estaba frente al equipo, lo que es relevante para la autoría.' },
+            ],
+          },
+        ]
+      },
+      {
+        id: 'fda_antiforensics',
+        title: "4. Técnicas Antiforenses y Cómo Detectarlas",
+        content: [
+          { type: 'text', icon: 'LockIcon', text: "Las técnicas antiforenses buscan ocultar o destruir evidencia: borrado seguro (wiping), cambiar fechas de archivos (timestomping), cifrado, esteganografía, uso de navegadores en modo privado o sistemas que corren desde USB, y limpieza de registros." },
+          { type: 'text', icon: 'ShieldCheckIcon', text: "Casi siempre dejan huellas: el propio programa de limpieza aparece en Prefetch; en NTFS, las fechas de $STANDARD_INFORMATION (fáciles de alterar) pueden no coincidir con las de $FILE_NAME (más difíciles), lo que delata un timestomping; y los registros centralizados sobreviven al borrado local." },
+          {
+            type: 'flashcards',
+            title: 'Técnica antiforense → cómo se detecta',
+            cards: [
+              { front: 'Timestomping', back: 'Comparar las fechas de $STANDARD_INFORMATION con las de $FILE_NAME en la $MFT: una discrepancia ilógica delata la manipulación.' },
+              { front: 'Borrado de registros', back: 'El evento 1102 marca el borrado; los registros enviados a un sistema central conservan la copia.' },
+              { front: 'Programas de limpieza', back: 'Su ejecución queda en Prefetch y su instalación en el registro; su uso, justo después del hecho, es en sí un indicio.' },
+              { front: 'Archivos disfrazados', back: 'Comparar la extensión con la firma del archivo (número mágico).' },
+              { front: 'Esteganografía', back: 'Tamaños anómalos, herramientas de esteganografía instaladas y análisis estadístico de las imágenes.' },
+            ]
+          },
+          {
+            type: 'quiz',
+            quizData: {
+              question: "Un documento muestra fecha de creación en 2019 en $STANDARD_INFORMATION, pero $FILE_NAME indica que se creó en octubre de 2026. ¿Qué es lo más probable?",
+              options: [
+                "Que el reloj del equipo estaba mal en 2019.",
+                "Que se manipularon las fechas (timestomping) para que el archivo pareciera antiguo.",
+                "Que el archivo viajó en el tiempo."
+              ],
+              correctOptionIndex: 1,
+              feedback: {
+                correct: "Correcto: las herramientas de timestomping suelen modificar solo $STANDARD_INFORMATION; la discrepancia con $FILE_NAME las delata.",
+                incorrect: "Lo más probable es una manipulación: $STANDARD_INFORMATION se altera fácilmente, $FILE_NAME no."
+              }
+            }
+          },
+        ]
+      },
+      {
+        id: 'fda_cloud',
+        title: "5. Evidencia en la Nube y en el Correo Corporativo",
+        content: [
+          { type: 'text', icon: 'ServerIcon', text: "Hoy gran parte de la evidencia no está en el equipo: está en el correo corporativo, en el almacenamiento en la nube y en los registros de auditoría de los servicios (inicios de sesión, descargas, archivos compartidos, reglas de buzón)." },
+          { type: 'text', icon: 'AlarmIcon', text: "Esos registros tienen periodos de retención limitados según el servicio y el plan contratado: hay que exportarlos o solicitar su preservación pronto. Si los datos están en servidores de otro país, aplica la cooperación internacional que vio en la ruta de Investigador Cibercriminal." },
+          {
+            type: 'memory',
+            title: 'Fuente en la nube → qué demuestra',
+            pairs: [
+              { term: 'Registro de inicios de sesión', definition: 'Quién entró, desde dónde y con qué dispositivo.' },
+              { term: 'Auditoría de archivos compartidos', definition: 'Qué documentos se compartieron hacia afuera y con quién.' },
+              { term: 'Auditoría del buzón', definition: 'Reglas de reenvío, correos borrados y accesos de terceros.' },
+              { term: 'Historial de versiones', definition: 'Qué cambió en un documento y quién lo cambió.' },
+            ]
+          },
+        ]
+      },
+      {
+        id: 'fda_report',
+        title: "6. El Dictamen Pericial",
+        content: [
+          { type: 'text', icon: 'DocumentTextIcon', text: "En Colombia, la Ley 906 de 2004 regula la prueba pericial (artículos 405 y siguientes): el perito presenta un informe que sirve de base a su opinión y lo sustenta oralmente en el juicio, donde puede ser interrogado y contrainterrogado." },
+          { type: 'text', icon: 'CheckCircleIcon', text: "Un dictamen sólido identifica la evidencia y sus hashes, describe la metodología y las herramientas con su versión, presenta los hallazgos con su fuente, separa los hechos de las interpretaciones y declara las limitaciones. Debe poder reproducirlo otro perito." },
+          {
+            type: 'scenario',
+            title: 'Caso 2: preparando el dictamen',
+            intro: "Debe redactar el dictamen del caso ficticio de fuga de información. Cada decisión afecta su solidez. Necesita 50 de 60 puntos.",
+            start: 'p1',
+            maxPoints: 60,
+            passPoints: 50,
+            steps: {
+              p1: {
+                text: "¿Cómo redacta la conclusión principal?",
+                choices: [
+                  { text: "\"La evidencia muestra que, desde la sesión de consola del usuario cvargas, se comprimió clientes_2026.xlsx, se disfrazó como vacaciones.jpg y se abrió desde la USB de serie 60A44C4136A2F1B0.\"", next: 'p2', points: 20, feedback: "Excelente: hechos verificables, con su fuente, sin ir más allá de la evidencia." },
+                  { text: "\"Carlos Vargas robó la base de datos para vendérsela a la competencia.\"", next: 'p2', points: -10, feedback: "La motivación y la venta no se desprenden de su evidencia; además, una sesión no identifica por sí sola a la persona." },
+                ]
+              },
+              p2: {
+                text: "La defensa podría cuestionar sus herramientas. ¿Qué incluye en la metodología?",
+                choices: [
+                  { text: "Nombre y versión de cada herramienta, los pasos seguidos, los hashes verificados y la posibilidad de reproducir el análisis.", next: 'p3', points: 20, feedback: "Correcto: la reproducibilidad es la mejor defensa del dictamen." },
+                  { text: "Basta con decir \"se usaron herramientas forenses reconocidas\".", next: 'p3', points: 0, feedback: "Demasiado vago: no permite verificar ni reproducir." },
+                ]
+              },
+              p3: {
+                text: "No pudo recuperar el contenido del ZIP porque la USB nunca fue incautada. ¿Qué hace con ese vacío?",
+                choices: [
+                  { text: "Lo declaro en las limitaciones: se demostró la copia del archivo a la USB, pero no se pudo verificar el contenido final en ella.", next: 'fin', points: 20, feedback: "Bien: declarar las limitaciones fortalece la credibilidad del dictamen." },
+                  { text: "Lo omito para que el dictamen se vea más contundente.", next: 'fin', points: -10, feedback: "Omitir limitaciones es un riesgo ético y procesal: la defensa lo descubrirá." },
+                ]
+              },
+              fin: { text: "Fin del caso. Revise su puntaje y la retroalimentación." },
+            }
+          },
+        ]
+      },
+      {
+        id: 'fda_capstone',
+        title: "7. 🧩 Caso Integrador: la Base de Datos que Salió de la Empresa",
+        content: [
+          { type: 'text', icon: 'SpyIcon', text: "Este caso integra todo: preservación, análisis de memoria y disco, línea de tiempo, nube y dictamen. Una empresa ficticia sospecha que un empleado que renunció se llevó la base de clientes." },
+          {
+            type: 'scenario',
+            title: 'Caso integrador: el último día del empleado',
+            intro: "El empleado renunció el viernes y el lunes un competidor contactó a varios clientes. Usted lidera el análisis forense. Necesita 80 de 100 puntos.",
+            start: 'k1',
+            maxPoints: 100,
+            passPoints: 80,
+            steps: {
+              k1: {
+                text: "TI quiere reasignar el portátil del exempleado a otra persona esta misma tarde. ¿Qué responde?",
+                choices: [
+                  { text: "Que no se toque: se preserva, se adquiere la imagen con hash y se abre la cadena de custodia antes de cualquier reasignación.", next: 'k2', points: 20, feedback: "Correcto: reinstalar el equipo destruiría la evidencia." },
+                  { text: "Que lo reasignen, pero guardando una copia de la carpeta Documentos.", next: 'k2', points: -10, feedback: "Se perderían lo borrado, Prefetch, LNK y el registro." },
+                ]
+              },
+              k2: {
+                text: "El análisis muestra una USB conectada el último día y un archivo grande subido a un servicio de almacenamiento personal desde el navegador. ¿Qué fuentes adicionales pide?",
+                choices: [
+                  { text: "Los registros del proxy o firewall corporativo y la auditoría de la nube corporativa de ese día, para corroborar la subida con fuentes independientes.", next: 'k3', points: 20, feedback: "Bien: corroborar con fuentes independientes fortalece la conclusión." },
+                  { text: "Ninguna: el historial del navegador es suficiente.", next: 'k3', points: 0, feedback: "Una sola fuente es más fácil de cuestionar." },
+                ]
+              },
+              k3: {
+                text: "El gerente le pide entrar a la cuenta personal de almacenamiento del exempleado, \"ya que la contraseña quedó guardada en el navegador\". ¿Qué hace?",
+                choices: [
+                  { text: "Me niego: acceder a una cuenta personal sin autorización ni orden judicial sería acceso abusivo y la prueba sería ilegal. Se solicita por la vía judicial.", next: 'k4', points: 20, feedback: "Correcto: la legalidad de la obtención es tan importante como el hallazgo." },
+                  { text: "Entro solo para mirar, sin descargar nada.", next: 'k4', points: -20, feedback: "Sigue siendo acceso abusivo (Art. 269A de la Ley 1273) y contamina el caso." },
+                ]
+              },
+              k4: {
+                text: "Encuentra que el archivo de la base fue modificado con fechas de 2019, aunque la base se creó en 2026. ¿Cómo lo interpreta?",
+                choices: [
+                  { text: "Como posible timestomping: verifico $STANDARD_INFORMATION contra $FILE_NAME y busco la herramienta usada antes de concluir.", next: 'k5', points: 20, feedback: "Bien: se valida la hipótesis antes de afirmarla." },
+                  { text: "Como prueba definitiva de que el empleado es culpable.", next: 'k5', points: 0, feedback: "Es un indicio que hay que verificar, no una conclusión automática." },
+                ]
+              },
+              k5: {
+                text: "¿Cómo presenta los resultados a la empresa?",
+                choices: [
+                  { text: "Dictamen con hallazgos verificables y sus fuentes, línea de tiempo, limitaciones y recomendaciones (control de USB, prevención de fuga de datos y procedimiento de retiro de empleados).", next: 'fin', points: 20, feedback: "Excelente cierre: hechos, límites y aprendizaje para la organización." },
+                  { text: "Un correo diciendo que el empleado es culpable.", next: 'fin', points: -10, feedback: "Sin dictamen formal ni fuentes, la conclusión no tiene valor probatorio." },
+                ]
+              },
+              fin: { text: "Fin del caso integrador. Si aprobó, está listo para el examen final." },
+            }
+          },
+        ]
+      },
+      {
+        id: 'fda_exam',
+        title: "8. 📝 Examen del Nivel Avanzado",
+        content: [
+          { type: 'text', icon: 'CheckCircleIcon', text: "Examen final de la ruta Perito Forense Digital: 12 preguntas al azar de un banco de 16, con 80% para aprobar." },
+          {
+            type: 'exam',
+            title: 'Examen: Perito Forense Digital · Avanzado',
+            description: 'Evalúa memoria RAM, líneas de tiempo, antiforense, nube y dictamen pericial.',
+            passPercent: 80,
+            questionsPerAttempt: 12,
+            questions: [
+              { question: '¿Qué puede revelar el análisis de memoria RAM que el disco quizá no muestre?', options: [{ id: 'g1a', text: 'Procesos activos, conexiones y código inyectado que nunca se escribió en disco.', isCorrect: true, score: 10 }, { id: 'g1b', text: 'Solo los archivos borrados.', isCorrect: false, score: 0 }, { id: 'g1c', text: 'Nada que no esté en el disco.', isCorrect: false, score: 0 }], feedback: 'El malware sin archivos vive solo en memoria.' },
+              { question: 'En Windows, ¿de qué proceso es hijo un svchost.exe legítimo?', options: [{ id: 'g2a', text: 'De services.exe.', isCorrect: true, score: 10 }, { id: 'g2b', text: 'De explorer.exe.', isCorrect: false, score: 0 }, { id: 'g2c', text: 'De powershell.exe.', isCorrect: false, score: 0 }], feedback: 'Otro padre o una ruta fuera de System32 es sospechoso.' },
+              { question: '¿Qué complemento de Volatility 3 lista las conexiones de red?', options: [{ id: 'g3a', text: 'windows.netscan.', isCorrect: true, score: 10 }, { id: 'g3b', text: 'windows.pslist.', isCorrect: false, score: 0 }, { id: 'g3c', text: 'windows.cmdline.', isCorrect: false, score: 0 }], feedback: 'pslist lista procesos y cmdline sus líneas de comandos.' },
+              { question: '¿Por qué es sospechoso "powershell.exe -W Hidden -EncodedCommand …"?', options: [{ id: 'g4a', text: 'Ejecuta código oculto y codificado, una técnica común para evadir la detección.', isCorrect: true, score: 10 }, { id: 'g4b', text: 'Porque PowerShell siempre es malicioso.', isCorrect: false, score: 0 }, { id: 'g4c', text: 'No es sospechoso.', isCorrect: false, score: 0 }], feedback: 'PowerShell es legítimo; la forma de uso es lo sospechoso.' },
+              { question: '¿Qué aporta una súper línea de tiempo?', options: [{ id: 'g5a', text: 'Une eventos de muchas fuentes en una sola cronología con su origen.', isCorrect: true, score: 10 }, { id: 'g5b', text: 'Borra los eventos repetidos.', isCorrect: false, score: 0 }, { id: 'g5c', text: 'Recupera contraseñas.', isCorrect: false, score: 0 }], feedback: 'Permite contar la historia en orden y con fuentes.' },
+              { question: 'Un inicio de sesión de tipo 2 en Windows indica…', options: [{ id: 'g6a', text: 'Un inicio interactivo en la consola del equipo.', isCorrect: true, score: 10 }, { id: 'g6b', text: 'Un acceso por escritorio remoto.', isCorrect: false, score: 0 }, { id: 'g6c', text: 'Un servicio del sistema.', isCorrect: false, score: 0 }], feedback: 'El escritorio remoto es el tipo 10.' },
+              { question: '¿Cómo se detecta un posible timestomping en NTFS?', options: [{ id: 'g7a', text: 'Comparando las fechas de $STANDARD_INFORMATION con las de $FILE_NAME.', isCorrect: true, score: 10 }, { id: 'g7b', text: 'Mirando el ícono del archivo.', isCorrect: false, score: 0 }, { id: 'g7c', text: 'No se puede detectar.', isCorrect: false, score: 0 }], feedback: '$FILE_NAME es más difícil de alterar.' },
+              { question: 'Tras el hecho se ejecutó un programa de limpieza. ¿Qué valor tiene ese dato?', options: [{ id: 'g8a', text: 'Es un indicio de intento de ocultar rastros, y su ejecución queda registrada.', isCorrect: true, score: 10 }, { id: 'g8b', text: 'Ninguno: limpiar el equipo es normal.', isCorrect: false, score: 0 }, { id: 'g8c', text: 'Demuestra que no hubo delito.', isCorrect: false, score: 0 }], feedback: 'El momento de la ejecución es lo relevante.' },
+              { question: '¿Por qué conviene preservar pronto los registros de auditoría en la nube?', options: [{ id: 'g9a', text: 'Porque tienen periodos de retención limitados y se eliminan.', isCorrect: true, score: 10 }, { id: 'g9b', text: 'Porque ocupan mucho espacio.', isCorrect: false, score: 0 }, { id: 'g9c', text: 'No hace falta: se guardan para siempre.', isCorrect: false, score: 0 }], feedback: 'La retención depende del servicio y del plan.' },
+              { question: 'El gerente ofrece la contraseña guardada de la cuenta personal del exempleado. ¿Qué hace el perito?', options: [{ id: 'g10a', text: 'No accede: sin autorización u orden judicial sería acceso abusivo.', isCorrect: true, score: 10 }, { id: 'g10b', text: 'Accede solo para mirar.', isCorrect: false, score: 0 }, { id: 'g10c', text: 'Descarga todo rápido.', isCorrect: false, score: 0 }], feedback: 'La prueba obtenida ilegalmente puede ser excluida.' },
+              { question: '¿Qué norma colombiana regula la prueba pericial en el proceso penal?', options: [{ id: 'g11a', text: 'La Ley 906 de 2004.', isCorrect: true, score: 10 }, { id: 'g11b', text: 'La Ley 1581 de 2012.', isCorrect: false, score: 0 }, { id: 'g11c', text: 'La Circular 36 de 2022.', isCorrect: false, score: 0 }], feedback: 'Desde el artículo 405.' },
+              { question: '¿Qué debe incluir la metodología de un dictamen?', options: [{ id: 'g12a', text: 'Herramientas con versión, pasos, hashes y forma de reproducir el análisis.', isCorrect: true, score: 10 }, { id: 'g12b', text: 'Solo la conclusión.', isCorrect: false, score: 0 }, { id: 'g12c', text: 'La opinión personal del perito sobre el acusado.', isCorrect: false, score: 0 }], feedback: 'La reproducibilidad da solidez.' },
+              { question: 'No pudo verificar un hallazgo porque falta una evidencia. ¿Qué hace en el dictamen?', options: [{ id: 'g13a', text: 'Lo declara como limitación.', isCorrect: true, score: 10 }, { id: 'g13b', text: 'Lo omite.', isCorrect: false, score: 0 }, { id: 'g13c', text: 'Lo supone cierto.', isCorrect: false, score: 0 }], feedback: 'Las limitaciones declaradas fortalecen la credibilidad.' },
+              { question: 'Una sesión de usuario en un equipo, ¿identifica por sí sola a la persona?', options: [{ id: 'g14a', text: 'No: muestra una cuenta; la autoría requiere más elementos.', isCorrect: true, score: 10 }, { id: 'g14b', text: 'Sí, siempre.', isCorrect: false, score: 0 }, { id: 'g14c', text: 'Solo si la contraseña es larga.', isCorrect: false, score: 0 }], feedback: 'Otra persona pudo usar la cuenta.' },
+              { question: '¿Por qué corroborar un hallazgo con fuentes independientes?', options: [{ id: 'g15a', text: 'Porque una conclusión respaldada por varias fuentes es más difícil de cuestionar.', isCorrect: true, score: 10 }, { id: 'g15b', text: 'Para alargar el informe.', isCorrect: false, score: 0 }, { id: 'g15c', text: 'No es necesario.', isCorrect: false, score: 0 }], feedback: 'Por ejemplo: navegador + proxy + auditoría en la nube.' },
+              { question: 'Antes de reasignar el equipo de un empleado investigado, ¿qué se hace?', options: [{ id: 'g16a', text: 'Preservarlo: imagen forense con hash y cadena de custodia.', isCorrect: true, score: 10 }, { id: 'g16b', text: 'Formatearlo y reinstalar.', isCorrect: false, score: 0 }, { id: 'g16c', text: 'Copiar solo la carpeta Documentos.', isCorrect: false, score: 0 }], feedback: 'Reinstalar destruye la evidencia.' },
+            ],
+          },
+        ]
+      },
+    ]
   }
 };
 

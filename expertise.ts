@@ -19,7 +19,7 @@ export const EXPERTISE_TRACKS: ExpertiseTrack[] = [
   { id: 'investigador_cibercriminal', title: 'Investigador Cibercriminal', levels: ['cybercrime', 'cybercrime_intermedio', 'cybercrime_avanzado'] },
   { id: 'analista_cibercriminologia', title: 'Analista en Cibercriminología', levels: ['cybercriminology', null, null] },
   { id: 'especialista_poscuantica', title: 'Especialista en Criptografía Poscuántica', levels: ['quantum_computing', null, null] },
-  { id: 'perito_forense', title: 'Perito Forense Digital', levels: ['forensic_auditing', null, null] },
+  { id: 'perito_forense', title: 'Perito Forense Digital', levels: ['forensic_auditing', 'forensic_intermedio', 'forensic_avanzado'] },
   { id: 'especialista_ia', title: 'Especialista en IA Aplicada', levels: ['artificial_intelligence', null, null] },
   { id: 'gestor_csirt', title: 'Gestor de Respuesta a Incidentes', levels: ['cert_csirt', null, null] },
 ];
