@@ -21,7 +21,7 @@ export const EXPERTISE_TRACKS: ExpertiseTrack[] = [
   { id: 'especialista_poscuantica', title: 'Especialista en Criptografía Poscuántica', levels: ['quantum_computing', null, null] },
   { id: 'perito_forense', title: 'Perito Forense Digital', levels: ['forensic_auditing', 'forensic_intermedio', 'forensic_avanzado'] },
   { id: 'especialista_ia', title: 'Especialista en IA Aplicada', levels: ['artificial_intelligence', null, null] },
-  { id: 'gestor_csirt', title: 'Gestor de Respuesta a Incidentes', levels: ['cert_csirt', null, null] },
+  { id: 'gestor_csirt', title: 'Gestor de Respuesta a Incidentes', levels: ['cert_csirt', 'csirt_intermedio', 'csirt_avanzado'] },
 ];
 
 /** Cursos de nivel Intermedio o Avanzado: no aparecen en el grid, solo en el mapa. */

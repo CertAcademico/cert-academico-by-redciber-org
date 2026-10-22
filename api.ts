@@ -3727,6 +3727,513 @@ TCPv4  10.0.0.15:49855       203.0.113.200:8443   ESTABLISHED   5112  svchost.ex
         ]
       },
     ]
+  },
+  csirt_intermedio: {
+    title: "Gestor de Respuesta a Incidentes · Nivel Intermedio",
+    description: "La operación diaria de un CSIRT: clasificar y priorizar, aplicar un playbook, comunicar con TLP, compartir indicadores y medir. Laboratorios prácticos y examen con nota mínima del 70%.",
+    lastUpdated: "Octubre 2026",
+    modules: [
+      {
+        id: 'gri_intro',
+        title: "1. 🗺️ Bienvenida al Nivel Intermedio",
+        content: [
+          { type: 'text', icon: 'AlarmIcon', text: "En el Nivel Básico diseñó un CSIRT: mandato, servicios, madurez y marcos. Ahora lo va a operar: le llegarán reportes simultáneos, tendrá que decidir qué atender primero, contener un incidente con un playbook, comunicarlo y compartir lo aprendido." },
+          { type: 'text', icon: 'CheckCircleIcon', text: "Este nivel incluye laboratorios de decisión, retos tipo CTF y un examen que se aprueba con 70%. Todos los casos, organizaciones y datos son ficticios." },
+          {
+            type: 'interactive',
+            title: 'Vocabulario operativo',
+            items: [
+              { term: 'Evento vs. incidente', definition: 'Un evento es cualquier ocurrencia observable; un incidente es un evento que compromete o amenaza la confidencialidad, integridad o disponibilidad.' },
+              { term: 'Triage', definition: 'Clasificar, priorizar y asignar cada reporte según su impacto y urgencia.' },
+              { term: 'Playbook', definition: 'Procedimiento predefinido para un tipo de incidente: quién hace qué, en qué orden y con qué herramientas.' },
+              { term: 'Contención', definition: 'Limitar el daño y evitar que el incidente se extienda, antes de erradicar la causa.' },
+              { term: 'MTTD / MTTR', definition: 'Tiempo medio para detectar y tiempo medio para responder o resolver: métricas clave del desempeño del equipo.' },
+            ]
+          },
+        ]
+      },
+      {
+        id: 'gri_triage',
+        title: "2. 🚩 Laboratorio: Triage de la Cola de Reportes",
+        content: [
+          { type: 'text', icon: 'ServerIcon', text: "Para priorizar se cruzan el impacto (a cuántos y a qué servicios afecta) y la urgencia (qué tan rápido empeora). Para clasificar, muchos CSIRT usan la Taxonomía de Referencia de Incidentes de Seguridad (RSIT, derivada de eCSIRT.net), con clases como Código malicioso, Recolección de información, Intentos de intrusión, Intrusiones, Disponibilidad, Seguridad del contenido de la información, Fraude y Contenido abusivo." },
+          {
+            type: 'challenge',
+            title: 'Lunes 8:00 a. m.: cinco reportes en la cola',
+            brief: "Usted es el gestor de turno del CSIRT ficticio de un ministerio. Aplique la matriz de prioridad y clasifique los reportes.",
+            artifacts: [
+              {
+                name: 'matriz_prioridad.txt',
+                content: `                     URGENCIA ALTA   URGENCIA MEDIA   URGENCIA BAJA
+IMPACTO ALTO         P1 (crítica)    P2               P3
+IMPACTO MEDIO        P2              P3               P4
+IMPACTO BAJO         P3              P4               P5
+Impacto alto  = servicio crítico o datos de muchas personas
+Urgencia alta = el daño crece en minutos u horas`,
+              },
+              {
+                name: 'cola_reportes.txt',
+                content: `#101  Escaneo de puertos desde 198.51.100.77 contra la web pública. Bloqueado por el firewall. Sin impacto.
+#102  El portal de pagos de impuestos no responde; cientos de ciudadanos afectados; el tráfico crece cada minuto.
+#103  Un funcionario recibió un correo de phishing; no hizo clic. Lo reportó.
+#104  Se detecta cifrado de archivos en 3 servidores de la intranet de nómina; avanza a otros equipos.
+#105  Página falsa que suplanta al ministerio pidiendo datos bancarios a ciudadanos; publicada hace 2 horas.`,
+              },
+            ],
+            questions: [
+              { prompt: 'Varios reportes son P1. ¿Cuál involucra código malicioso que se está propagando? (número del reporte, ej. #000)', answers: ['#104', '104'], explanation: '#104: cifrado que se propaga en servidores de nómina. Impacto alto (datos de todos los empleados) y urgencia alta (avanza): P1, clase Código malicioso (ransomware).' },
+              { prompt: '¿A qué clase de la taxonomía corresponde el #102? (una palabra)', answers: ['disponibilidad', 'availability'], explanation: '#102 es un problema de Disponibilidad, posiblemente una denegación de servicio, y también es P1 por su impacto en ciudadanos y su urgencia.' },
+              { prompt: '¿A qué clase corresponde el #105, la página falsa que pide datos bancarios? (una palabra)', answers: ['fraude', 'fraud'], explanation: '#105 es Fraude (suplantación o phishing contra ciudadanos): impacto alto, se prioriza alto para solicitar la baja del sitio.' },
+              { prompt: '¿Qué prioridad tiene el #101, el escaneo bloqueado sin impacto? (P1 a P5)', answers: ['P5', 'p5'], explanation: 'Impacto bajo y urgencia baja: P5. Se registra (clase Recolección de información) pero no consume tiempo del equipo.' },
+            ],
+          },
+        ]
+      },
+      {
+        id: 'gri_playbook',
+        title: "3. Aplicando un Playbook: Campaña de Phishing",
+        content: [
+          { type: 'text', icon: 'FishHookIcon', text: "Un playbook de phishing suele tener cinco bloques: análisis del correo, alcance (quién lo recibió y quién hizo clic), contención (bloquear remitente y enlace, eliminar el correo de los buzones, restablecer credenciales), erradicación y recuperación, y lecciones aprendidas." },
+          {
+            type: 'scenario',
+            title: 'Caso 1: 340 buzones y 12 clics',
+            intro: "Un correo de phishing llegó a 340 funcionarios de una entidad ficticia. 12 hicieron clic y 4 ingresaron su contraseña. Aplique el playbook. Necesita 60 de 80 puntos.",
+            start: 'p1',
+            maxPoints: 80,
+            passPoints: 60,
+            steps: {
+              p1: {
+                text: "¿Por dónde empieza la contención?",
+                choices: [
+                  { text: "Bloquear el dominio y la URL en el proxy y el correo, y eliminar el mensaje de los 340 buzones.", next: 'p2', points: 20, feedback: "Correcto: se corta la exposición para quienes aún no han hecho clic." },
+                  { text: "Enviar un correo a todos diciendo que no abran el mensaje y esperar.", next: 'p2', points: 5, feedback: "Avisar ayuda, pero sin bloquear ni eliminar el mensaje, más personas seguirán cayendo." },
+                ]
+              },
+              p2: {
+                text: "¿Qué hace con las 4 personas que ingresaron su contraseña?",
+                choices: [
+                  { text: "Restablecer sus contraseñas, cerrar sus sesiones activas, verificar el doble factor y revisar sus buzones en busca de reglas de reenvío o accesos extraños.", next: 'p3', points: 20, feedback: "Exacto: una contraseña robada se usa rápido; hay que cerrar todas las puertas." },
+                  { text: "Solo pedirles que cambien la contraseña cuando puedan.", next: 'p3', points: -10, feedback: "Insuficiente y lento: el atacante puede estar usando ya esas cuentas." },
+                ]
+              },
+              p3: {
+                text: "Revisando, una de las cuentas comprometidas envió el mismo phishing a una entidad aliada. ¿Qué hace?",
+                choices: [
+                  { text: "Aviso al CSIRT de la entidad aliada con los indicadores del ataque, marcados con el TLP adecuado.", next: 'p4', points: 20, feedback: "Bien: la coordinación entre CSIRT evita que el ataque se propague." },
+                  { text: "No digo nada para no dañar la reputación de la entidad.", next: 'p4', points: -10, feedback: "Callar deja expuesta a la entidad aliada y daña más la confianza cuando se descubre." },
+                ]
+              },
+              p4: {
+                text: "Incidente contenido. ¿Cómo lo cierra?",
+                choices: [
+                  { text: "Documento la línea de tiempo y las acciones, registro las métricas y propongo mejoras (filtros, capacitación, doble factor para todos).", next: 'fin', points: 20, feedback: "Excelente: sin cierre formal no hay aprendizaje." },
+                  { text: "Cierro el ticket sin más: ya pasó.", next: 'fin', points: 0, feedback: "Se pierde la oportunidad de evitar el próximo incidente." },
+                ]
+              },
+              fin: { text: "Fin del caso. Revise su puntaje y la retroalimentación." },
+            }
+          },
+        ]
+      },
+      {
+        id: 'gri_comms',
+        title: "4. Comunicar Durante el Incidente",
+        content: [
+          { type: 'text', icon: 'HappyUsersIcon', text: "Durante un incidente se comunica a públicos distintos: el equipo técnico, la dirección, las áreas afectadas, otros CSIRT, autoridades y, a veces, el público. Cada uno necesita un mensaje diferente, con la información que puede recibir según el TLP." },
+          { type: 'text', icon: 'ClosedEnvelopeIcon', text: "Buenas prácticas: una sola voz oficial, actualizaciones a horas fijas aunque no haya novedades, hechos confirmados separados de las hipótesis, y nunca indicadores técnicos sensibles en comunicados públicos." },
+          {
+            type: 'memory',
+            title: 'Mensaje → TLP adecuado',
+            pairs: [
+              { term: 'Hallazgos preliminares para la reunión de crisis', definition: 'TLP:RED' },
+              { term: 'Detalle técnico para el equipo interno de TI', definition: 'TLP:AMBER+STRICT' },
+              { term: 'Indicadores para el CSIRT de una entidad aliada y sus proveedores', definition: 'TLP:AMBER' },
+              { term: 'Alerta a la comunidad de CSIRT del sector', definition: 'TLP:GREEN' },
+              { term: 'Recomendaciones para la ciudadanía', definition: 'TLP:CLEAR' },
+            ]
+          },
+          {
+            type: 'quiz',
+            quizData: {
+              question: "Un periodista pregunta por el incidente y aún no se conoce el alcance. ¿Qué responde la vocería oficial?",
+              options: [
+                "\"No hay ningún problema\", para evitar alarma.",
+                "Lo confirmado (que se atiende un incidente y que los servicios críticos están siendo protegidos), sin especular sobre el alcance, y cuándo habrá una nueva actualización.",
+                "Todos los detalles técnicos disponibles, incluidas las IP del atacante."
+              ],
+              correctOptionIndex: 1,
+              feedback: {
+                correct: "Correcto: hechos confirmados, sin especular y con un compromiso de actualización. Negar o sobreinformar se vuelve en contra.",
+                incorrect: "Negar el incidente destruye la confianza cuando se conoce, y publicar detalles técnicos ayuda al atacante."
+              }
+            }
+          },
+        ]
+      },
+      {
+        id: 'gri_sharing',
+        title: "5. 🚩 Laboratorio: Preparar Indicadores para Compartir",
+        content: [
+          { type: 'text', icon: 'ShieldCheckIcon', text: "Compartir indicadores ayuda a otros a defenderse, pero hay que depurarlos: no se comparten datos internos (IP privadas, nombres de equipos o de funcionarios) ni datos personales, y cada indicador debe ser realmente malicioso, no un servicio legítimo que también aparece en los registros." },
+          {
+            type: 'challenge',
+            title: 'Depure las notas del incidente antes de enviarlas',
+            brief: "Estas son las notas del incidente de phishing. Usted preparará el evento para compartir con la comunidad del sector. Todos los datos son ficticios.",
+            artifacts: [
+              {
+                name: 'notas_incidente.txt',
+                content: `Correo de phishing: remitente  soporte@actualiza-clave.example
+URL de captura:                  https://actualiza-clave.example/login
+IP del servidor de captura:      203.0.113.66
+Adjunto (hash SHA-256):          7a3f9c0e…e41b (valor ficticio)
+Equipo afectado interno:         PC-NOMINA-07 (10.20.4.15)
+Funcionaria que hizo clic:       María Torres, tesorería
+Servicio legítimo visto en logs: login.microsoftonline.com (autenticación normal de la entidad)`,
+              },
+            ],
+            questions: [
+              { prompt: '¿Qué dominio malicioso debe incluirse en el evento compartido?', answers: ['actualiza-clave.example'], explanation: 'actualiza-clave.example es el dominio del atacante: es el indicador más útil para que otros lo bloqueen.' },
+              { prompt: '¿Qué IP NO debe compartirse porque es interna de la entidad?', answers: ['10.20.4.15'], explanation: '10.20.4.15 es una dirección privada de la red interna: no sirve a otros y expone información de la entidad.' },
+              { prompt: '¿Qué dominio aparece en las notas pero NO es malicioso y no debe compartirse como indicador?', answers: ['login.microsoftonline.com'], explanation: 'Es un servicio legítimo de autenticación. Compartirlo como malicioso provocaría bloqueos que afectarían a otras entidades (falso positivo).' },
+            ],
+          },
+        ]
+      },
+      {
+        id: 'gri_metrics',
+        title: "6. Métricas y Registro de Incidentes",
+        content: [
+          { type: 'text', icon: 'CalendarIcon', text: "Lo que no se mide no se mejora. Un CSIRT registra cada incidente con su clase, prioridad, fechas clave (ocurrencia, detección, contención, cierre), impacto y causa raíz. De ahí salen métricas como el tiempo medio de detección (MTTD), el de contención y el de resolución (MTTR)." },
+          {
+            type: 'flashcards',
+            title: 'Métricas útiles para la dirección',
+            cards: [
+              { front: 'MTTD', back: 'Tiempo medio desde que ocurre el incidente hasta que se detecta. Mide la capacidad de vigilancia.' },
+              { front: 'Tiempo de contención', back: 'Desde la detección hasta que el incidente deja de extenderse. Mide la capacidad de reacción.' },
+              { front: 'MTTR', back: 'Tiempo medio hasta resolver y recuperar. Mide la capacidad de recuperación.' },
+              { front: 'Incidentes por clase', back: 'Muestra dónde concentrar la prevención (por ejemplo, si el phishing es la mayoría).' },
+              { front: 'Reincidencia', back: 'Incidentes con la misma causa raíz: indica que las lecciones aprendidas no se aplicaron.' },
+            ]
+          },
+          {
+            type: 'quiz',
+            quizData: {
+              question: "Un incidente ocurrió el lunes a las 9:00, se detectó el miércoles a las 9:00 y se contuvo ese mismo miércoles a las 13:00. ¿Cuál fue el tiempo de detección?",
+              options: ["4 horas.", "48 horas.", "52 horas."],
+              correctOptionIndex: 1,
+              feedback: {
+                correct: "Correcto: de lunes 9:00 a miércoles 9:00 son 48 horas. La contención tomó 4 horas más.",
+                incorrect: "El tiempo de detección va de la ocurrencia (lunes 9:00) a la detección (miércoles 9:00): 48 horas."
+              }
+            }
+          },
+        ]
+      },
+      {
+        id: 'gri_exam',
+        title: "7. 📝 Examen del Nivel Intermedio",
+        content: [
+          { type: 'text', icon: 'CheckCircleIcon', text: "El examen toma 10 preguntas al azar de un banco de 14 y se aprueba con 70%. Al aprobarlo obtendrá el badge de Gestor de Respuesta a Incidentes · Nivel Intermedio." },
+          {
+            type: 'exam',
+            title: 'Examen: Gestor de Respuesta a Incidentes · Intermedio',
+            description: 'Evalúa triage, taxonomía, playbooks, comunicación y TLP, intercambio de indicadores y métricas.',
+            passPercent: 70,
+            questionsPerAttempt: 10,
+            questions: [
+              { question: '¿Qué diferencia un incidente de un evento?', options: [{ id: 'r1a', text: 'El incidente compromete o amenaza la confidencialidad, integridad o disponibilidad.', isCorrect: true, score: 10 }, { id: 'r1b', text: 'Ninguna: son sinónimos.', isCorrect: false, score: 0 }, { id: 'r1c', text: 'El evento siempre es más grave.', isCorrect: false, score: 0 }], feedback: 'No todo evento es un incidente.' },
+              { question: 'Con impacto alto y urgencia alta, ¿qué prioridad tiene un incidente en la matriz del curso?', options: [{ id: 'r2a', text: 'P1 (crítica).', isCorrect: true, score: 10 }, { id: 'r2b', text: 'P3.', isCorrect: false, score: 0 }, { id: 'r2c', text: 'P5.', isCorrect: false, score: 0 }], feedback: 'Impacto y urgencia altos = crítica.' },
+              { question: 'Un portal ciudadano deja de responder por un tráfico masivo. ¿Qué clase de la taxonomía aplica?', options: [{ id: 'r3a', text: 'Disponibilidad.', isCorrect: true, score: 10 }, { id: 'r3b', text: 'Fraude.', isCorrect: false, score: 0 }, { id: 'r3c', text: 'Contenido abusivo.', isCorrect: false, score: 0 }], feedback: 'Afecta la disponibilidad del servicio.' },
+              { question: 'Una página falsa suplanta a la entidad para pedir datos bancarios. ¿Qué clase aplica?', options: [{ id: 'r4a', text: 'Fraude.', isCorrect: true, score: 10 }, { id: 'r4b', text: 'Recolección de información.', isCorrect: false, score: 0 }, { id: 'r4c', text: 'Disponibilidad.', isCorrect: false, score: 0 }], feedback: 'La suplantación para robar datos es fraude.' },
+              { question: 'En un phishing masivo, ¿cuál es la primera acción de contención?', options: [{ id: 'r5a', text: 'Bloquear el dominio y la URL y eliminar el correo de los buzones.', isCorrect: true, score: 10 }, { id: 'r5b', text: 'Esperar a ver cuántos hacen clic.', isCorrect: false, score: 0 }, { id: 'r5c', text: 'Apagar el servidor de correo.', isCorrect: false, score: 0 }], feedback: 'Se corta la exposición para el resto.' },
+              { question: 'Un funcionario ingresó su contraseña en el phishing. Además de cambiarla, ¿qué hay que hacer?', options: [{ id: 'r6a', text: 'Cerrar sesiones activas, verificar el doble factor y revisar reglas de reenvío.', isCorrect: true, score: 10 }, { id: 'r6b', text: 'Nada más.', isCorrect: false, score: 0 }, { id: 'r6c', text: 'Despedirlo.', isCorrect: false, score: 0 }], feedback: 'El atacante pudo dejar accesos persistentes.' },
+              { question: '¿Qué se debe hacer si el ataque se propagó a una entidad aliada?', options: [{ id: 'r7a', text: 'Avisar a su CSIRT con los indicadores y el TLP adecuado.', isCorrect: true, score: 10 }, { id: 'r7b', text: 'No decir nada para cuidar la reputación.', isCorrect: false, score: 0 }, { id: 'r7c', text: 'Publicarlo en redes sociales.', isCorrect: false, score: 0 }], feedback: 'La coordinación entre CSIRT es su razón de ser.' },
+              { question: 'Hallazgos preliminares para la reunión de crisis, que no deben salir de esa sala. ¿Qué TLP usa?', options: [{ id: 'r8a', text: 'TLP:RED.', isCorrect: true, score: 10 }, { id: 'r8b', text: 'TLP:GREEN.', isCorrect: false, score: 0 }, { id: 'r8c', text: 'TLP:CLEAR.', isCorrect: false, score: 0 }], feedback: 'RED: solo para los presentes.' },
+              { question: '¿Qué TLP corresponde a recomendaciones para la ciudadanía?', options: [{ id: 'r9a', text: 'TLP:CLEAR.', isCorrect: true, score: 10 }, { id: 'r9b', text: 'TLP:AMBER.', isCorrect: false, score: 0 }, { id: 'r9c', text: 'TLP:RED.', isCorrect: false, score: 0 }], feedback: 'CLEAR se puede publicar.' },
+              { question: 'Ante la prensa, con el alcance aún desconocido, la vocería debe…', options: [{ id: 'r10a', text: 'Informar lo confirmado, no especular y anunciar la próxima actualización.', isCorrect: true, score: 10 }, { id: 'r10b', text: 'Negar el incidente.', isCorrect: false, score: 0 }, { id: 'r10c', text: 'Dar todos los detalles técnicos.', isCorrect: false, score: 0 }], feedback: 'Hechos, sin especulación, con compromiso de seguimiento.' },
+              { question: '¿Por qué no se comparte una IP como 10.20.4.15 en un evento para la comunidad?', options: [{ id: 'r11a', text: 'Es una dirección privada interna: no le sirve a otros y expone a la entidad.', isCorrect: true, score: 10 }, { id: 'r11b', text: 'Porque es del atacante.', isCorrect: false, score: 0 }, { id: 'r11c', text: 'Porque es demasiado larga.', isCorrect: false, score: 0 }], feedback: 'Se depuran los datos internos antes de compartir.' },
+              { question: 'Compartir un dominio legítimo como malicioso provoca…', options: [{ id: 'r12a', text: 'Falsos positivos: otros lo bloquean y afectan sus propios servicios.', isCorrect: true, score: 10 }, { id: 'r12b', text: 'Mayor seguridad para todos.', isCorrect: false, score: 0 }, { id: 'r12c', text: 'Nada.', isCorrect: false, score: 0 }], feedback: 'La calidad de los indicadores es clave para la confianza.' },
+              { question: '¿Qué mide el MTTD?', options: [{ id: 'r13a', text: 'El tiempo medio desde que ocurre un incidente hasta que se detecta.', isCorrect: true, score: 10 }, { id: 'r13b', text: 'El tiempo de recuperación.', isCorrect: false, score: 0 }, { id: 'r13c', text: 'El número de incidentes al mes.', isCorrect: false, score: 0 }], feedback: 'Mide la capacidad de vigilancia.' },
+              { question: 'Muchos incidentes se repiten con la misma causa raíz. ¿Qué indica?', options: [{ id: 'r14a', text: 'Que las lecciones aprendidas no se están aplicando.', isCorrect: true, score: 10 }, { id: 'r14b', text: 'Que el equipo trabaja muy bien.', isCorrect: false, score: 0 }, { id: 'r14c', text: 'Que hay que dejar de registrar incidentes.', isCorrect: false, score: 0 }], feedback: 'La reincidencia es una métrica de mejora continua.' },
+            ],
+          },
+        ]
+      },
+    ]
+  },
+  csirt_avanzado: {
+    title: "Gestor de Respuesta a Incidentes · Nivel Avanzado",
+    description: "Liderar incidentes mayores: estructura de mando y crisis, ejercicios de mesa, obligaciones de reporte, divulgación coordinada de vulnerabilidades, lecciones aprendidas y un caso sectorial integrador. Examen con nota mínima del 80%.",
+    lastUpdated: "Octubre 2026",
+    modules: [
+      {
+        id: 'gra_intro',
+        title: "1. 🎯 Nivel Avanzado: Liderar la Respuesta",
+        content: [
+          { type: 'text', icon: 'HappyUsersIcon', text: "En este nivel usted ya no atiende un ticket: lidera. Coordinará equipos y organizaciones bajo presión, tomará decisiones con información incompleta, rendirá cuentas a la dirección y a las autoridades, y convertirá cada incidente en mejoras." },
+          { type: 'text', icon: 'AlarmIcon', text: "El examen final toma 12 preguntas al azar de un banco de 16 y exige 80%. Al aprobarlo obtendrá el badge de Gestor de Respuesta a Incidentes · Nivel Avanzado." },
+        ]
+      },
+      {
+        id: 'gra_major',
+        title: "2. Gestión de un Incidente Mayor",
+        content: [
+          { type: 'text', icon: 'ServerIcon', text: "Un incidente mayor necesita una estructura de mando clara: un líder del incidente que decide y coordina, responsables técnicos por frente (contención, forense, recuperación), un enlace con la dirección, una vocería única, y alguien que lleve la bitácora de decisiones con su hora." },
+          { type: 'text', icon: 'CalendarIcon', text: "La cadencia importa: reuniones cortas a horas fijas, con el mismo formato (situación, acciones, bloqueos, próximas decisiones). La dirección decide sobre el negocio (cerrar un servicio, pagar o no, comunicar); el equipo técnico informa las opciones y sus riesgos." },
+          {
+            type: 'scenario',
+            title: 'Caso 1: ransomware en la red hospitalaria',
+            intro: "Lidera la respuesta de un CSIRT sectorial ficticio: un ransomware afecta a tres hospitales de una red pública. Necesita 60 de 80 puntos.",
+            start: 'h1',
+            maxPoints: 80,
+            passPoints: 60,
+            steps: {
+              h1: {
+                text: "Primera hora: todos llaman a todos y hay versiones contradictorias. ¿Qué hace primero?",
+                choices: [
+                  { text: "Establezco la estructura de mando: líder del incidente, responsables por frente, vocería única y bitácora de decisiones, con la primera reunión de situación en 30 minutos.", next: 'h2', points: 20, feedback: "Correcto: sin estructura, el caos multiplica los errores." },
+                  { text: "Me pongo yo mismo a revisar servidores para avanzar más rápido.", next: 'h2', points: 0, feedback: "Si el líder se dedica a lo técnico, nadie coordina." },
+                ]
+              },
+              h2: {
+                text: "Uno de los hospitales aún no está cifrado, pero comparte red con los afectados. ¿Qué recomienda?",
+                choices: [
+                  { text: "Aislar su conexión con la red compartida y activar sus procedimientos de contingencia clínica, priorizando la seguridad de los pacientes.", next: 'h3', points: 20, feedback: "Bien: se protege lo que aún funciona y se prioriza la vida de los pacientes." },
+                  { text: "Mantener todo conectado para no interrumpir la atención.", next: 'h3', points: -10, feedback: "Un riesgo enorme: el cifrado podría alcanzarlo en minutos." },
+                ]
+              },
+              h3: {
+                text: "La dirección pregunta si debe pagar el rescate. ¿Cuál es su papel?",
+                choices: [
+                  { text: "Presentar opciones con sus riesgos: estado de los respaldos, tiempo estimado de recuperación, que pagar no garantiza el descifrado ni la no publicación, implicaciones legales, y la recomendación del equipo. La decisión es de la dirección, con asesoría jurídica y las autoridades.", next: 'h4', points: 20, feedback: "Exacto: el equipo técnico informa y recomienda; la dirección decide con toda la información." },
+                  { text: "Decidir yo mismo pagar para terminar rápido.", next: 'h4', points: -10, feedback: "Excede su rol y omite riesgos legales, éticos y técnicos." },
+                ]
+              },
+              h4: {
+                text: "Hay tres hospitales, el ministerio y la prensa pidiendo información. ¿Cómo organiza las comunicaciones?",
+                choices: [
+                  { text: "Actualizaciones a horas fijas para cada público, con el TLP adecuado, y una sola vocería pública coordinada con el ministerio.", next: 'fin', points: 20, feedback: "Correcto: cadencia, públicos diferenciados y una sola voz." },
+                  { text: "Que cada hospital comunique lo que quiera.", next: 'fin', points: -10, feedback: "Mensajes contradictorios generan desconfianza y pánico." },
+                ]
+              },
+              fin: { text: "Fin del caso. Revise su puntaje y la retroalimentación." },
+            }
+          },
+        ]
+      },
+      {
+        id: 'gra_tabletop',
+        title: "3. Diseñar y Facilitar un Ejercicio de Mesa",
+        content: [
+          { type: 'text', icon: 'DocumentTextIcon', text: "Un ejercicio de mesa (tabletop) simula un incidente en una sala, sin tocar sistemas. Se define un objetivo (por ejemplo, probar la toma de decisiones de la dirección), un escenario realista, inyecciones de información que llegan durante el ejercicio, roles y criterios de evaluación." },
+          { type: 'text', icon: 'CheckCircleIcon', text: "El valor está en el debate y en las brechas que aparecen: decisiones que nadie sabe quién toma, contactos desactualizados, procedimientos que no existen. Todo se registra y se convierte en un plan de mejora con responsables y fechas." },
+          {
+            type: 'activity',
+            title: 'Reto: diseñe su propio ejercicio de mesa',
+            duration: '30–40 min',
+            groupSize: 'Individual o en equipo',
+            goal: 'Diseñar un ejercicio de mesa de 60 minutos para la dirección de una organización (puede ser la suya o una ficticia).',
+            downloads: [],
+            steps: [
+              { title: 'Objetivo', minutes: '5 min', detail: 'Escriba en una frase qué quiere probar. Ejemplo: "¿Sabe la dirección quién decide apagar un servicio crítico?"' },
+              { title: 'Escenario', minutes: '10 min', detail: 'Elija un incidente creíble para el sector (ransomware, fuga de datos, caída de un proveedor) y describa la situación inicial.' },
+              { title: 'Inyecciones', minutes: '10 min', detail: 'Prepare 4 inyecciones que lleguen cada 10–15 minutos: una llamada de la prensa, una nota de rescate, un proveedor que no responde, una solicitud del regulador.' },
+              { title: 'Roles y preguntas', minutes: '5 min', detail: 'Defina quién participa (dirección, TI, jurídica, comunicaciones) y las preguntas clave que cada inyección debe provocar.' },
+              { title: 'Evaluación', minutes: '5 min', detail: 'Defina cómo medirá el resultado: decisiones tomadas a tiempo, brechas detectadas y acciones de mejora con responsable.' },
+            ],
+            closing: 'Si lo realiza en su organización, compare las brechas encontradas con las lecciones aprendidas de este curso.',
+          },
+          {
+            type: 'quiz',
+            quizData: {
+              question: "En un ejercicio de mesa, nadie supo quién autoriza desconectar el servicio de pagos. ¿Qué se hace con ese hallazgo?",
+              options: [
+                "Nada: era solo un ejercicio.",
+                "Se registra como brecha y se define en el plan de respuesta quién autoriza esa decisión, con responsable y fecha.",
+                "Se repite el ejercicio hasta que alguien adivine."
+              ],
+              correctOptionIndex: 1,
+              feedback: {
+                correct: "Correcto: encontrar esas brechas antes del incidente real es exactamente el propósito del ejercicio.",
+                incorrect: "El ejercicio sirve para descubrir brechas y corregirlas antes de que ocurra un incidente real."
+              }
+            }
+          },
+        ]
+      },
+      {
+        id: 'gra_reporting',
+        title: "4. Obligaciones de Reporte y Coordinación con Autoridades",
+        content: [
+          { type: 'text', icon: 'DocumentTextIcon', text: "Además de responder, hay que reportar. En Colombia, si un incidente afecta datos personales, la Ley 1581 de 2012 obliga a informarlo a la Superintendencia de Industria y Comercio; los sectores vigilados tienen además reglas propias (por ejemplo, la Superintendencia Financiera para entidades financieras y la Superintendencia de la Economía Solidaria para cooperativas, con su Circular Externa 36 de 2022). Y los delitos se denuncian ante la Fiscalía." },
+          { type: 'text', icon: 'ClosedEnvelopeIcon', text: "El papel del CSIRT es tener listos esos reportes: saber qué autoridad aplica según el sector y el tipo de datos, qué plazos rigen y quién en la organización firma. Los plazos y formatos cambian con la regulación: verifíquelos siempre con el área jurídica y el regulador de su sector." },
+          {
+            type: 'memory',
+            title: 'Situación → a quién se reporta',
+            pairs: [
+              { term: 'Fuga de datos personales de clientes', definition: 'Superintendencia de Industria y Comercio (Ley 1581).' },
+              { term: 'Incidente en una cooperativa de ahorro y crédito', definition: 'Superintendencia de la Economía Solidaria (CE 36 de 2022).' },
+              { term: 'Fraude o acceso abusivo con víctimas', definition: 'Denuncia ante la Fiscalía General de la Nación.' },
+              { term: 'Indicadores útiles para otras entidades', definition: 'CSIRT sectorial o nacional, con el TLP adecuado.' },
+            ]
+          },
+        ]
+      },
+      {
+        id: 'gra_cvd',
+        title: "5. 🚩 Divulgación Coordinada de Vulnerabilidades",
+        content: [
+          { type: 'text', icon: 'ShieldCheckIcon', text: "Cuando un investigador encuentra una vulnerabilidad, la divulgación coordinada (CVD) busca que el fabricante la corrija antes de que se haga pública. El CSIRT puede actuar como coordinador: recibe el reporte, contacta al fabricante, acuerda un plazo y coordina la publicación con la solución disponible." },
+          {
+            type: 'challenge',
+            title: 'Coordine el caso VULN-2026-031',
+            brief: "Usted coordina un caso ficticio de divulgación. Lea el expediente y responda.",
+            artifacts: [
+              {
+                name: 'expediente_VULN-2026-031.txt',
+                content: `Producto: Software de historia clínica "ClinicaPro" v4.2 (fabricante ficticio: SaludSoft)
+Reporte del investigador: 2026-08-01 · inyección SQL en el módulo de citas · permite leer datos de pacientes
+2026-08-03  CSIRT confirma la vulnerabilidad en laboratorio
+2026-08-04  CSIRT notifica a SaludSoft · plazo acordado: 90 días
+2026-09-15  SaludSoft publica parche v4.2.1 para clientes con soporte
+2026-10-20  Se detecta explotación activa contra un hospital que NO aplicó el parche
+2026-11-02  Fecha acordada de publicación del aviso`,
+              },
+            ],
+            questions: [
+              { prompt: '¿Cuántos días de plazo se acordaron con el fabricante?', answers: ['90', '90 dias', '90 días'], explanation: '90 días es un plazo de referencia frecuente en divulgación coordinada.' },
+              { prompt: '¿Qué versión corrige la vulnerabilidad?', answers: ['4.2.1', 'v4.2.1'], explanation: 'La v4.2.1 corrige la falla; el problema ahora es que no todos los clientes la aplicaron.' },
+              { prompt: 'Con explotación activa detectada, ¿debe el CSIRT esperar al 2 de noviembre para alertar? (sí/no)', answers: ['no'], explanation: 'No: ante explotación activa se adelanta una alerta (con el TLP adecuado) a las entidades que usan el producto, para que apliquen el parche ya. La coordinación protege a las víctimas, no al calendario.' },
+            ],
+          },
+        ]
+      },
+      {
+        id: 'gra_lessons',
+        title: "6. Lecciones Aprendidas y Causa Raíz",
+        content: [
+          { type: 'text', icon: 'QuestionMarkCircleIcon', text: "La revisión posterior al incidente se hace sin buscar culpables: el objetivo es entender por qué el sistema permitió que ocurriera. La técnica de los \"cinco porqués\" ayuda a pasar del síntoma (se cifraron los servidores) a la causa raíz (no había doble factor en el acceso remoto ni respaldos fuera de línea)." },
+          { type: 'text', icon: 'CheckCircleIcon', text: "El informe ejecutivo resume: qué pasó y cuándo, impacto (días, personas, costo), causa raíz, qué funcionó y qué no, y un plan de mejora con responsables, fechas e indicadores para verificar que se cumpla." },
+          {
+            type: 'scenario',
+            title: 'Caso 2: la reunión de lecciones aprendidas',
+            intro: "Facilita la revisión posterior al ransomware hospitalario. Necesita 40 de 60 puntos.",
+            start: 'l1',
+            maxPoints: 60,
+            passPoints: 40,
+            steps: {
+              l1: {
+                text: "El director de TI llega diciendo: \"Esto fue culpa del técnico que dejó abierto el escritorio remoto\". ¿Cómo encauza la reunión?",
+                choices: [
+                  { text: "Recuerdo que la revisión es sin culpables y pregunto por qué el sistema permitió que un acceso remoto quedara abierto sin doble factor ni monitoreo.", next: 'l2', points: 20, feedback: "Bien: se buscan causas del sistema, no un chivo expiatorio." },
+                  { text: "Le doy la razón y se anota como causa: error humano.", next: 'l2', points: -10, feedback: "\"Error humano\" no es una causa raíz útil: no dice qué cambiar." },
+                ]
+              },
+              l2: {
+                text: "Tras los cinco porqués, ¿cuál es la mejor formulación de causa raíz?",
+                choices: [
+                  { text: "No existía un control que exigiera doble factor y revisión periódica de los accesos remotos, y los respaldos estaban en la misma red.", next: 'l3', points: 20, feedback: "Correcto: es accionable y sistémica." },
+                  { text: "Los atacantes eran muy sofisticados.", next: 'l3', points: 0, feedback: "Describe al atacante, no lo que la organización puede mejorar." },
+                ]
+              },
+              l3: {
+                text: "¿Cómo se asegura de que las mejoras se cumplan?",
+                choices: [
+                  { text: "Cada acción tiene responsable, fecha e indicador, y se revisa su avance en el comité cada mes.", next: 'fin', points: 20, feedback: "Excelente: sin seguimiento, las lecciones se olvidan." },
+                  { text: "Se envía el informe por correo y se archiva.", next: 'fin', points: 0, feedback: "Es la forma más común de que el incidente se repita." },
+                ]
+              },
+              fin: { text: "Fin del caso. Revise su puntaje y la retroalimentación." },
+            }
+          },
+        ]
+      },
+      {
+        id: 'gra_capstone',
+        title: "7. 🧩 Caso Integrador: Ataque a la Cadena de Suministro del Sector",
+        content: [
+          { type: 'text', icon: 'SpyIcon', text: "Caso final: un proveedor de software usado por muchas entidades de un sector fue comprometido y distribuyó una actualización maliciosa. Usted lidera el CSIRT sectorial ficticio." },
+          {
+            type: 'scenario',
+            title: 'Caso integrador: la actualización envenenada',
+            intro: "Un fabricante ficticio de software contable usado por 60 entidades del sector distribuyó una actualización con una puerta trasera. Necesita 80 de 100 puntos.",
+            start: 'x1',
+            maxPoints: 100,
+            passPoints: 80,
+            steps: {
+              x1: {
+                text: "Recibe el aviso de un CSIRT internacional con indicadores, marcado TLP:AMBER. ¿Qué hace primero?",
+                choices: [
+                  { text: "Valido los indicadores, identifico qué entidades del sector usan el software y les envío una alerta con acciones inmediatas, respetando el TLP:AMBER.", next: 'x2', points: 20, feedback: "Correcto: validar, delimitar el alcance y alertar rápido a quienes están expuestos." },
+                  { text: "Publico la alerta completa en redes sociales para llegar a todos.", next: 'x2', points: -10, feedback: "Viola el TLP:AMBER y rompe la confianza de quien compartió." },
+                ]
+              },
+              x2: {
+                text: "¿Qué acción inmediata recomienda a las entidades?",
+                choices: [
+                  { text: "Aislar los servidores con la versión afectada, buscar los indicadores en sus registros y no aplicar actualizaciones del fabricante hasta que confirme una versión limpia.", next: 'x3', points: 20, feedback: "Bien: contención y búsqueda, sin profundizar el daño." },
+                  { text: "Desinstalar el software de inmediato en todas partes sin revisar nada.", next: 'x3', points: 5, feedback: "Puede detener la operación contable y destruir evidencia; se necesita un enfoque más medido." },
+                ]
+              },
+              x3: {
+                text: "Tres entidades encuentran conexiones a los servidores del atacante. ¿Cómo prioriza el apoyo del CSIRT?",
+                choices: [
+                  { text: "Primero las comprometidas, por impacto: las que manejan más datos sensibles o servicios críticos, con apoyo forense y de contención.", next: 'x4', points: 20, feedback: "Correcto: triage aplicado a nivel sectorial." },
+                  { text: "Por orden de llegada de los correos.", next: 'x4', points: 0, feedback: "El orden de llegada no refleja el riesgo." },
+                ]
+              },
+              x4: {
+                text: "El fabricante pide no mencionar su nombre en ninguna comunicación. ¿Qué hace?",
+                choices: [
+                  { text: "Coordino con él los tiempos y el contenido, pero las entidades afectadas necesitan saber qué producto revisar: la protección de las víctimas prima.", next: 'x5', points: 20, feedback: "Bien: coordinación sí, ocultamiento que deje expuestas a las víctimas, no." },
+                  { text: "Acepto: el fabricante es un aliado importante.", next: 'x5', points: -10, feedback: "Sin nombrar el producto, las entidades no pueden protegerse." },
+                ]
+              },
+              x5: {
+                text: "Superada la crisis, ¿qué deja el CSIRT al sector?",
+                choices: [
+                  { text: "Un informe con línea de tiempo, indicadores compartibles, lecciones aprendidas y recomendaciones de gestión de proveedores (cláusulas de notificación, verificación de actualizaciones, ejercicios conjuntos).", next: 'fin', points: 20, feedback: "Excelente: el sector sale más preparado." },
+                  { text: "Un agradecimiento a los participantes.", next: 'fin', points: 0, feedback: "Agradecer está bien, pero sin informe ni recomendaciones no hay mejora." },
+                ]
+              },
+              fin: { text: "Fin del caso integrador. Si aprobó, está listo para el examen final." },
+            }
+          },
+        ]
+      },
+      {
+        id: 'gra_exam',
+        title: "8. 📝 Examen del Nivel Avanzado",
+        content: [
+          { type: 'text', icon: 'CheckCircleIcon', text: "Examen final de la ruta Gestor de Respuesta a Incidentes: 12 preguntas al azar de un banco de 16, con 80% para aprobar." },
+          {
+            type: 'exam',
+            title: 'Examen: Gestor de Respuesta a Incidentes · Avanzado',
+            description: 'Evalúa gestión de incidentes mayores, ejercicios de mesa, reporte a autoridades, divulgación coordinada y lecciones aprendidas.',
+            passPercent: 80,
+            questionsPerAttempt: 12,
+            questions: [
+              { question: '¿Qué es lo primero en la primera hora de un incidente mayor?', options: [{ id: 's1a', text: 'Establecer la estructura de mando, la vocería única y la bitácora de decisiones.', isCorrect: true, score: 10 }, { id: 's1b', text: 'Que el líder revise personalmente los servidores.', isCorrect: false, score: 0 }, { id: 's1c', text: 'Esperar a tener toda la información.', isCorrect: false, score: 0 }], feedback: 'Sin estructura, el caos multiplica los errores.' },
+              { question: 'En un incidente mayor, ¿quién decide sobre el negocio (cerrar un servicio, pagar un rescate)?', options: [{ id: 's2a', text: 'La dirección, con las opciones y riesgos que presenta el equipo.', isCorrect: true, score: 10 }, { id: 's2b', text: 'El técnico de turno.', isCorrect: false, score: 0 }, { id: 's2c', text: 'El atacante.', isCorrect: false, score: 0 }], feedback: 'El equipo técnico informa y recomienda.' },
+              { question: '¿Garantiza el pago de un rescate la recuperación de los datos?', options: [{ id: 's3a', text: 'No: no garantiza el descifrado ni que los datos no se publiquen.', isCorrect: true, score: 10 }, { id: 's3b', text: 'Sí, siempre.', isCorrect: false, score: 0 }, { id: 's3c', text: 'Solo si se paga rápido.', isCorrect: false, score: 0 }], feedback: 'Es una de las razones para no depender del pago.' },
+              { question: 'Un sitio aún no afectado comparte red con los cifrados. ¿Qué se recomienda?', options: [{ id: 's4a', text: 'Aislar su conexión y activar la contingencia.', isCorrect: true, score: 10 }, { id: 's4b', text: 'Mantenerlo conectado.', isCorrect: false, score: 0 }, { id: 's4c', text: 'Apagar toda la ciudad.', isCorrect: false, score: 0 }], feedback: 'Se protege lo que aún funciona.' },
+              { question: '¿Qué es un ejercicio de mesa (tabletop)?', options: [{ id: 's5a', text: 'Una simulación de un incidente en sala, sin tocar sistemas, para probar decisiones y procedimientos.', isCorrect: true, score: 10 }, { id: 's5b', text: 'Un ataque real controlado contra la red.', isCorrect: false, score: 0 }, { id: 's5c', text: 'Una auditoría documental.', isCorrect: false, score: 0 }], feedback: 'Su valor está en las brechas que revela.' },
+              { question: 'En un ejercicio de mesa, ¿qué son las "inyecciones"?', options: [{ id: 's6a', text: 'Información nueva que llega durante el ejercicio para provocar decisiones.', isCorrect: true, score: 10 }, { id: 's6b', text: 'Ataques de inyección SQL.', isCorrect: false, score: 0 }, { id: 's6c', text: 'El presupuesto del ejercicio.', isCorrect: false, score: 0 }], feedback: 'Por ejemplo, una llamada de la prensa o una nota de rescate.' },
+              { question: 'Un incidente expuso datos personales de clientes en Colombia. ¿A qué autoridad se informa?', options: [{ id: 's7a', text: 'A la Superintendencia de Industria y Comercio.', isCorrect: true, score: 10 }, { id: 's7b', text: 'A ninguna.', isCorrect: false, score: 0 }, { id: 's7c', text: 'Solo a los medios.', isCorrect: false, score: 0 }], feedback: 'Es la autoridad de protección de datos (Ley 1581).' },
+              { question: '¿Qué circular de la Supersolidaria aplica a la seguridad de la información en cooperativas?', options: [{ id: 's8a', text: 'La Circular Externa 36 de 2022.', isCorrect: true, score: 10 }, { id: 's8b', text: 'La Ley 1273 de 2009.', isCorrect: false, score: 0 }, { id: 's8c', text: 'El RFC 2350.', isCorrect: false, score: 0 }], feedback: 'Incluye requisitos y reporte de incidentes.' },
+              { question: '¿Qué busca la divulgación coordinada de vulnerabilidades?', options: [{ id: 's9a', text: 'Que el fabricante corrija la falla antes de que se haga pública.', isCorrect: true, score: 10 }, { id: 's9b', text: 'Ocultar la falla para siempre.', isCorrect: false, score: 0 }, { id: 's9c', text: 'Vender la falla al mejor postor.', isCorrect: false, score: 0 }], feedback: 'Equilibra la corrección con el derecho a saber.' },
+              { question: 'Durante el plazo acordado de divulgación se detecta explotación activa. ¿Qué hace el CSIRT?', options: [{ id: 's10a', text: 'Adelanta una alerta a los usuarios del producto para que se protejan.', isCorrect: true, score: 10 }, { id: 's10b', text: 'Espera la fecha acordada.', isCorrect: false, score: 0 }, { id: 's10c', text: 'Cierra el caso.', isCorrect: false, score: 0 }], feedback: 'La protección de las víctimas prima sobre el calendario.' },
+              { question: '¿Cómo debe ser la revisión posterior al incidente?', options: [{ id: 's11a', text: 'Sin buscar culpables, enfocada en por qué el sistema lo permitió.', isCorrect: true, score: 10 }, { id: 's11b', text: 'Para identificar a quién sancionar.', isCorrect: false, score: 0 }, { id: 's11c', text: 'Opcional.', isCorrect: false, score: 0 }], feedback: 'Así la gente reporta y se aprende.' },
+              { question: '¿Por qué "error humano" no es una buena causa raíz?', options: [{ id: 's12a', text: 'Porque no dice qué control o proceso cambiar.', isCorrect: true, score: 10 }, { id: 's12b', text: 'Porque los humanos no cometen errores.', isCorrect: false, score: 0 }, { id: 's12c', text: 'Porque es demasiado específica.', isCorrect: false, score: 0 }], feedback: 'La causa raíz debe ser accionable.' },
+              { question: '¿Qué asegura que las lecciones aprendidas se cumplan?', options: [{ id: 's13a', text: 'Acciones con responsable, fecha e indicador, revisadas periódicamente.', isCorrect: true, score: 10 }, { id: 's13b', text: 'Enviar el informe por correo.', isCorrect: false, score: 0 }, { id: 's13c', text: 'Archivar el informe.', isCorrect: false, score: 0 }], feedback: 'Sin seguimiento, se repite el incidente.' },
+              { question: 'Recibe indicadores marcados TLP:AMBER de un CSIRT internacional. ¿Puede publicarlos en redes?', options: [{ id: 's14a', text: 'No: AMBER limita su difusión a quienes necesitan saberlo.', isCorrect: true, score: 10 }, { id: 's14b', text: 'Sí, para alertar a todos.', isCorrect: false, score: 0 }, { id: 's14c', text: 'Sí, si quita el logo.', isCorrect: false, score: 0 }], feedback: 'Respetar el TLP sostiene la confianza.' },
+              { question: 'En un ataque a la cadena de suministro, ¿qué se recomienda primero a las entidades?', options: [{ id: 's15a', text: 'Aislar los sistemas con la versión afectada y buscar los indicadores en sus registros.', isCorrect: true, score: 10 }, { id: 's15b', text: 'Instalar más actualizaciones del mismo fabricante de inmediato.', isCorrect: false, score: 0 }, { id: 's15c', text: 'No hacer nada hasta el informe final.', isCorrect: false, score: 0 }], feedback: 'Contener y buscar, sin profundizar el daño.' },
+              { question: 'El fabricante comprometido pide no ser nombrado. ¿Qué prima?', options: [{ id: 's16a', text: 'Que las entidades afectadas sepan qué producto revisar para protegerse.', isCorrect: true, score: 10 }, { id: 's16b', text: 'La reputación del fabricante.', isCorrect: false, score: 0 }, { id: 's16c', text: 'El silencio total.', isCorrect: false, score: 0 }], feedback: 'Se coordina con el fabricante, sin dejar expuestas a las víctimas.' },
+            ],
+          },
+        ]
+      },
+    ]
   }
 };
 

@@ -20,6 +20,8 @@ const BADGE_COLORS: Record<string, [string, string]> = {
   cybercrime_avanzado: ['#7f1d1d', '#0c0a09'],
   forensic_intermedio: ['#15803d', '#052e16'],
   forensic_avanzado: ['#14532d', '#0c0a09'],
+  csirt_intermedio: ['#0f766e', '#042f2e'],
+  csirt_avanzado: ['#134e4a', '#0c0a09'],
   [ROUTE_CERTIFICATE_ID]: ['#eab308', '#713f12'],
 };
 
@@ -62,6 +64,8 @@ const BADGE_TITLES: Record<string, string> = {
   cybercrime_avanzado: 'Investigador Cibercriminal',
   forensic_intermedio: 'Perito Forense Digital',
   forensic_avanzado: 'Perito Forense Digital',
+  csirt_intermedio: 'Gestor de Respuesta a Incidentes',
+  csirt_avanzado: 'Gestor de Respuesta a Incidentes',
   [ROUTE_CERTIFICATE_ID]: 'Ruta de Ciberseguridad',
 };
 
