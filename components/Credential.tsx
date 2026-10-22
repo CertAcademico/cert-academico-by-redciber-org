@@ -1,5 +1,5 @@
 import React, { forwardRef, useRef, useState } from 'react';
-import { BRAND, appUrl } from '../platform';
+import { BRAND, FREE_ROUTE, appUrl } from '../platform';
 import { ROUTE_CERTIFICATE_ID } from '../certificateService';
 import type { Certificate } from '../certificateService';
 
@@ -33,7 +33,7 @@ const wrap = (text: string, max: number): string[] => {
     }
   }
   if (line) lines.push(line);
-  return lines.slice(0, 4);
+  return lines;
 };
 
 export const verifyUrl = (code: string) => appUrl(`?verificar=${encodeURIComponent(code)}`);
@@ -41,43 +41,102 @@ export const verifyUrl = (code: string) => appUrl(`?verificar=${encodeURICompone
 const formatDate = (iso: string) =>
   new Date(iso).toLocaleDateString('es-CO', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'America/Bogota' });
 
-/** Badge digital en SVG (400×460). */
+// Título corto que cabe en el badge (el certificado usa el título completo).
+const BADGE_TITLES: Record<string, string> = {
+  cybersecurity: 'Fundamentos de Ciberseguridad',
+  cybercrime: 'Investigación del Cibercrimen',
+  cybercriminology: 'Principios de Cibercriminología',
+  quantum_computing: 'Computación Cuántica',
+  forensic_auditing: 'Auditoría Forense Digital',
+  artificial_intelligence: 'Inteligencia Artificial y LLMs',
+  ia_ofensiva_insider: 'IA Ofensiva e Insider',
+  cert_csirt: 'CERTs y CSIRTs',
+  auditoria_ciberriesgo: 'Auditoría del Riesgo Cibernético',
+  cti_basico: 'Cyber Threat Intelligence',
+  [ROUTE_CERTIFICATE_ID]: 'Ruta de Ciberseguridad',
+};
+
+/** Ícono de cada curso, dibujado en una caja de 64×64. */
+const BadgeIcon: React.FC<{ pathId: string; color: string }> = ({ pathId, color }) => {
+  const s = { fill: 'none', stroke: color, strokeWidth: 4, strokeLinecap: 'round' as const, strokeLinejoin: 'round' as const };
+  switch (pathId) {
+    case 'cybersecurity': // escudo con candado
+      return (<g {...s}><path d="M32 4 L56 13 V30 C56 46 45 56 32 61 C19 56 8 46 8 30 V13 Z" /><rect x="22" y="30" width="20" height="15" rx="3" /><path d="M26 30 V25 a6 6 0 0 1 12 0 V30" /></g>);
+    case 'cybercrime': // lupa de investigación
+      return (<g {...s}><circle cx="27" cy="27" r="18" /><path d="M40 40 L57 57" strokeWidth={6} /><path d="M27 17 V29" /><circle cx="27" cy="36" r="1.5" fill={color} /></g>);
+    case 'cybercriminology': // perfil con interrogante: la mente del delincuente
+      return (<g {...s}><path d="M22 60 V47 C14 43 9 35 11 25 C13 13 24 5 36 6 C48 7 56 18 54 30 L58 38 L53 40 V47 C53 51 50 53 46 52 L41 51 V60" /><path d="M28 21 a6 6 0 1 1 8 6 c-2 1 -3 2 -3 5" /><circle cx="33" cy="38" r="1.5" fill={color} /></g>);
+    case 'quantum_computing': // átomo
+      return (<g {...s} strokeWidth={3.5}><ellipse cx="32" cy="32" rx="27" ry="10" /><ellipse cx="32" cy="32" rx="27" ry="10" transform="rotate(60 32 32)" /><ellipse cx="32" cy="32" rx="27" ry="10" transform="rotate(120 32 32)" /><circle cx="32" cy="32" r="4" fill={color} /></g>);
+    case 'forensic_auditing': // huella digital
+      return (<g {...s} strokeWidth={3.5}><path d="M14 40 C12 30 14 20 22 13 C29 7 41 7 48 14 C54 20 55 30 53 40" /><path d="M21 50 C18 40 18 29 24 22 C29 17 37 17 42 23 C46 28 46 38 44 48" /><path d="M29 57 C26 48 26 37 29 30 C31 26 35 26 37 30 C39 37 38 46 36 55" /><path d="M32 33 C33 42 32 50 29 58" /></g>);
+    case 'artificial_intelligence': // chip de IA
+      return (<g {...s}><rect x="15" y="15" width="34" height="34" rx="5" /><path d="M24 15 V7 M32 15 V7 M40 15 V7 M24 49 V57 M32 49 V57 M40 49 V57 M15 24 H7 M15 32 H7 M15 40 H7 M49 24 H57 M49 32 H57 M49 40 H57" /><text x="32" y="38" textAnchor="middle" fontFamily="Arial, Helvetica, sans-serif" fontWeight="700" fontSize="16" fill={color} stroke="none">IA</text></g>);
+    case 'cert_csirt': // radar de respuesta a incidentes
+      return (<g {...s}><circle cx="32" cy="32" r="26" /><circle cx="32" cy="32" r="15" /><path d="M32 32 L50 14" /><circle cx="44" cy="22" r="3" fill={color} /><circle cx="32" cy="32" r="2.5" fill={color} /></g>);
+    case 'ia_ofensiva_insider': // mira
+      return (<g {...s}><circle cx="32" cy="32" r="22" /><circle cx="32" cy="32" r="8" /><path d="M32 4 V16 M32 48 V60 M4 32 H16 M48 32 H60" /></g>);
+    case 'auditoria_ciberriesgo': // portapapeles con visto bueno
+      return (<g {...s}><rect x="13" y="10" width="38" height="48" rx="5" /><rect x="23" y="5" width="18" height="10" rx="3" /><path d="M22 36 L29 43 L43 27" /></g>);
+    case 'cti_basico': // ojo de inteligencia
+      return (<g {...s}><path d="M4 32 C14 15 50 15 60 32 C50 49 14 49 4 32 Z" /><circle cx="32" cy="32" r="10" /><circle cx="32" cy="32" r="3.5" fill={color} /></g>);
+    case ROUTE_CERTIFICATE_ID: // trofeo
+      return (<g {...s}><path d="M20 8 H44 V22 C44 32 39 39 32 39 C25 39 20 32 20 22 Z" /><path d="M20 13 H11 C11 23 15 28 21 28 M44 13 H53 C53 23 49 28 43 28" /><path d="M32 39 V49 M23 57 H41 M26 49 H38" /></g>);
+    default: // visto bueno genérico
+      return (<g {...s}><circle cx="32" cy="32" r="26" /><path d="M20 33 L29 42 L45 24" /></g>);
+  }
+};
+
+/** Badge digital en SVG (400×460): hexágono con ícono del curso, título y posición en la ruta. */
 export const BadgeSvg = forwardRef<SVGSVGElement, { pathId: string; title: string; year: string; size?: number }>(
   ({ pathId, title, year, size = 220 }, ref) => {
     const [c1, c2] = BADGE_COLORS[pathId] ?? ['#2563eb', '#1e3a8a'];
     const isRoute = pathId === ROUTE_CERTIFICATE_ID;
-    const lines = wrap(title.toUpperCase(), 20);
-    const gid = `g-${pathId}`;
+    const routeIndex = FREE_ROUTE.indexOf(pathId);
+    const ribbon = isRoute
+      ? `RUTA COMPLETA · ${year}`
+      : routeIndex >= 0
+        ? `CURSO ${routeIndex + 1} DE ${FREE_ROUTE.length} · ${year}`
+        : `CURSO COMPLETADO · ${year}`;
+    const lines = wrap((BADGE_TITLES[pathId] ?? cleanCourseTitle(title)).toUpperCase(), 17).slice(0, 3);
+    const id = `b-${pathId}`;
+    const hex = 'M200 22 L367 118 V310 L200 406 L33 310 V118 Z';
+    const font = 'Arial, Helvetica, sans-serif';
     return (
       <svg ref={ref} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 460" width={size} height={(size * 460) / 400} role="img" aria-label={`Badge: ${title}`}>
         <defs>
-          <linearGradient id={gid} x1="0" y1="0" x2="1" y2="1">
+          <linearGradient id={`${id}-g`} x1="0" y1="0" x2="1" y2="1">
             <stop offset="0" stopColor={c1} />
             <stop offset="1" stopColor={c2} />
           </linearGradient>
+          <pattern id={`${id}-p`} width="28" height="28" patternUnits="userSpaceOnUse">
+            <path d="M0 14 H10 L14 10 V0 M28 14 H18 L14 18 V28" fill="none" stroke="#ffffff" strokeOpacity="0.07" strokeWidth="1.5" />
+            <circle cx="14" cy="14" r="1.6" fill="#ffffff" fillOpacity="0.1" />
+          </pattern>
+          <clipPath id={`${id}-c`}><path d={hex} /></clipPath>
         </defs>
-        {/* Escudo */}
-        <path d="M200 10 L380 70 V230 C380 340 300 410 200 450 C100 410 20 340 20 230 V70 Z" fill={`url(#${gid})`} />
-        <path d="M200 30 L362 84 V230 C362 330 290 392 200 428 C110 392 38 330 38 230 V84 Z" fill="none" stroke="#ffffff" strokeOpacity="0.55" strokeWidth="3" />
+        {/* Hexágono con borde y textura de circuito */}
+        <path d={hex} fill={c2} stroke={c2} strokeWidth="18" strokeLinejoin="round" />
+        <path d={hex} fill={`url(#${id}-g)`} />
+        <rect width="400" height="460" fill={`url(#${id}-p)`} clipPath={`url(#${id}-c)`} />
+        <path d="M200 40 L351 127 V301 L200 388 L49 301 V127 Z" fill="none" stroke="#ffffff" strokeOpacity="0.35" strokeWidth="2" strokeLinejoin="round" />
         {/* Marca */}
-        <text x="200" y="88" textAnchor="middle" fill="#ffffff" fontFamily="Arial, Helvetica, sans-serif" fontWeight="700" fontSize="20" letterSpacing="3">CERT ACADÉMICO</text>
-        <text x="200" y="110" textAnchor="middle" fill="#ffffff" fillOpacity="0.8" fontFamily="Arial, Helvetica, sans-serif" fontSize="13" letterSpacing="1">by RedCiber.org</text>
-        {/* Sello central */}
-        <circle cx="200" cy="168" r="38" fill="#ffffff" fillOpacity="0.15" stroke="#ffffff" strokeOpacity="0.7" strokeWidth="2" />
-        {isRoute ? (
-          <path d="M200 142 l8 17 19 2-14 13 4 19-17-10-17 10 4-19-14-13 19-2z" fill="#ffffff" />
-        ) : (
-          <path d="M184 168 l11 11 22-24" fill="none" stroke="#ffffff" strokeWidth="7" strokeLinecap="round" strokeLinejoin="round" />
-        )}
-        {/* Curso */}
+        <text x="200" y="88" textAnchor="middle" fill="#ffffff" fontFamily={font} fontWeight="700" fontSize="15" letterSpacing="3">CERT ACADÉMICO</text>
+        {/* Ícono del curso */}
+        <circle cx="200" cy="152" r="50" fill="#ffffff" />
+        <circle cx="200" cy="152" r="54" fill="none" stroke="#ffffff" strokeOpacity="0.35" strokeWidth="6" />
+        <g transform="translate(161.6 113.6) scale(1.2)"><BadgeIcon pathId={pathId} color={c2} /></g>
+        {/* Título del curso */}
         {lines.map((l, i) => (
-          <text key={i} x="200" y={256 + i * 26 - (lines.length - 1) * 9} textAnchor="middle" fill="#ffffff" fontFamily="Arial, Helvetica, sans-serif" fontWeight="700" fontSize="21">{l}</text>
+          <text key={i} x="200" y={236 + i * 25} textAnchor="middle" fill="#ffffff" fontFamily={font} fontWeight="700" fontSize="20">{l}</text>
         ))}
-        {/* Cinta */}
-        <rect x="55" y="350" width="290" height="36" rx="6" fill="#ffffff" />
-        <text x="200" y="374" textAnchor="middle" fill={c2} fontFamily="Arial, Helvetica, sans-serif" fontWeight="700" fontSize="15" letterSpacing="1">
-          {isRoute ? 'RUTA COMPLETA' : 'CURSO COMPLETADO'} · {year}
-        </text>
+        {/* Cinta con extremos plegados */}
+        <path d="M14 326 L44 326 L44 362 L14 362 L26 344 Z" fill={c2} />
+        <path d="M386 326 L356 326 L356 362 L386 362 L374 344 Z" fill={c2} />
+        <rect x="34" y="318" width="332" height="38" rx="4" fill="#ffffff" />
+        <text x="200" y="343" textAnchor="middle" fill={c2} fontFamily={font} fontWeight="700" fontSize="16" letterSpacing="1.5">{ribbon}</text>
+        {/* Firma de la marca */}
+        <text x="200" y="384" textAnchor="middle" fill="#ffffff" fillOpacity="0.85" fontFamily={font} fontSize="13" letterSpacing="1">by RedCiber.org</text>
       </svg>
     );
   },
