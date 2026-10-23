@@ -1,14 +1,7 @@
 import React, { useState } from 'react';
 import type { ExamContent, H5PQuestion } from '../types';
+import { shuffle } from '../shuffle';
 
-const shuffle = <T,>(arr: T[]): T[] => {
-  const a = [...arr];
-  for (let i = a.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [a[i], a[j]] = [a[j], a[i]];
-  }
-  return a;
-};
 
 const drawAttempt = (data: ExamContent): H5PQuestion[] =>
   shuffle(data.questions)

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import type { H5PCheckContent } from '../types';
+import { shuffle } from '../shuffle';
 
 interface H5PCheckViewProps {
   data: H5PCheckContent;
@@ -15,7 +16,9 @@ export const H5PCheckView: React.FC<H5PCheckViewProps> = ({ data, onComplete }) 
   const [gameFinished, setGameFinished] = useState(false);
   const [answersLog, setAnswersLog] = useState<{ question: string; chosen: string; isCorrect: boolean }[]>([]);
 
-  const currentQuestion = data.questions[currentQuestionIndex];
+  // Opciones barajadas por pregunta (se identifican por id, así que el puntaje no cambia).
+  const [questions] = useState(() => data.questions.map(q => ({ ...q, options: shuffle(q.options) })));
+  const currentQuestion = questions[currentQuestionIndex];
   const maxPossible = data.questions.length * 10;
 
   const handleSelectOption = (optionId: string) => {

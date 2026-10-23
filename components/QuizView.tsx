@@ -1,6 +1,7 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import type { QuizData } from '../types';
+import { shuffle } from '../shuffle';
 
 interface QuizViewProps {
   data: QuizData;
@@ -17,6 +18,8 @@ const QuizView: React.FC<QuizViewProps> = ({ data, onComplete }) => {
   const [selectedOption, setSelectedOption] = useState<number | null>(null);
   const [answerState, setAnswerState] = useState<AnswerState>(AnswerState.UNANSWERED);
   const retryButtonRef = useRef<HTMLButtonElement>(null);
+  // Orden de presentación barajado; los índices siguen siendo los originales (correctOptionIndex no cambia).
+  const [order] = useState(() => shuffle(data.options.map((_, i) => i)));
 
   useEffect(() => {
     if (answerState === AnswerState.INCORRECT) {
@@ -68,7 +71,7 @@ const QuizView: React.FC<QuizViewProps> = ({ data, onComplete }) => {
     <div className="h-full flex flex-col items-center justify-center p-8 text-center">
       <h2 className="text-2xl md:text-3xl font-bold mb-6">{data.question}</h2>
       <div className="w-full max-w-2xl space-y-4">
-        {data.options.map((option, index) => (
+        {order.map(index => ({ option: data.options[index], index })).map(({ option, index }) => (
           <button
             key={index}
             onClick={() => handleOptionClick(index)}

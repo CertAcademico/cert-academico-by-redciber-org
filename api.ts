@@ -2312,7 +2312,7 @@ const LEARNING_PATHS_DATA: LearningPaths = {
             pairs: [
               { term: 'e3b0c442…b855', definition: 'Hash (base de la pirámide).' },
               { term: '203.0.113.45', definition: 'Dirección IP.' },
-              { term: 'banco-actualiza-datos.co', definition: 'Nombre de dominio.' },
+              { term: 'banco-actualiza-datos.example', definition: 'Nombre de dominio.' },
               { term: 'Robar credenciales volcando la memoria de LSASS', definition: 'TTP (cima de la pirámide).' },
             ]
           },
@@ -2535,7 +2535,7 @@ const LEARNING_PATHS_DATA: LearningPaths = {
         title: "10. 🧪 Laboratorio: Su Primer Informe de Inteligencia",
         content: [
           { type: 'text', icon: 'DocumentTextIcon', text: "Un informe de inteligencia empieza por la conclusión (BLUF, por Bottom Line Up Front): en las primeras líneas, qué pasa, qué tan seguro está y qué se recomienda hacer. Los detalles van después." },
-          { type: 'text', icon: 'AlarmIcon', text: "Caso ficticio: varios funcionarios de una universidad reciben un correo \"de Rectoría\" con el asunto \"Actualización de nómina\" que lleva a un formulario en el dominio rectoria-nomina-universidad.co (registrado hace 3 días). Dos personas ingresaron su contraseña. Al día siguiente, una de esas cuentas inicia sesión desde otro país y crea una regla para reenviar todo su correo hacia afuera." },
+          { type: 'text', icon: 'AlarmIcon', text: "Caso ficticio: varios funcionarios de una universidad reciben un correo \"de Rectoría\" con el asunto \"Actualización de nómina\" que lleva a un formulario en el dominio rectoria-nomina-universidad.example (registrado hace 3 días). Dos personas ingresaron su contraseña. Al día siguiente, una de esas cuentas inicia sesión desde otro país y crea una regla para reenviar todo su correo hacia afuera." },
           {
             type: 'activity',
             title: 'Laboratorio: analice el caso y redacte su informe',
@@ -2557,7 +2557,7 @@ const LEARNING_PATHS_DATA: LearningPaths = {
             quizData: {
               question: "En el caso, ¿qué recomendación ataca la TTP y no solo el indicador?",
               options: [
-                "Bloquear el dominio rectoria-nomina-universidad.co.",
+                "Bloquear el dominio rectoria-nomina-universidad.example.",
                 "Activar MFA y alertar sobre la creación de reglas de reenvío externo, para que una contraseña robada no baste y el robo de correo se detecte.",
                 "Bloquear la IP del país desde donde se conectaron."
               ],
