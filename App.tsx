@@ -29,6 +29,7 @@ import ActivityView from './components/ActivityView';
 import ScenarioLabView from './components/ScenarioLabView';
 import ChallengeLabView from './components/ChallengeLabView';
 import ExamView from './components/ExamView';
+import LibraryView from './components/LibraryView';
 import ChangePasswordModal from './components/ChangePasswordModal';
 import { FREE_ROUTE } from './platform';
 import { EXPERTISE_TRACKS, LEVEL_PATHS } from './expertise';
@@ -133,10 +134,13 @@ interface LearningPathViewProps {
   onExit: () => void;
   userId: string;
   unlockAll: boolean;
+  /** Puede agregar y eliminar materiales de la biblioteca. */
+  isAdmin: boolean;
 }
 
-const LearningPathView: React.FC<LearningPathViewProps> = ({ path, pathId, onExit, userId, unlockAll }) => {
+const LearningPathView: React.FC<LearningPathViewProps> = ({ path, pathId, onExit, userId, unlockAll, isAdmin }) => {
   const [currentModuleIndex, setCurrentModuleIndex] = useState(0);
+  const [showLibrary, setShowLibrary] = useState(false);
   const [completedModules, setCompletedModules] = useState<number[]>([]);
   const [isProgressLoading, setIsProgressLoading] = useState(true);
   const moduleContentRef = useRef<HTMLDivElement>(null);
@@ -262,8 +266,18 @@ const LearningPathView: React.FC<LearningPathViewProps> = ({ path, pathId, onExi
             ← Volver al Panel
           </button>
           <h1 className="text-2xl md:text-3xl font-bold text-center">{path.title}</h1>
-          <div className="w-36" />
+          <div className="w-36 flex justify-end">
+            <button
+              onClick={() => setShowLibrary(true)}
+              className="text-sm text-violet-200 border border-violet-500/40 hover:border-violet-300 bg-violet-500/10 rounded-lg px-3 py-1.5"
+            >
+              📚 Biblioteca
+            </button>
+          </div>
         </div>
+        {showLibrary && (
+          <LibraryView pathId={pathId} path={path} isAdmin={isAdmin} userId={userId} onClose={() => setShowLibrary(false)} />
+        )}
 
         <ProgressBar
           completedCount={completedModules.length}
@@ -1018,6 +1032,7 @@ const App: React.FC = () => {
       onExit={() => setSelectedPathId(null)}
       userId={currentUser.id}
       unlockAll={isAdmin || isFreeStudent}
+      isAdmin={isAdmin}
     />
   );
 };
