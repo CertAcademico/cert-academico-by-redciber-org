@@ -30,6 +30,8 @@ import ScenarioLabView from './components/ScenarioLabView';
 import ChallengeLabView from './components/ChallengeLabView';
 import ExamView from './components/ExamView';
 import LibraryView from './components/LibraryView';
+import WallView from './components/WallView';
+import { WALL_COURSES } from './wallService';
 import ChangePasswordModal from './components/ChangePasswordModal';
 import { FREE_ROUTE } from './platform';
 import { EXPERTISE_TRACKS, LEVEL_PATHS } from './expertise';
@@ -141,6 +143,8 @@ interface LearningPathViewProps {
 const LearningPathView: React.FC<LearningPathViewProps> = ({ path, pathId, onExit, userId, unlockAll, isAdmin }) => {
   const [currentModuleIndex, setCurrentModuleIndex] = useState(0);
   const [showLibrary, setShowLibrary] = useState(false);
+  const [showWall, setShowWall] = useState(false);
+  const hasWall = WALL_COURSES.includes(pathId);
   const [completedModules, setCompletedModules] = useState<number[]>([]);
   const [isProgressLoading, setIsProgressLoading] = useState(true);
   const moduleContentRef = useRef<HTMLDivElement>(null);
@@ -266,7 +270,15 @@ const LearningPathView: React.FC<LearningPathViewProps> = ({ path, pathId, onExi
             ← Volver al Panel
           </button>
           <h1 className="text-2xl md:text-3xl font-bold text-center">{path.title}</h1>
-          <div className="w-36 flex justify-end">
+          <div className="w-36 md:w-auto flex justify-end gap-2">
+            {hasWall && (
+              <button
+                onClick={() => setShowWall(true)}
+                className="text-sm text-sky-200 border border-sky-500/40 hover:border-sky-300 bg-sky-500/10 rounded-lg px-3 py-1.5"
+              >
+                💬 Muro
+              </button>
+            )}
             <button
               onClick={() => setShowLibrary(true)}
               className="text-sm text-violet-200 border border-violet-500/40 hover:border-violet-300 bg-violet-500/10 rounded-lg px-3 py-1.5"
@@ -275,6 +287,9 @@ const LearningPathView: React.FC<LearningPathViewProps> = ({ path, pathId, onExi
             </button>
           </div>
         </div>
+        {showWall && (
+          <WallView pathId={pathId} courseTitle={path.title} userId={userId} isAdmin={isAdmin} onClose={() => setShowWall(false)} />
+        )}
         {showLibrary && (
           <LibraryView pathId={pathId} path={path} isAdmin={isAdmin} userId={userId} onClose={() => setShowLibrary(false)} />
         )}
