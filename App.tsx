@@ -522,6 +522,10 @@ const COURSE_WINDOWS_BY_ROLE: Partial<Record<UserRole, Record<string, { opensAt:
   auditor: {
     auditoria_ciberriesgo: { opensAt: '2026-10-15T08:00:00-05:00', closesAt: '2026-10-22T23:59:59-05:00' },
   },
+  // Grupo de estudiantes EAN del curso de CTI.
+  cti_student: {
+    cti_basico: { opensAt: '2026-10-24T00:00:00-05:00', closesAt: '2026-11-30T23:59:59-05:00' },
+  },
 };
 
 // Extensiones individuales: estudiantes que se sumaron tarde y necesitan un curso abierto más tiempo.
