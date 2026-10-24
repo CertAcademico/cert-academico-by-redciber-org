@@ -2189,6 +2189,13 @@ const LEARNING_PATHS_DATA: LearningPaths = {
         title: "1. 🕵️ ¿Qué es la Inteligencia de Amenazas?",
         content: [
           { type: 'text', icon: 'UserSearchIcon', text: "La Inteligencia de Amenazas Cibernéticas (CTI, por Cyber Threat Intelligence) es conocimiento basado en evidencia sobre quién podría atacarnos, cómo lo haría y por qué, organizado para que alguien pueda tomar una mejor decisión." },
+          {
+            type: 'resource',
+            title: '📊 Presentación del curso: Fundamentos de CTI',
+            description: '25 diapositivas con los conceptos clave del curso, cifras 2025–2026 (IBM, Verizon DBIR, CrowdStrike, Mandiant, MITRE) y referencias. Úsela como guía o para repasar.',
+            href: '/materiales/cti/presentacion-cti.html',
+            cta: 'Abrir presentación',
+          },
           { type: 'text', icon: 'BrainCircuitIcon', text: "La clave está en la diferencia entre dato, información e inteligencia. Una dirección IP es un dato. Saber que esa IP aparece en una campaña de phishing es información. Saber que esa campaña apunta a entidades financieras de Colombia y que hay que bloquearla hoy es inteligencia: contexto + relevancia + acción." },
           {
             type: 'interactive',
@@ -2419,10 +2426,10 @@ const LEARNING_PATHS_DATA: LearningPaths = {
         title: "7. MITRE ATT&CK: el Lenguaje Común",
         content: [
           { type: 'text', icon: 'DocumentTextIcon', text: "MITRE ATT&CK es una base de conocimiento pública y gratuita de tácticas y técnicas reales de atacantes, construida a partir de incidentes observados. Le da a defensores, analistas y proveedores un vocabulario común." },
-          { type: 'text', icon: 'ServerIcon', text: "Se organiza en una matriz. La matriz Enterprise tiene 14 tácticas (el \"por qué\" de cada paso del atacante), y cada táctica contiene técnicas y subtécnicas (el \"cómo\"), cada una con un identificador. Por ejemplo, T1566 es Phishing y T1486 es Cifrado de datos para causar impacto (ransomware)." },
+          { type: 'text', icon: 'ServerIcon', text: "Se organiza en una matriz. La matriz Enterprise tiene 15 tácticas (el \"por qué\" de cada paso del atacante; desde la versión 19, de abril de 2026, la táctica Evasión de defensas se dividió en Sigilo y Debilitamiento de las defensas), y cada táctica contiene técnicas y subtécnicas (el \"cómo\"), cada una con un identificador. Por ejemplo, T1566 es Phishing y T1486 es Cifrado de datos para causar impacto (ransomware)." },
           {
             type: 'interactive',
-            title: 'Algunas de las 14 tácticas de ATT&CK Enterprise',
+            title: 'Algunas de las 15 tácticas de ATT&CK Enterprise',
             items: [
               { term: 'Acceso inicial (Initial Access)', definition: 'Entrar a la red. Ej.: T1566 Phishing.' },
               { term: 'Ejecución (Execution)', definition: 'Correr código malicioso. Ej.: T1059 Intérprete de comandos y scripts.' },

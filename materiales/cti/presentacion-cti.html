@@ -1,0 +1,609 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fundamentos de CTI · CERT Académico</title>
+<meta name="description" content="Presentación de apoyo del curso Fundamentos de Cyber Threat Intelligence (CTI) de CERT Académico by RedCiber.org: conceptos, cifras 2025–2026 y referencias.">
+<style>
+  :root {
+    color-scheme: dark;
+    --bg: #0b0f1c;
+    --surface-1: #0f1424;
+    --surface-2: #161d33;
+    --line: #26304d;
+    --text-primary: #f1f2f6;
+    --text-secondary: #b9bfd3;
+    --text-muted: #8a91a8;
+    --accent: #a78bfa;
+    --accent-soft: rgba(167, 139, 250, .14);
+    --series-1: #9085e9;
+    --warn: #f5b84b;
+    --good: #4ade80;
+    --bad: #f87171;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; background: var(--bg); color: var(--text-primary);
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif; }
+  body { overflow: hidden; }
+
+  .deck { position: relative; height: 100%; }
+  .slide { position: absolute; inset: 0; display: none; padding: clamp(20px, 5vw, 64px) clamp(16px, 6vw, 88px) 84px;
+    overflow-y: auto; background: radial-gradient(ellipse at top right, rgba(144,133,233,.10), transparent 55%), var(--bg); }
+  .slide.active { display: flex; flex-direction: column; animation: in .35s ease; }
+  @keyframes in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+
+  .kicker { font-size: 13px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--accent); margin-bottom: 10px; }
+  h1 { font-size: clamp(32px, 5.4vw, 60px); line-height: 1.05; font-weight: 800; letter-spacing: -.02em; }
+  h2 { font-size: clamp(26px, 3.6vw, 42px); line-height: 1.12; font-weight: 800; letter-spacing: -.01em; margin-bottom: 18px; }
+  h3 { font-size: 18px; font-weight: 700; margin-bottom: 6px; }
+  p, li { font-size: clamp(15px, 1.5vw, 19px); line-height: 1.55; color: var(--text-secondary); }
+  .lead { font-size: clamp(17px, 1.9vw, 23px); color: var(--text-secondary); max-width: 980px; margin-bottom: 22px; }
+  strong { color: var(--text-primary); }
+  .grow { flex: 1; }
+
+  .grid { display: grid; gap: 14px; }
+  .g2 { grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
+  .g3 { grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); }
+  .g4 { grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); }
+  .card { background: var(--surface-1); border: 1px solid var(--line); border-radius: 16px; padding: 18px 20px; }
+  .card p { font-size: 15px; }
+  .card .tag { display: inline-block; font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase;
+    color: var(--accent); margin-bottom: 6px; }
+
+  .stat { background: var(--surface-1); border: 1px solid var(--line); border-radius: 16px; padding: 20px; }
+  .stat .num { white-space: nowrap; font-size: clamp(30px, 3.8vw, 50px); font-weight: 800; color: var(--text-primary); letter-spacing: -.02em; line-height: 1; }
+  .stat .lbl { margin-top: 8px; font-size: 15px; color: var(--text-secondary); }
+  .stat .src { margin-top: 8px; font-size: 12px; color: var(--text-muted); }
+
+  .src-line { margin-top: auto; padding-top: 18px; font-size: 12px; color: var(--text-muted); }
+  .src-line a { color: var(--text-muted); }
+
+  /* Flujo de pasos (ciclo, kill chain) */
+  .flow { display: grid; gap: 10px; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); counter-reset: s; }
+  .flow .step { position: relative; background: var(--surface-1); border: 1px solid var(--line); border-radius: 14px; padding: 16px 14px 14px; }
+  .flow .step::before { counter-increment: s; content: counter(s); position: absolute; top: -12px; left: 12px; width: 26px; height: 26px;
+    border-radius: 50%; background: var(--accent); color: #140f2b; font-weight: 800; font-size: 13px; display: grid; place-items: center; }
+  .flow .step h3 { font-size: 16px; margin-top: 6px; }
+  .flow .step p { font-size: 14px; }
+
+  /* Pirámide del dolor */
+  .pyramid { display: flex; flex-direction: column; align-items: center; gap: 6px; margin: 8px 0; }
+  .pyramid div { height: 44px; display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 0 16px;
+    border-radius: 6px; font-weight: 700; font-size: 15px; color: #140f2b; }
+  .pyramid span.pain { font-weight: 600; font-size: 13px; opacity: .85; }
+
+  /* Gráficos de barras: una serie, un tono (validado), etiquetas directas, tooltip por barra */
+  .bars { display: grid; gap: 12px; max-width: 860px; }
+  .bar-row { display: grid; grid-template-columns: minmax(150px, 230px) 1fr; align-items: center; gap: 12px; }
+  .bar-row .name { font-size: 15px; color: var(--text-secondary); text-align: right; }
+  .bar-track { position: relative; height: 26px; }
+  .bar { height: 100%; background: var(--series-1); border-radius: 0 4px 4px 0; min-width: 4px; transition: filter .15s; }
+  .bar:hover { filter: brightness(1.18); }
+  .bar-val { white-space: nowrap; position: absolute; top: 50%; transform: translateY(-50%); margin-left: 8px; font-size: 14px; font-weight: 700; color: var(--text-primary); }
+  .chart-title { font-size: 15px; font-weight: 700; color: var(--text-primary); margin-bottom: 12px; }
+
+  /* Diamante */
+  .diamond { position: relative; width: min(560px, 92vw); aspect-ratio: 700 / 480; margin: 6px auto; }
+  .diamond svg { width: 100%; height: 100%; }
+
+  /* TLP */
+  .tlp { display: grid; grid-template-columns: 170px 1fr; gap: 10px; align-items: center; }
+  .tlp .chip { font-family: ui-monospace, Menlo, monospace; font-weight: 800; font-size: 14px; padding: 8px 10px; border-radius: 8px;
+    background: #000; text-align: center; }
+
+  table { width: 100%; border-collapse: collapse; font-size: 15px; }
+  th, td { text-align: left; padding: 9px 10px; border-bottom: 1px solid var(--line); color: var(--text-secondary); vertical-align: top; }
+  th { color: var(--text-primary); font-size: 13px; letter-spacing: .06em; text-transform: uppercase; }
+  code, .mono { font-family: ui-monospace, Menlo, monospace; font-size: .92em; color: #d6ccff; }
+
+  .callout { border: 1px solid rgba(167,139,250,.45); background: var(--accent-soft); border-radius: 14px; padding: 14px 18px; margin-top: 16px; }
+  .callout p { color: var(--text-primary); }
+  .ex { background: #070a14; border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; font-family: ui-monospace, Menlo, monospace;
+    font-size: 14px; line-height: 1.6; color: #c7f9d4; white-space: pre-wrap; }
+
+  ol.refs { padding-left: 20px; display: grid; gap: 6px; }
+  ol.refs li { font-size: 14px; }
+  ol.refs a { color: var(--accent); }
+
+  /* Barra de navegación */
+  .nav { position: fixed; left: 0; right: 0; bottom: 0; height: 60px; display: flex; align-items: center; gap: 12px; padding: 0 16px;
+    background: rgba(11,15,28,.92); border-top: 1px solid var(--line); backdrop-filter: blur(6px); z-index: 10; }
+  .nav button { background: var(--surface-2); color: var(--text-primary); border: 1px solid var(--line); border-radius: 10px;
+    padding: 8px 14px; font-size: 15px; cursor: pointer; }
+  .nav button:hover:not(:disabled) { border-color: var(--accent); }
+  .nav button:disabled { opacity: .35; cursor: default; }
+  .nav .brand { font-size: 13px; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .nav .count { margin-left: auto; font-size: 14px; color: var(--text-secondary); font-variant-numeric: tabular-nums; }
+  .progress { position: fixed; left: 0; top: 0; height: 3px; background: var(--accent); z-index: 11; transition: width .3s; }
+
+  @media (max-width: 640px) {
+    .bar-row { grid-template-columns: 1fr; gap: 4px; }
+    .bar-row .name { text-align: left; }
+    .tlp { grid-template-columns: 1fr; }
+    .nav .brand { display: none; }
+  }
+  @media print {
+    body { overflow: visible; }
+    .nav, .progress { display: none; }
+    .slide { position: relative; display: flex !important; min-height: 100vh; page-break-after: always; overflow: visible; }
+  }
+</style>
+</head>
+<body>
+<div class="progress" id="progress"></div>
+<main class="deck" id="deck">
+
+<!-- 1 -->
+<section class="slide" aria-label="Portada">
+  <p class="kicker">CERT Académico by RedCiber.org · Material de apoyo</p>
+  <h1>Fundamentos de<br>Cyber Threat Intelligence</h1>
+  <p class="lead" style="margin-top:18px">Cómo convertir datos sobre amenazas en decisiones: conceptos, modelos y cifras del panorama 2025–2026.</p>
+  <div class="grid g4" style="max-width:900px;margin-top:10px">
+    <div class="card"><span class="tag">Duración</span><p>25 diapositivas · 45–60 min</p></div>
+    <div class="card"><span class="tag">Curso</span><p>11 módulos en la plataforma</p></div>
+    <div class="card"><span class="tag">Navegación</span><p>Flechas ← → o los botones de abajo</p></div>
+  </div>
+  <p class="src-line">Versión octubre de 2026. Las cifras citan su fuente en cada diapositiva; ver referencias completas en la diapositiva 25.</p>
+</section>
+
+<!-- 2 -->
+<section class="slide" aria-label="Agenda">
+  <p class="kicker">Agenda</p>
+  <h2>El recorrido de hoy</h2>
+  <div class="grid g3">
+    <div class="card"><span class="tag">1 · Contexto</span><p>Por qué la inteligencia de amenazas importa hoy: cifras globales y de Colombia.</p></div>
+    <div class="card"><span class="tag">2 · Fundamentos</span><p>Dato, información e inteligencia; los 4 tipos; el ciclo y los requerimientos (PIR).</p></div>
+    <div class="card"><span class="tag">3 · Fuentes</span><p>De dónde sale la inteligencia y cómo calificar su confiabilidad.</p></div>
+    <div class="card"><span class="tag">4 · Modelos</span><p>Pirámide del Dolor, Cyber Kill Chain, Modelo Diamante y MITRE ATT&amp;CK.</p></div>
+    <div class="card"><span class="tag">5 · Adversarios</span><p>Actores, velocidad del ataque, ransomware y los límites de la atribución.</p></div>
+    <div class="card"><span class="tag">6 · Acción</span><p>Compartir con TLP, STIX y MISP, y escribir un informe que se use.</p></div>
+  </div>
+</section>
+
+<!-- 3 -->
+<section class="slide" aria-label="El panorama en cifras">
+  <p class="kicker">1 · Contexto</p>
+  <h2>El costo de llegar tarde</h2>
+  <p class="lead">Las brechas cuestan más y se detectan tarde. La inteligencia de amenazas existe para acortar ese tiempo.</p>
+  <div class="grid g4">
+    <div class="stat"><div class="num">US$4,99 M</div><div class="lbl">costo promedio global de una brecha de datos, récord y +12 % frente a 2025</div><div class="src">IBM, Cost of a Data Breach 2026</div></div>
+    <div class="stat"><div class="num">247 días</div><div class="lbl">en promedio para identificar y contener una brecha</div><div class="src">IBM, Cost of a Data Breach 2026</div></div>
+    <div class="stat"><div class="num">65 días</div><div class="lbl">más rápido responden quienes usan IA y automatización de seguridad de forma extensiva</div><div class="src">IBM, Cost of a Data Breach 2026</div></div>
+    <div class="stat"><div class="num">22.000+</div><div class="lbl">brechas confirmadas analizadas en 145 países, la base más grande del informe</div><div class="src">Verizon DBIR 2026</div></div>
+  </div>
+  <p class="src-line">IBM Security, Cost of a Data Breach Report 2026 (julio de 2026). Verizon, 2026 Data Breach Investigations Report (mayo de 2026).</p>
+</section>
+
+<!-- 4 -->
+<section class="slide" aria-label="Colombia">
+  <p class="kicker">1 · Contexto</p>
+  <h2>Colombia, en la mira</h2>
+  <p class="lead">Ninguna organización es "demasiado pequeña" para ser atacada: el volumen es industrial y automatizado.</p>
+  <div class="grid g3">
+    <div class="stat"><div class="num">2.º</div><div class="lbl">país más atacado de Latinoamérica, con 4.090 ataques semanales por organización</div><div class="src">Check Point Research, vía Noticias RCN (sep. 2026)</div></div>
+    <div class="stat"><div class="num">10,9 billones</div><div class="lbl">de intentos de ciberataque registrados en 2025 (billón = millón de millones)</div><div class="src">FortiGuard Labs (Fortinet)</div></div>
+    <div class="stat"><div class="num">77.866</div><div class="lbl">denuncias por delitos informáticos en 2024, un 23 % más que el año anterior</div><div class="src">CCIT y Centro Cibernético Policial</div></div>
+  </div>
+  <div class="callout"><p><strong>Pregunta para el aula:</strong> si su organización recibe miles de ataques por semana, ¿cómo decide cuáles le importan? Esa es exactamente la pregunta que responde la CTI.</p></div>
+</section>
+
+<!-- 5 -->
+<section class="slide" aria-label="Dato, información, inteligencia">
+  <p class="kicker">2 · Fundamentos</p>
+  <h2>Dato → información → inteligencia</h2>
+  <p class="lead">La inteligencia es conocimiento basado en evidencia, con contexto y relevancia, que permite tomar una mejor decisión.</p>
+  <div class="grid g3">
+    <div class="card"><span class="tag">Dato</span><h3 class="mono">203.0.113.45</h3><p>Una dirección IP en un registro. Por sí sola no dice nada.</p></div>
+    <div class="card"><span class="tag">Información</span><h3>La IP aloja un sitio de phishing</h3><p>Ya sabemos qué es, pero todavía no si nos afecta ni qué hacer.</p></div>
+    <div class="card"><span class="tag">Inteligencia</span><h3>Campaña activa contra entidades financieras de Colombia</h3><p>Imita a nuestra marca, empezó ayer: <strong>bloquear hoy y alertar a los asociados</strong>.</p></div>
+  </div>
+  <div class="callout"><p>Regla práctica: si no responde <strong>¿y qué hago con esto?</strong>, todavía no es inteligencia.</p></div>
+  <p class="src-line">IP de documentación (RFC 5737), usada solo como ejemplo.</p>
+</section>
+
+<!-- 6 -->
+<section class="slide" aria-label="Tipos de inteligencia">
+  <p class="kicker">2 · Fundamentos</p>
+  <h2>Cuatro tipos, cuatro audiencias</h2>
+  <table>
+    <thead><tr><th>Tipo</th><th>Para quién</th><th>Pregunta que responde</th><th>Ejemplo</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Estratégica</strong></td><td>Junta y dirección</td><td>¿En qué debemos invertir?</td><td>"El ransomware contra el sector crece: prioricemos respaldos fuera de línea."</td></tr>
+      <tr><td><strong>Operacional</strong></td><td>Respuesta a incidentes</td><td>¿Qué se nos viene encima?</td><td>"Una campaña contra cooperativas comenzará esta semana."</td></tr>
+      <tr><td><strong>Táctica</strong></td><td>Analistas y defensores</td><td>¿Cómo atacan y cómo los detectamos?</td><td>"Entran por VPN sin parchar y persisten con tareas programadas."</td></tr>
+      <tr><td><strong>Técnica</strong></td><td>SOC y herramientas</td><td>¿Qué bloqueamos ahora?</td><td>Dominios, IP y hashes de la campaña.</td></tr>
+    </tbody>
+  </table>
+  <div class="callout"><p>El mismo hallazgo se cuenta distinto según el público: a la junta, en riesgo y dinero; al SOC, en indicadores.</p></div>
+</section>
+
+<!-- 7 -->
+<section class="slide" aria-label="Ciclo de inteligencia">
+  <p class="kicker">2 · Fundamentos</p>
+  <h2>El ciclo de inteligencia</h2>
+  <p class="lead">Empieza con una pregunta, no con los datos. Y nunca termina: la retroalimentación reinicia el ciclo.</p>
+  <div class="flow">
+    <div class="step"><h3>Planeación</h3><p>Qué necesita saber quién, para qué decisión.</p></div>
+    <div class="step"><h3>Recolección</h3><p>Datos de las fuentes que responden esa pregunta.</p></div>
+    <div class="step"><h3>Procesamiento</h3><p>Normalizar, traducir, quitar duplicados.</p></div>
+    <div class="step"><h3>Análisis</h3><p>Conectar hechos, evaluar hipótesis, asignar confianza.</p></div>
+    <div class="step"><h3>Difusión</h3><p>Al público correcto, a tiempo y en su formato.</p></div>
+    <div class="step"><h3>Retroalimentación</h3><p>¿Sirvió? Lo que responda ajusta las preguntas.</p></div>
+  </div>
+  <div class="callout"><p>Error típico: suscribirse a 50 fuentes de indicadores sin saber qué preguntas responder. Resultado: ruido, no inteligencia.</p></div>
+</section>
+
+<!-- 8 -->
+<section class="slide" aria-label="Requerimientos de inteligencia">
+  <p class="kicker">2 · Fundamentos</p>
+  <h2>PIR: las preguntas que guían todo</h2>
+  <p class="lead">Los Requerimientos de Inteligencia Prioritarios (PIR) traducen las preocupaciones del negocio en preguntas que se pueden investigar.</p>
+  <div class="grid g3">
+    <div class="card"><span class="tag">Universidad</span><p>¿Qué grupos de ransomware están atacando a universidades en Colombia y por dónde entran?</p></div>
+    <div class="card"><span class="tag">Cooperativa</span><p>¿Hay campañas de suplantación de nuestra marca dirigidas a asociados este mes?</p></div>
+    <div class="card"><span class="tag">Entidad pública</span><p>¿Qué vulnerabilidades explotadas activamente afectan a los sistemas que tenemos expuestos?</p></div>
+  </div>
+  <div class="callout"><p>Un buen PIR es <strong>específico</strong>, ligado a una <strong>decisión</strong> y revisable en el tiempo.</p></div>
+</section>
+
+<!-- 9 -->
+<section class="slide" aria-label="Fuentes">
+  <p class="kicker">3 · Fuentes</p>
+  <h2>¿De dónde sale la inteligencia?</h2>
+  <div class="grid g2">
+    <div class="card"><span class="tag">Internas · las más valiosas</span><p>Registros del firewall, el correo, el EDR y el proxy; incidentes previos; reportes de los propios usuarios. Hablan de <strong>su</strong> entorno.</p></div>
+    <div class="card"><span class="tag">OSINT · fuentes abiertas</span><p>Registros de dominios, DNS, transparencia de certificados, blogs de investigadores, avisos de fabricantes.</p></div>
+    <div class="card"><span class="tag">Comunidades</span><p>CSIRT nacionales y sectoriales, ISAC (centros de intercambio por sector) y redes de confianza como FIRST.</p></div>
+    <div class="card"><span class="tag">Catálogos y feeds</span><p>El catálogo KEV de CISA lista vulnerabilidades <strong>explotadas activamente</strong>; los feeds aportan indicadores.</p></div>
+  </div>
+  <p class="src-line">CISA, Known Exploited Vulnerabilities Catalog: cisa.gov/known-exploited-vulnerabilities-catalog</p>
+</section>
+
+<!-- 10 -->
+<section class="slide" aria-label="Código del Almirantazgo">
+  <p class="kicker">3 · Fuentes</p>
+  <h2>¿Le creo? El código del Almirantazgo</h2>
+  <p class="lead">Se califican por separado la fuente (letra) y la información (número).</p>
+  <div class="grid g2">
+    <table>
+      <thead><tr><th>Fuente</th><th>Confiabilidad</th></tr></thead>
+      <tbody>
+        <tr><td><strong>A</strong></td><td>Completamente confiable</td></tr>
+        <tr><td><strong>B</strong></td><td>Usualmente confiable</td></tr>
+        <tr><td><strong>C</strong></td><td>Bastante confiable</td></tr>
+        <tr><td><strong>D</strong></td><td>No usualmente confiable</td></tr>
+        <tr><td><strong>E</strong></td><td>No confiable</td></tr>
+        <tr><td><strong>F</strong></td><td>No se puede juzgar</td></tr>
+      </tbody>
+    </table>
+    <table>
+      <thead><tr><th>Información</th><th>Credibilidad</th></tr></thead>
+      <tbody>
+        <tr><td><strong>1</strong></td><td>Confirmada por otras fuentes</td></tr>
+        <tr><td><strong>2</strong></td><td>Probablemente cierta</td></tr>
+        <tr><td><strong>3</strong></td><td>Posiblemente cierta</td></tr>
+        <tr><td><strong>4</strong></td><td>Dudosa</td></tr>
+        <tr><td><strong>5</strong></td><td>Improbable</td></tr>
+        <tr><td><strong>6</strong></td><td>No se puede juzgar</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="callout"><p><strong>Ejercicio:</strong> una cuenta anónima sin historial afirma en un foro que un ministerio fue hackeado y nadie lo confirma. Calificación honesta: <strong>F6</strong>.</p></div>
+</section>
+
+<!-- 11 -->
+<section class="slide" aria-label="Pirámide del Dolor">
+  <p class="kicker">4 · Modelos</p>
+  <h2>La Pirámide del Dolor</h2>
+  <p class="lead">No todos los indicadores valen igual: cuanto más arriba, más le cuesta al atacante cambiarlo.</p>
+  <div class="pyramid" role="img" aria-label="Pirámide del dolor: de abajo hacia arriba, hashes, IP, dominios, artefactos, herramientas y TTP">
+    <div style="width:min(240px,60%);background:#e9d5ff">TTP <span class="pain">difícil</span></div>
+    <div style="width:min(320px,70%);background:#d8b4fe">Herramientas <span class="pain">desafiante</span></div>
+    <div style="width:min(400px,78%);background:#c4b5fd">Artefactos de red y host <span class="pain">molesto</span></div>
+    <div style="width:min(480px,86%);background:#a5b4fc">Nombres de dominio <span class="pain">simple</span></div>
+    <div style="width:min(560px,93%);background:#93c5fd">Direcciones IP <span class="pain">fácil</span></div>
+    <div style="width:min(640px,100%);background:#7dd3fc">Hashes <span class="pain">trivial</span></div>
+  </div>
+  <p class="src-line">David J. Bianco, "The Pyramid of Pain" (2013). TTP = tácticas, técnicas y procedimientos.</p>
+</section>
+
+<!-- 12 -->
+<section class="slide" aria-label="Velocidad del atacante">
+  <p class="kicker">4 · Modelos</p>
+  <h2>Por qué importan los comportamientos: la velocidad</h2>
+  <div class="grid g2" style="align-items:start">
+    <div>
+      <p class="chart-title">Tiempo promedio de "breakout" (del acceso inicial al movimiento lateral), en minutos</p>
+      <div class="bars" role="img" aria-label="Breakout promedio: 98 minutos en 2021, 48 en 2024 y 29 en 2025">
+        <div class="bar-row"><span class="name">2021</span><div class="bar-track" style="display:flex;align-items:center"><div class="bar" style="width:75%" title="2021: 98 minutos"></div><span class="bar-val" style="position:static;transform:none">98 min</span></div></div>
+        <div class="bar-row"><span class="name">2024</span><div class="bar-track" style="display:flex;align-items:center"><div class="bar" style="width:36.7%" title="2024: 48 minutos"></div><span class="bar-val" style="position:static;transform:none">48 min</span></div></div>
+        <div class="bar-row"><span class="name">2025</span><div class="bar-track" style="display:flex;align-items:center"><div class="bar" style="width:22.2%" title="2025: 29 minutos"></div><span class="bar-val" style="position:static;transform:none">29 min</span></div></div>
+      </div>
+      <p style="font-size:14px;margin-top:8px">El caso más rápido de 2025: <strong>27 segundos</strong>.</p>
+    </div>
+    <div class="grid">
+      <div class="stat"><div class="num">82 %</div><div class="lbl">de las detecciones de 2025 no involucraron malware: credenciales válidas y herramientas legítimas</div></div>
+      <div class="stat"><div class="num">+89 %</div><div class="lbl">aumentaron los ataques de adversarios que usan IA</div></div>
+    </div>
+  </div>
+  <div class="callout"><p>Si el atacante no usa malware, no hay hash que bloquear: hay que detectar <strong>comportamientos</strong> (la cima de la pirámide).</p></div>
+  <p class="src-line">CrowdStrike, 2026 Global Threat Report (datos de 2025) y ediciones anteriores para 2021 y 2024.</p>
+</section>
+
+<!-- 13 -->
+<section class="slide" aria-label="Cyber Kill Chain">
+  <p class="kicker">4 · Modelos</p>
+  <h2>Cyber Kill Chain: romper la cadena</h2>
+  <div class="flow">
+    <div class="step"><h3>Reconocimiento</h3><p>Investiga a la víctima.</p></div>
+    <div class="step"><h3>Armado</h3><p>Prepara el arma (documento con macro).</p></div>
+    <div class="step"><h3>Entrega</h3><p>Correo, USB, sitio comprometido.</p></div>
+    <div class="step"><h3>Explotación</h3><p>Se ejecuta el código.</p></div>
+    <div class="step"><h3>Instalación</h3><p>Puerta trasera para persistir.</p></div>
+    <div class="step"><h3>Comando y control</h3><p>El equipo recibe órdenes.</p></div>
+    <div class="step"><h3>Acciones</h3><p>Robo, cifrado, fraude.</p></div>
+  </div>
+  <div class="callout"><p>Idea central: basta con cortar <strong>un eslabón</strong>. Si el filtro de correo detiene la entrega, todo lo que sigue no ocurre.</p></div>
+  <p class="src-line">Hutchins, Cloppert y Amin, Lockheed Martin (2011), "Intelligence-Driven Computer Network Defense…".</p>
+</section>
+
+<!-- 14 -->
+<section class="slide" aria-label="Modelo Diamante">
+  <p class="kicker">4 · Modelos</p>
+  <h2>El Modelo Diamante</h2>
+  <div class="grid g2" style="align-items:center">
+    <div class="diamond">
+      <svg viewBox="-150 -40 700 480" role="img" aria-label="Diamante con adversario arriba, capacidad a la derecha, víctima abajo e infraestructura a la izquierda">
+        <polygon points="200,30 370,200 200,370 30,200" fill="none" stroke="#9085e9" stroke-width="3"/>
+        <line x1="200" y1="30" x2="200" y2="370" stroke="#26304d" stroke-width="2" stroke-dasharray="6 6"/>
+        <line x1="30" y1="200" x2="370" y2="200" stroke="#26304d" stroke-width="2" stroke-dasharray="6 6"/>
+        <g fill="#a78bfa"><circle cx="200" cy="30" r="9"/><circle cx="370" cy="200" r="9"/><circle cx="200" cy="370" r="9"/><circle cx="30" cy="200" r="9"/></g>
+        <g font-family="system-ui, sans-serif" font-weight="700" font-size="22" fill="#f1f2f6">
+          <text x="200" y="5" text-anchor="middle">Adversario</text>
+          <text x="388" y="207" text-anchor="start">Capacidad</text>
+          <text x="200" y="408" text-anchor="middle">Víctima</text>
+          <text x="12" y="207" text-anchor="end">Infraestructura</text>
+        </g>
+      </svg>
+    </div>
+    <div>
+      <p class="lead">Cada evento: un <strong>adversario</strong> usa una <strong>capacidad</strong> sobre una <strong>infraestructura</strong> contra una <strong>víctima</strong>.</p>
+      <div class="card"><span class="tag">Pivoteo</span><p>Del dominio del phishing (infraestructura) se llega a otros 12 dominios registrados con el mismo correo, y de ahí a otras víctimas de la misma campaña.</p></div>
+    </div>
+  </div>
+  <p class="src-line">Caltagirone, Pendergast y Betz (2013), "The Diamond Model of Intrusion Analysis".</p>
+</section>
+
+<!-- 15 -->
+<section class="slide" aria-label="MITRE ATT&CK">
+  <p class="kicker">4 · Modelos</p>
+  <h2>MITRE ATT&amp;CK: el lenguaje común</h2>
+  <p class="lead">Base de conocimiento pública de tácticas y técnicas reales, construida a partir de incidentes observados.</p>
+  <div class="grid g4">
+    <div class="stat"><div class="num">15</div><div class="lbl">tácticas en la matriz Enterprise (el "porqué" de cada paso)</div></div>
+    <div class="stat"><div class="num">222</div><div class="lbl">técnicas (el "cómo")</div></div>
+    <div class="stat"><div class="num">475</div><div class="lbl">subtécnicas</div></div>
+    <div class="stat"><div class="num">v20</div><div class="lbl">octubre de 2026: suma técnicas de adversarios que usan IA</div></div>
+  </div>
+  <div class="callout"><p><strong>Novedad 2026:</strong> desde la versión 19, la táctica "Evasión de defensas" se dividió en dos, <strong>Sigilo</strong> y <strong>Debilitamiento de las defensas</strong>; por eso hoy son 15 tácticas y no 14.</p></div>
+  <p class="src-line">MITRE ATT&amp;CK, Updates – April 2026 (v19: 15 tácticas, 222 técnicas, 475 subtécnicas). La v20 (oct. 2026) agrega técnicas asociadas a IA; consulte attack.mitre.org para las cifras vigentes.</p>
+</section>
+
+<!-- 16 -->
+<section class="slide" aria-label="Técnicas de ATT&CK">
+  <p class="kicker">4 · Modelos</p>
+  <h2>De la táctica a la técnica</h2>
+  <table>
+    <thead><tr><th>Táctica (porqué)</th><th>Técnica (cómo)</th><th>Cómo se ve en la práctica</th></tr></thead>
+    <tbody>
+      <tr><td>Acceso inicial</td><td><code>T1566</code> Phishing</td><td>Correo con un adjunto o enlace malicioso.</td></tr>
+      <tr><td>Ejecución</td><td><code>T1059</code> Intérprete de comandos y scripts</td><td>Word lanza PowerShell con un comando codificado.</td></tr>
+      <tr><td>Persistencia</td><td><code>T1053.005</code> Tarea programada</td><td>Una tarea con nombre de "OneDriveSync" que corre al iniciar sesión.</td></tr>
+      <tr><td>Acceso a credenciales</td><td><code>T1003</code> Volcado de credenciales</td><td>Lectura de la memoria del proceso LSASS.</td></tr>
+      <tr><td>Recolección</td><td><code>T1114</code> Recolección de correo</td><td>Regla oculta que reenvía todo el buzón hacia afuera.</td></tr>
+      <tr><td>Impacto</td><td><code>T1486</code> Cifrado de datos para causar impacto</td><td>Ransomware.</td></tr>
+    </tbody>
+  </table>
+  <p class="src-line">Identificadores según attack.mitre.org.</p>
+</section>
+
+<!-- 17 -->
+<section class="slide" aria-label="Vectores de acceso inicial">
+  <p class="kicker">5 · Adversarios</p>
+  <h2>¿Por dónde entran hoy?</h2>
+  <div class="grid g2" style="align-items:start">
+    <div>
+      <p class="chart-title">Vector de acceso inicial, % de intrusiones con vector identificado (2025)</p>
+      <div class="bars" role="img" aria-label="Explotación de vulnerabilidades 32 por ciento, phishing por voz 11 por ciento">
+        <div class="bar-row"><span class="name">Explotación de vulnerabilidades</span><div class="bar-track" style="display:flex;align-items:center"><div class="bar" style="width:72%" title="Exploits: 32 %"></div><span class="bar-val" style="position:static;transform:none">32 %</span></div></div>
+        <div class="bar-row"><span class="name">Phishing por voz (vishing)</span><div class="bar-track" style="display:flex;align-items:center"><div class="bar" style="width:24.8%" title="Vishing: 11 %"></div><span class="bar-val" style="position:static;transform:none">11 %</span></div></div>
+      </div>
+      <p style="font-size:13px;margin-top:8px;color:var(--text-muted)">Fuente: Mandiant M-Trends 2026. Las demás categorías no se muestran.</p>
+    </div>
+    <div class="grid">
+      <div class="stat"><div class="num">31 %</div><div class="lbl">de las brechas empezaron explotando una vulnerabilidad: por primera vez supera a las credenciales robadas</div><div class="src">Verizon DBIR 2026</div></div>
+      <div class="stat"><div class="num">62 %</div><div class="lbl">de las brechas involucraron el elemento humano</div><div class="src">Verizon DBIR 2026</div></div>
+    </div>
+  </div>
+  <div class="callout"><p>Dos informes distintos, la misma conclusión: <strong>parchar lo expuesto</strong> y <strong>entrenar contra la ingeniería social</strong>, también por teléfono.</p></div>
+</section>
+
+<!-- 18 -->
+<section class="slide" aria-label="Actores de amenaza">
+  <p class="kicker">5 · Adversarios</p>
+  <h2>¿Quién ataca y por qué?</h2>
+  <div class="grid g4">
+    <div class="card"><span class="tag">Cibercrimen</span><p><strong>Dinero.</strong> Ransomware, fraude, robo y venta de datos. Opera como empresa, con afiliados.</p></div>
+    <div class="card"><span class="tag">Estatales (APT)</span><p><strong>Espionaje y ventaja geopolítica.</strong> Persistentes y con muchos recursos.</p></div>
+    <div class="card"><span class="tag">Hacktivistas</span><p><strong>Una causa.</strong> Desfiguraciones, filtraciones, denegación de servicio.</p></div>
+    <div class="card"><span class="tag">Insiders</span><p><strong>Desde adentro.</strong> Dinero, venganza o simple descuido.</p></div>
+  </div>
+  <div class="callout"><p>Un mismo grupo puede tener 3 o 4 nombres distintos según el fabricante que lo describa: al leer informes, verifique los alias.</p></div>
+</section>
+
+<!-- 19 -->
+<section class="slide" aria-label="Atribución">
+  <p class="kicker">5 · Adversarios</p>
+  <h2>Atribuir es difícil (y riesgoso)</h2>
+  <div class="grid g3">
+    <div class="card"><span class="tag">Banderas falsas</span><p>Idioma en el código, horarios o herramientas de otro grupo: pistas fáciles de plantar.</p></div>
+    <div class="card"><span class="tag">Sesgos</span><p>Quedarse con la primera hipótesis y buscar solo lo que la confirma.</p></div>
+    <div class="card"><span class="tag">Antídoto</span><p>Análisis de hipótesis en competencia: gana la que tiene <strong>menos</strong> evidencia en contra.</p></div>
+  </div>
+  <h3 style="margin-top:20px">Siempre declare su nivel de confianza</h3>
+  <div class="grid g3">
+    <div class="card"><span class="tag" style="color:var(--bad)">Baja</span><p>Indicios aislados o fáciles de falsificar.</p></div>
+    <div class="card"><span class="tag" style="color:var(--warn)">Moderada</span><p>Evidencia consistente con vacíos importantes.</p></div>
+    <div class="card"><span class="tag" style="color:var(--good)">Alta</span><p>Múltiples fuentes independientes que coinciden.</p></div>
+  </div>
+</section>
+
+<!-- 20 -->
+<section class="slide" aria-label="Ransomware y permanencia">
+  <p class="kicker">5 · Adversarios</p>
+  <h2>Ransomware y permanencia del atacante</h2>
+  <div class="grid g4">
+    <div class="stat"><div class="num">48 %</div><div class="lbl">de las brechas involucraron ransomware</div><div class="src">Verizon DBIR 2026</div></div>
+    <div class="stat"><div class="num">69 %</div><div class="lbl">de las víctimas de ransomware no pagaron el rescate</div><div class="src">Verizon DBIR 2026 (cifra reportada por la cobertura del informe)</div></div>
+    <div class="stat"><div class="num">14 días</div><div class="lbl">mediana global de permanencia del atacante antes de ser detectado (11 en 2024)</div><div class="src">Mandiant M-Trends 2026</div></div>
+    <div class="stat"><div class="num">122 días</div><div class="lbl">mediana de permanencia en casos de ciberespionaje</div><div class="src">Mandiant M-Trends 2026</div></div>
+  </div>
+  <div class="callout"><p>El espionaje se queda meses porque su objetivo es <strong>no ser visto</strong>; el ransomware, en cambio, se anuncia. La CTI ayuda a buscar a los que no se anuncian.</p></div>
+</section>
+
+<!-- 21 -->
+<section class="slide" aria-label="TLP 2.0">
+  <p class="kicker">6 · Acción</p>
+  <h2>Compartir con reglas: TLP 2.0</h2>
+  <div class="grid" style="gap:10px;max-width:980px">
+    <div class="tlp"><span class="chip" style="color:#ff2b2b">TLP:RED</span><p>Solo para los presentes o destinatarios directos.</p></div>
+    <div class="tlp"><span class="chip" style="color:#ffc000">TLP:AMBER+STRICT</span><p>Solo dentro de la organización del destinatario.</p></div>
+    <div class="tlp"><span class="chip" style="color:#ffc000">TLP:AMBER</span><p>La organización del destinatario y sus clientes, si necesitan saberlo para protegerse.</p></div>
+    <div class="tlp"><span class="chip" style="color:#33ff00">TLP:GREEN</span><p>La comunidad o el sector, pero no canales públicos.</p></div>
+    <div class="tlp"><span class="chip" style="color:#ffffff">TLP:CLEAR</span><p>Sin restricción: se puede publicar.</p></div>
+  </div>
+  <p class="src-line">FIRST, Traffic Light Protocol 2.0 (agosto de 2022): first.org/tlp</p>
+</section>
+
+<!-- 22 -->
+<section class="slide" aria-label="Estándares y vulnerabilidades">
+  <p class="kicker">6 · Acción</p>
+  <h2>Estándares para compartir y el reto de parchar</h2>
+  <div class="grid g3">
+    <div class="card"><span class="tag">STIX 2.1</span><p>Formato para describir amenazas: indicadores, actores, campañas, técnicas (OASIS).</p></div>
+    <div class="card"><span class="tag">TAXII 2.1</span><p>Protocolo para transportar STIX entre organizaciones (OASIS).</p></div>
+    <div class="card"><span class="tag">MISP</span><p>Plataforma de código abierto, muy usada por CSIRT, para almacenar y compartir eventos.</p></div>
+  </div>
+  <div class="grid g2" style="margin-top:14px">
+    <div class="stat"><div class="num">26 %</div><div class="lbl">de las vulnerabilidades críticas del catálogo KEV de CISA se remediaron por completo en 2025 (38 % el año anterior)</div><div class="src">Verizon DBIR 2026</div></div>
+    <div class="stat"><div class="num">43 días</div><div class="lbl">mediana para remediar por completo (32 el año anterior)</div><div class="src">Verizon DBIR 2026</div></div>
+  </div>
+  <div class="callout"><p>Compartir rápido sirve de poco si nadie actúa: la inteligencia debe llegar con una <strong>acción recomendada</strong>.</p></div>
+</section>
+
+<!-- 23 -->
+<section class="slide" aria-label="Informe de inteligencia">
+  <p class="kicker">6 · Acción</p>
+  <h2>Un informe que se use: BLUF</h2>
+  <p class="lead">Bottom Line Up Front: la conclusión primero. Si el lector solo lee 5 líneas, ya sabe qué hacer.</p>
+  <div class="ex">TLP:AMBER · Confianza: MODERADA · 24-oct-2026
+CONCLUSIÓN: Campaña de phishing con suplantación de Rectoría dirigida a
+funcionarios de nómina; 2 cuentas comprometidas y reenvío de correo hacia afuera.
+IMPACTO: posible fuga de datos personales de empleados.
+ACCIONES (hoy): 1) bloquear rectoria-nomina-universidad.example
+2) restablecer las 2 cuentas y cerrar sesiones  3) activar MFA y alertar
+sobre reglas de reenvío externo  4) evaluar reporte a la SIC.
+DETALLE: línea de tiempo, indicadores (anexo) y técnicas: T1566, T1114.</div>
+  <p class="src-line">Caso ficticio del laboratorio del módulo 10. Dominio reservado para ejemplos.</p>
+</section>
+
+<!-- 24 -->
+<section class="slide" aria-label="Claves para el analista">
+  <p class="kicker">Cierre</p>
+  <h2>10 claves para el analista de CTI</h2>
+  <div class="grid g2">
+    <ol style="padding-left:22px;display:grid;gap:6px">
+      <li>Empiece por la pregunta (PIR), no por los datos.</li>
+      <li>Priorice sus fuentes internas.</li>
+      <li>Califique cada fuente y dato (Almirantazgo).</li>
+      <li>Suba en la Pirámide del Dolor: detecte comportamientos.</li>
+      <li>Mapee con ATT&amp;CK para hablar el mismo idioma.</li>
+    </ol>
+    <ol start="6" style="padding-left:22px;display:grid;gap:6px">
+      <li>Pivotee con el Modelo Diamante.</li>
+      <li>Desconfíe de las atribuciones fáciles.</li>
+      <li>Declare siempre su nivel de confianza.</li>
+      <li>Comparta con TLP y depure datos internos.</li>
+      <li>Escriba en BLUF: conclusión y acción primero.</li>
+    </ol>
+  </div>
+  <div class="callout"><p><strong>Siguiente paso en la plataforma:</strong> complete los 11 módulos del curso, incluido el laboratorio del informe, y obtenga su badge verificable.</p></div>
+</section>
+
+<!-- 25 -->
+<section class="slide" aria-label="Referencias">
+  <p class="kicker">Referencias</p>
+  <h2>Fuentes</h2>
+  <ol class="refs">
+    <li>IBM Security (2026). <em>Cost of a Data Breach Report 2026</em>. ibm.com/reports/data-breach</li>
+    <li>Verizon (2026). <em>2026 Data Breach Investigations Report</em>, 19.ª ed. verizon.com/business/resources/reports/dbir/</li>
+    <li>CrowdStrike (2026). <em>2026 Global Threat Report</em>; ediciones 2022 y 2025 para las cifras de 2021 y 2024. crowdstrike.com</li>
+    <li>Google Cloud / Mandiant (2026). <em>M-Trends 2026</em>. cloud.google.com/security/resources/m-trends</li>
+    <li>MITRE (2026). <em>ATT&amp;CK Updates – April 2026</em> (v19) y v20 (octubre de 2026). attack.mitre.org</li>
+    <li>CISA. <em>Known Exploited Vulnerabilities Catalog</em>. cisa.gov/known-exploited-vulnerabilities-catalog</li>
+    <li>FIRST (2022). <em>Traffic Light Protocol (TLP) 2.0</em>. first.org/tlp</li>
+    <li>OASIS. <em>STIX 2.1 y TAXII 2.1</em>. oasis-open.github.io/cti-documentation</li>
+    <li>Bianco, D. J. (2013). <em>The Pyramid of Pain</em>.</li>
+    <li>Hutchins, E., Cloppert, M. y Amin, R. (2011). <em>Intelligence-Driven Computer Network Defense Informed by Analysis of Adversary Campaigns and Intrusion Kill Chains</em>. Lockheed Martin.</li>
+    <li>Caltagirone, S., Pendergast, A. y Betz, C. (2013). <em>The Diamond Model of Intrusion Analysis</em>.</li>
+    <li>Check Point Research y FortiGuard Labs, vía Noticias RCN (sep. 2026); CCIT y Centro Cibernético Policial (denuncias 2024).</li>
+  </ol>
+  <p class="src-line">CERT Académico by RedCiber.org · Material educativo. Los casos y datos de ejemplo son ficticios.</p>
+</section>
+
+</main>
+
+<nav class="nav" aria-label="Navegación de diapositivas">
+  <button id="prev" aria-label="Diapositiva anterior">←</button>
+  <button id="next" aria-label="Diapositiva siguiente">→</button>
+  <span class="brand">Fundamentos de CTI · CERT Académico by RedCiber.org</span>
+  <span class="count" id="count" aria-live="polite"></span>
+</nav>
+
+<script>
+  (function () {
+    var slides = Array.prototype.slice.call(document.querySelectorAll('.slide'));
+    var prev = document.getElementById('prev'), next = document.getElementById('next');
+    var count = document.getElementById('count'), progress = document.getElementById('progress');
+    var i = 0;
+    function fromHash() { var n = parseInt((location.hash || '').replace('#', ''), 10); return n >= 1 && n <= slides.length ? n - 1 : 0; }
+    function show(n) {
+      i = Math.max(0, Math.min(slides.length - 1, n));
+      slides.forEach(function (s, k) { s.classList.toggle('active', k === i); });
+      count.textContent = (i + 1) + ' / ' + slides.length;
+      progress.style.width = ((i + 1) / slides.length * 100) + '%';
+      prev.disabled = i === 0; next.disabled = i === slides.length - 1;
+      if (location.hash !== '#' + (i + 1)) history.replaceState(null, '', '#' + (i + 1));
+      slides[i].scrollTop = 0;
+    }
+    prev.addEventListener('click', function () { show(i - 1); });
+    next.addEventListener('click', function () { show(i + 1); });
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'ArrowRight' || e.key === 'PageDown' || e.key === ' ') { e.preventDefault(); show(i + 1); }
+      if (e.key === 'ArrowLeft' || e.key === 'PageUp') { e.preventDefault(); show(i - 1); }
+      if (e.key === 'Home') show(0);
+      if (e.key === 'End') show(slides.length - 1);
+    });
+    var x0 = null;
+    document.addEventListener('touchstart', function (e) { x0 = e.touches[0].clientX; }, { passive: true });
+    document.addEventListener('touchend', function (e) {
+      if (x0 === null) return; var dx = e.changedTouches[0].clientX - x0;
+      if (Math.abs(dx) > 50) show(i + (dx < 0 ? 1 : -1)); x0 = null;
+    });
+    window.addEventListener('hashchange', function () { show(fromHash()); });
+    show(fromHash());
+  })();
+</script>
+</body>
+</html>

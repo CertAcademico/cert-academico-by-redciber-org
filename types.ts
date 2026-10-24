@@ -146,6 +146,15 @@ export interface ExamContent {
   questions: H5PQuestion[];
 }
 
+/** Enlace a un material de apoyo (presentación, guía). No cuenta como actividad. */
+export interface ResourceContent {
+  type: 'resource';
+  title: string;
+  description: string;
+  href: string; // ruta pública, p. ej. /materiales/...
+  cta: string;
+}
+
 export type ContentBlock = 
   | TextContent 
   | VideoContent 
@@ -157,7 +166,8 @@ export type ContentBlock =
   | ActivityContent
   | ScenarioContent
   | ChallengeContent
-  | ExamContent;
+  | ExamContent
+  | ResourceContent;
 
 export interface Module {
   id: string;

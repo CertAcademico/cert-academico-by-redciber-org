@@ -101,6 +101,23 @@ const renderContentBlock = (
       return <ChallengeLabView data={block} onComplete={onComplete} />;
     case 'exam':
       return <ExamView data={block} onPassed={onH5PComplete} />;
+    case 'resource':
+      return (
+        <div className="my-6 flex flex-col md:flex-row md:items-center justify-between gap-4 bg-violet-500/10 border border-violet-500/40 rounded-2xl p-5 text-left">
+          <div>
+            <p className="text-lg font-bold text-white">{block.title}</p>
+            <p className="text-sm text-slate-300 mt-1">{block.description}</p>
+          </div>
+          <a
+            href={block.href}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="shrink-0 bg-violet-600 hover:bg-violet-500 text-white font-bold rounded-xl px-5 py-2.5 text-sm text-center"
+          >
+            {block.cta} ↗
+          </a>
+        </div>
+      );
     default:
       return null;
   }
