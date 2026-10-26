@@ -234,6 +234,99 @@ const AdminPanel: React.FC<{ onUserCreated: () => void }> = ({ onUserCreated }) 
   );
 };
 
+const ROLE_LABELS: Record<string, string> = {
+  free_student: 'Registro gratuito',
+  student: 'EAN · Hacking Ético',
+  cti_student: 'CTI',
+  cert_student: 'CERTs/CSIRTs',
+  auditor: 'Auditor',
+  teacher: 'Docente',
+  tutor: 'Tutor',
+  admin: 'Admin',
+};
+
+interface SignupRow {
+  name: string;
+  email: string;
+  role: string;
+  created_at: string;
+  data_consent_at: string | null;
+}
+
+/** Registros recientes (solo admin): quién se registró, cuándo, con qué rol y si aceptó la política. */
+const RecentSignupsPanel: React.FC = () => {
+  const [rows, setRows] = useState<SignupRow[] | null>(null);
+  const [role, setRole] = useState('');
+  const [limit, setLimit] = useState(20);
+
+  useEffect(() => {
+    let cancelled = false;
+    let q = supabase
+      .from('profiles')
+      .select('name, email, role, created_at, data_consent_at')
+      .order('created_at', { ascending: false })
+      .limit(limit);
+    if (role) q = q.eq('role', role);
+    q.then(({ data }) => { if (!cancelled) setRows((data as SignupRow[]) ?? []); });
+    return () => { cancelled = true; };
+  }, [role, limit]);
+
+  const fmt = (iso: string) =>
+    new Date(iso).toLocaleString('es-CO', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit', timeZone: 'America/Bogota' });
+  const today = new Date().toLocaleDateString('en-CA', { timeZone: 'America/Bogota' });
+  const todayCount = (rows ?? []).filter(r => new Date(r.created_at).toLocaleDateString('en-CA', { timeZone: 'America/Bogota' }) === today).length;
+
+  return (
+    <div className="bg-slate-800/50 rounded-2xl p-4 md:p-6 mb-6">
+      <div className="flex flex-wrap items-center justify-between gap-3 mb-1">
+        <h2 className="text-lg font-semibold">🆕 Registros recientes</h2>
+        <select
+          value={role}
+          onChange={e => setRole(e.target.value)}
+          className="bg-slate-900/80 border border-slate-700 rounded-lg px-3 py-1.5 text-sm text-white outline-none"
+        >
+          <option value="">Todos los tipos de usuario</option>
+          {Object.entries(ROLE_LABELS).map(([v, l]) => <option key={v} value={v}>{l}</option>)}
+        </select>
+      </div>
+      <p className="text-slate-400 text-sm mb-4">
+        {rows === null ? 'Cargando…' : `Mostrando los ${rows.length} más recientes${todayCount ? ` · ${todayCount} hoy` : ''}.`}
+      </p>
+      {rows && rows.length > 0 && (
+        <div className="overflow-x-auto">
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="text-left text-slate-400 border-b border-slate-700">
+                <th className="py-2 pr-3">Registro</th>
+                <th className="py-2 pr-3">Nombre</th>
+                <th className="py-2 pr-3">Correo</th>
+                <th className="py-2 pr-3">Tipo</th>
+                <th className="py-2">Política</th>
+              </tr>
+            </thead>
+            <tbody>
+              {rows.map(r => (
+                <tr key={r.email + r.created_at} className="border-b border-slate-800">
+                  <td className="py-2 pr-3 text-slate-400 whitespace-nowrap">{fmt(r.created_at)}</td>
+                  <td className="py-2 pr-3">{r.name}</td>
+                  <td className="py-2 pr-3 text-slate-400">{r.email}</td>
+                  <td className="py-2 pr-3 whitespace-nowrap">{ROLE_LABELS[r.role] ?? r.role}</td>
+                  <td className="py-2" title={r.data_consent_at ? `Aceptó el ${fmt(r.data_consent_at)}` : 'Cuenta creada por un administrador o antes de la política'}>
+                    {r.data_consent_at ? '✅' : '—'}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          {rows.length === limit && (
+            <button onClick={() => setLimit(l => l + 50)} className="mt-3 text-sm text-blue-400 hover:underline">Ver más</button>
+          )}
+        </div>
+      )}
+    </div>
+  );
+};
+
 /** Ranking de la campaña (solo admin): top 50 con datos de contacto, alerta de ritmo sospechoso y CSV. */
 const CampaignRankingPanel: React.FC = () => {
   const [rows, setRows] = useState<RankingRow[] | null>(null);
@@ -421,6 +514,7 @@ const TeacherDashboard: React.FC<TeacherDashboardProps> = ({ paths, onExit, isAd
 
         {isAdmin && <AdminPanel onUserCreated={loadStudents} />}
         {isAdmin && <BulkCreatePanel onUsersCreated={loadStudents} />}
+        {isAdmin && <RecentSignupsPanel />}
         {isAdmin && <CampaignRankingPanel />}
         {isAdmin && <BadgePreviewPanel paths={paths} viewerName={viewerName} />}
         {isAdmin && resetResult && <ResultBox email={resetResult.email} password={resetResult.password} onClose={() => setResetResult(null)} />}
