@@ -4,7 +4,7 @@
 
 export const BRAND = 'CERT Académico by RedCiber.org';
 
-/** Campaña de registro gratuito (22–31 oct 2026): los 7 cursos iniciales, en orden; cada uno se desbloquea al terminar el anterior. */
+/** Campaña de registro gratuito (22 oct – 3 nov 2026): los 7 cursos iniciales, en orden; cada uno se desbloquea al terminar el anterior. */
 export const FREE_ROUTE = [
   'cybersecurity',
   'cybercrime',
@@ -16,7 +16,7 @@ export const FREE_ROUTE = [
 ];
 
 /** Último momento para registrarse gratis (hora de Colombia). Debe coincidir con handle_new_user(). */
-export const REGISTRATION_DEADLINE = '2026-10-31T23:59:59-05:00';
+export const REGISTRATION_DEADLINE = '2026-11-03T23:59:59-05:00';
 
 export const isRegistrationOpen = (now = Date.now()) => now <= Date.parse(REGISTRATION_DEADLINE);
 

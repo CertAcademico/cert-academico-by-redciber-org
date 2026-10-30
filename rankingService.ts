@@ -1,7 +1,7 @@
 import { supabase } from './supabaseClient';
 
 /** Corte del ranking (hora de Colombia). Debe coincidir con campaign_cutoff() en la migración 2026-10-24. */
-export const CAMPAIGN_CUTOFF = '2026-10-31T23:59:59-05:00';
+export const CAMPAIGN_CUTOFF = '2026-11-03T23:59:59-05:00';
 export const CAMPAIGN_TOP = 50;
 export const CAMPAIGN_PRIZE = 'curso de creación de agentes defensivos y ofensivos en ciberseguridad';
 

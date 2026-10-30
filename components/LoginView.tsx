@@ -256,11 +256,11 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLogin }) => {
               >
                 {registrationOpen ? (
                   <p className="text-xs text-emerald-300 bg-emerald-500/10 border border-emerald-500/30 rounded-lg px-3 py-2 -mt-1">
-                    🎁 Registro gratuito del 22 al 31 de octubre: accede a los 7 cursos iniciales, desde Fundamentos de Ciberseguridad hasta CERTs y CSIRTs. Gana un badge verificable por cada curso y tu certificado al completar la ruta. 🏆 Los 50 mejores puntajes al 31 de octubre acceden gratis al curso de creación de agentes defensivos y ofensivos en ciberseguridad.
+                    🎁 Registro gratuito del 22 de octubre al 3 de noviembre: accede a los 7 cursos iniciales, desde Fundamentos de Ciberseguridad hasta CERTs y CSIRTs. Gana un badge verificable por cada curso y tu certificado al completar la ruta. 🏆 Los 50 mejores puntajes al 3 de noviembre acceden gratis al curso de creación de agentes defensivos y ofensivos en ciberseguridad.
                   </p>
                 ) : (
                   <p className="text-xs text-amber-300 bg-amber-500/10 border border-amber-500/30 rounded-lg px-3 py-2 -mt-1">
-                    El registro gratuito cerró el 31 de octubre. Si ya tienes una cuenta, inicia sesión.
+                    El registro gratuito cerró el 3 de noviembre. Si ya tienes una cuenta, inicia sesión.
                   </p>
                 )}
                 <div>

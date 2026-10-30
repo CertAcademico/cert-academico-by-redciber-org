@@ -29,7 +29,7 @@ const CampaignRankCard: React.FC = () => {
             🏆 {closed ? 'Ranking cerrado' : 'Convocatoria · Top 50'}
           </p>
           <p className="text-lg font-bold text-white">
-            Los {CAMPAIGN_TOP} mejores puntajes al 31 de octubre acceden gratis al {CAMPAIGN_PRIZE}
+            Los {CAMPAIGN_TOP} mejores puntajes al 3 de noviembre acceden gratis al {CAMPAIGN_PRIZE}
           </p>
           {loaded && (
             <p className="text-sm text-slate-200 mt-1">
@@ -50,8 +50,8 @@ const CampaignRankCard: React.FC = () => {
       </div>
       {showRules && (
         <ol className="mt-4 text-sm text-slate-200 space-y-1.5 list-decimal pl-5">
-          <li>Participan quienes se registraron gratis en CERT Académico hasta el 31 de octubre de 2026.</li>
-          <li>Cuenta lo logrado hasta el 31 de octubre a las 23:59 (hora de Colombia).</li>
+          <li>Participan quienes se registraron gratis en CERT Académico hasta el 3 de noviembre de 2026.</li>
+          <li>Cuenta lo logrado hasta el 3 de noviembre a las 23:59 (hora de Colombia).</li>
           <li>El orden se define por: (1) número de badges obtenidos en los 7 cursos iniciales; (2) a igual número, la mayor suma de notas en las evaluaciones de esos cursos; (3) si persiste el empate, quien obtuvo su último badge primero.</li>
           <li>Los {CAMPAIGN_TOP} primeros acceden gratis al {CAMPAIGN_PRIZE}. Serán contactados al correo con el que se registraron.</li>
           <li>RedCiber.org revisará los resultados antes de anunciarlos y podrá excluir puntajes obtenidos de forma fraudulenta o automatizada.</li>

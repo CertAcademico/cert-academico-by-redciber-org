@@ -61,7 +61,7 @@ export async function registerUser(
     }
     // Supabase envuelve las excepciones del trigger handle_new_user() en un mensaje genérico.
     if (error.message.includes('REGISTRATION_CLOSED') || error.message.includes('CONSENT_REQUIRED') || error.message.includes('Database error saving new user')) {
-      throw new Error('No fue posible completar el registro. El registro gratuito está abierto hasta el 31 de octubre y requiere aceptar la Política de Tratamiento de Datos Personales.');
+      throw new Error('No fue posible completar el registro. El registro gratuito está abierto hasta el martes 3 de noviembre y requiere aceptar la Política de Tratamiento de Datos Personales.');
     }
     throw new Error(error.message);
   }

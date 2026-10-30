@@ -377,7 +377,7 @@ const CampaignRankingPanel: React.FC = () => {
       <p className="text-slate-400 text-sm mb-4">
         {rows === null
           ? 'Cargando…'
-          : `${rows.length} participantes · ${ranked.length} con al menos un badge. Corte: 31 oct, 23:59. ⚠️ = menos de 15 min por badge: revisar antes de anunciar.`}
+          : `${rows.length} participantes · ${ranked.length} con al menos un badge. Corte: 3 nov, 23:59. ⚠️ = menos de 15 min por badge: revisar antes de anunciar.`}
       </p>
       {ranked.length > 0 && (
         <div className="overflow-x-auto">

@@ -1038,7 +1038,7 @@ const App: React.FC = () => {
         onOpenMap={hasMap ? () => setShowMap(true) : undefined}
         showCampaign={isFreeStudent}
         mapNote={isFreeStudent ? 'Tus 7 cursos gratuitos son el Nivel Básico de cada ruta. Mira el camino completo: los niveles Intermedio y Avanzado no están incluidos en el registro gratuito.' : undefined}
-        banner={isFreeStudent ? '🎁 Registro gratuito (22–31 de octubre): completa los 7 cursos iniciales en orden, desde Fundamentos de Ciberseguridad hasta CERTs y CSIRTs. Cada curso terminado te da un badge verificable, y al completar los 7 obtienes tu certificado final. Los 50 mejores puntajes al 31 de octubre acceden gratis al curso de creación de agentes defensivos y ofensivos en ciberseguridad.' : undefined}
+        banner={isFreeStudent ? '🎁 Registro gratuito (22 de octubre – 3 de noviembre): completa los 7 cursos iniciales en orden, desde Fundamentos de Ciberseguridad hasta CERTs y CSIRTs. Cada curso terminado te da un badge verificable, y al completar los 7 obtienes tu certificado final. Los 50 mejores puntajes al 3 de noviembre acceden gratis al curso de creación de agentes defensivos y ofensivos en ciberseguridad.' : undefined}
       />
     );
   }
