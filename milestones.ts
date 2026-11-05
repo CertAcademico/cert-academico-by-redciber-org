@@ -1,6 +1,6 @@
 // Badges de alcance y estrellas por sesión.
 // Deben coincidir con milestone_rules(), deliverable_xp() y star_xp() en
-// supabase/migrations/2026-11-06_estrellas_y_badges_por_sesion.sql.
+// supabase/migrations/2026-11-07_sesiones_6_y_7.sql.
 
 export interface Milestone {
   pathId: string;
@@ -27,6 +27,8 @@ export const MILESTONES: Record<string, Milestone> = {
   cert_csirt_s3: session(3, 'Portafolio de servicios FIRST', ['#8b5cf6', '#4c1d95']),
   cert_csirt_s4: session(4, 'Madurez SIM3 y ENISA', ['#f59e0b', '#78350f']),
   cert_csirt_s5: session(5, 'Respuesta a incidentes NIST', ['#ef4444', '#7f1d1d']),
+  cert_csirt_s6: session(6, 'Cooperación y TLP', ['#22c55e', '#14532d']),
+  cert_csirt_s7: session(7, 'Anteproyecto de un CSIRT', ['#ec4899', '#831843']),
   cert_csirt_fase1: {
     pathId: 'cert_csirt',
     title: 'CERTs y CSIRTs — Fase 1: Sesiones 1 a 3',

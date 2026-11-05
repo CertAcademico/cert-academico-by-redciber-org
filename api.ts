@@ -1326,7 +1326,6 @@ const LEARNING_PATHS_DATA: LearningPaths = {
       },
       {
         id: 'cert_s6',
-        locked: true,
         title: "Sesión 6: Cooperación e Intercambio de Información",
         content: [
           { type: 'text', icon: 'ClosedEnvelopeIcon', text: "Objetivo de la sesión: aplicar el Traffic Light Protocol (TLP) para clasificar y compartir información sensible entre organizaciones, y reconocer las principales redes de confianza y mecanismos de divulgación coordinada de vulnerabilidades." },
@@ -1337,12 +1336,42 @@ const LEARNING_PATHS_DATA: LearningPaths = {
             title: 'Glosario: niveles del TLP',
             items: [
               { term: 'TLP:RED', definition: 'Uso exclusivo de los destinatarios directos de la reunión o el mensaje; no se redistribuye.' },
-              { term: 'TLP:AMBER', definition: 'Compartible solo dentro de la organización del destinatario y con quienes necesiten conocerlo.' },
+              { term: 'TLP:AMBER+STRICT', definition: 'Compartible solo dentro de la organización del destinatario (nivel agregado en la versión 2.0 del TLP, de 2022).' },
+              { term: 'TLP:AMBER', definition: 'Compartible dentro de la organización del destinatario y con sus clientes, con quienes necesiten conocerlo para protegerse.' },
               { term: 'TLP:GREEN', definition: 'Compartible dentro de la comunidad de confianza del sector, pero no en canales públicos.' },
               { term: 'TLP:CLEAR', definition: 'Difusión pública sin restricciones (antes llamado TLP:WHITE).' },
             ]
           },
-          { type: 'text', icon: 'CalendarIcon', text: "Actividad presencial: se entregan 6 reportes de incidentes simulados; cada grupo debe asignarles el nivel TLP correcto y simular su intercambio con un CSIRT 'par' de otro grupo, respetando las reglas de redistribución de cada nivel." },
+          {
+            type: 'activity',
+            title: 'Red de confianza: intercambio con TLP',
+            duration: '50–55 min',
+            groupSize: 'Los mismos 6 grupos, cada uno con su CSIRT',
+            goal: 'Su CSIRT acaba de entrar a una red regional de confianza con los CSIRT de los otros grupos. Practiquen las dos caras del intercambio: etiquetar con TLP lo que ustedes comparten y respetar las etiquetas de lo que reciben. Al final, decidan cómo divulgar una vulnerabilidad cuando el fabricante no responde. Regla de oro: la etiqueta la pone la fuente.',
+            downloads: [
+              {
+                label: 'Hoja de trabajo del estudiante (.docx)',
+                href: '/materiales/certs-csirts/hoja-estudiante-intercambio-tlp.docx',
+                note: 'Los niveles del TLP 2.0, los 6 reportes para etiquetar, la bandeja de entrada y el caso de divulgación coordinada.',
+              },
+            ],
+            steps: [
+              { title: 'Etiqueten lo que comparten', minutes: '15 min', detail: 'Ustedes son la fuente de 6 reportes: un phishing, infraestructura de ransomware, un hospital cifrado, una vulnerabilidad sin parche, estadísticas y las brechas de su propio CSIRT. Asignen a cada uno una etiqueta TLP y digan a quién lo envían.' },
+              { title: 'Bandeja de entrada', minutes: '15 min', detail: 'Reciben 6 solicitudes para reenviar información que otros les compartieron. Decidan: compartir, no compartir, pedir permiso a la fuente o compartir una versión sin datos sensibles. Comparen con su grupo par (A–B, C–D, E–F).' },
+              { title: 'Divulgación coordinada', minutes: '15 min', detail: 'El fabricante del software vulnerable no responde y un concejal pregunta en público. Armen la línea de tiempo: a quién informan, con qué etiqueta y cuándo publican el aviso.' },
+              { title: 'Cierre', minutes: '5–10 min', detail: 'Las etiquetas se muestran al mismo tiempo y se discuten las diferencias. ¿Etiquetar todo como RED es más seguro?' },
+            ],
+            groupsTitle: 'Los niveles del TLP 2.0',
+            groups: [
+              { name: 'TLP:RED', items: ['Solo los destinatarios directos'] },
+              { name: 'TLP:AMBER+STRICT', items: ['Solo dentro de la propia organización'] },
+              { name: 'TLP:AMBER', items: ['La organización y sus clientes, según necesidad'] },
+              { name: 'TLP:GREEN', items: ['La comunidad de confianza, no en canales públicos'] },
+              { name: 'TLP:CLEAR', items: ['Sin restricción: se puede publicar'] },
+            ],
+            closing: 'Entregable: la Matriz de etiquetado TLP, las decisiones de la bandeja de entrada y la línea de tiempo de divulgación coordinada. Todo el caso es ficticio.',
+            deliverable: { label: 'Suban su Matriz TLP', hint: 'La hoja con las etiquetas de los 6 reportes, las decisiones de la bandeja de entrada y su línea de tiempo de divulgación coordinada.' },
+          },
           {
             type: 'flashcards',
             title: 'Redes de cooperación y organismos clave',
@@ -1373,7 +1402,6 @@ const LEARNING_PATHS_DATA: LearningPaths = {
       },
       {
         id: 'cert_s7',
-        locked: true,
         title: "Sesión 7: Taller Aplicado — Diseño de un CSIRT",
         content: [
           { type: 'text', icon: 'ServerIcon', text: "Objetivo de la sesión: diseñar el anteproyecto de un CSIRT completo — mandato, constituencia, portafolio de servicios y nivel de madurez objetivo — tomando como referencia casos reales de CSIRT nacionales y sectoriales." },
@@ -1389,7 +1417,36 @@ const LEARNING_PATHS_DATA: LearningPaths = {
               { term: 'Enlace Legal/Comunicaciones', definition: 'Gestiona los aspectos normativos, de reporte regulatorio y la comunicación con la constituencia y medios.' },
             ]
           },
-          { type: 'text', icon: 'CalendarIcon', text: "Actividad presencial: cada grupo entrega el anteproyecto de diseño de un CSIRT (mandato + constituencia + hasta 3 servicios prioritarios del framework de FIRST + nivel de madurez SIM3 objetivo a 2 años) para el CSIRT que viene desarrollando desde la Sesión 2 (portafolio de la Sesión 3, plan de mejora de la Sesión 4). Este anteproyecto es la base del proyecto final de la Sesión 8." },
+          {
+            type: 'activity',
+            title: 'Comité de financiación: el anteproyecto de su CSIRT',
+            duration: '75–85 min',
+            groupSize: 'Los mismos 6 grupos; los que escuchan forman el comité',
+            goal: 'Junten todo lo construido: mandato y constituencia (Sesión 2), portafolio de servicios (Sesión 3), plan de mejora SIM3 (Sesión 4), lo aprendido en el simulacro (Sesión 5) y la cooperación (Sesión 6). Completen el lienzo de su CSIRT y convenzan a un comité de financiación de aprobarlo. El comité no busca el proyecto más grande, sino el más coherente y realista.',
+            downloads: [
+              {
+                label: 'Hoja de trabajo del estudiante (.docx)',
+                href: '/materiales/certs-csirts/hoja-estudiante-anteproyecto-csirt.docx',
+                note: 'El lienzo de 10 bloques, el reparto del presupuesto y la hoja de evaluación del comité.',
+              },
+            ],
+            steps: [
+              { title: 'Completen el lienzo', minutes: '25 min', detail: 'Misión, mandato y autoridad, constituencia, ubicación, hasta 3 servicios prioritarios, equipo y horario, herramientas, cooperación, madurez SIM3 hoy y a 2 años, presupuesto y riesgos. Repartan 100 unidades de presupuesto anual.' },
+              { title: 'Presenten al comité', minutes: '3 min por grupo', detail: 'Sin diapositivas: solo el lienzo. Expliquen por qué su CSIRT es coherente y realista.' },
+              { title: 'Respondan al comité', minutes: '3 min por grupo', detail: 'El director financiero, la jefa jurídica, el director de TI y el representante del regulador hacen cada uno su pregunta difícil.' },
+              { title: 'Evalúen a los demás', minutes: 'Durante las presentaciones', detail: 'Cuando les toque ser comité, califiquen de 1 a 4 la coherencia, el realismo, la madurez, la cooperación y la defensa, y escriban una recomendación.' },
+              { title: 'Cierre', minutes: '10–15 min', detail: 'Cada grupo dice qué cambiará en su anteproyecto. Ese ajuste es la base del proyecto final de la Sesión 8.' },
+            ],
+            groupsTitle: 'Los roles del comité',
+            groups: [
+              { name: 'Director financiero', items: ['¿Es sostenible después del primer año?'] },
+              { name: 'Jefa jurídica', items: ['¿Tiene respaldo legal para actuar?'] },
+              { name: 'Director de TI', items: ['¿En qué se diferencia del SOC?'] },
+              { name: 'Regulador', items: ['¿Cómo y cuándo notificará?'] },
+            ],
+            closing: 'Entregable: el Lienzo del anteproyecto completo y la evaluación que recibieron del comité. Los casos de CERT.br y CERT-EU sirven de referencia.',
+            deliverable: { label: 'Suban el Lienzo del anteproyecto', hint: 'El lienzo de 10 bloques con el presupuesto y, si la tienen, una foto o copia de la evaluación del comité.' },
+          },
           {
             type: 'h5p_check',
             title: 'Aplicación al diseño propio',
