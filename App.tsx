@@ -191,6 +191,7 @@ const LearningPathView: React.FC<LearningPathViewProps> = ({ path, pathId, onExi
   }, [currentModuleIndex, path, userId, pathId]);
 
   const isModuleLocked = (index: number): boolean => {
+    if (isAdmin) return false; // El admin abre cualquier sesión, sin orden ni quizzes previos.
     if (path.modules[index]?.locked && !unlockAll) return true;
     const checkInteractive = (m: Module) =>
       m.content.some(
@@ -333,7 +334,7 @@ const LearningPathView: React.FC<LearningPathViewProps> = ({ path, pathId, onExi
                       >
                         <div className="w-6 h-6 flex-shrink-0">{getModuleIcon(module, index)}</div>
                         <span className="flex-grow text-xs font-semibold leading-snug">{module.title}</span>
-                        {module.locked && <span className="text-xs shrink-0" title="Sesión aún no habilitada">🔒</span>}
+                        {module.locked && !unlockAll && <span className="text-xs shrink-0" title="Sesión aún no habilitada">🔒</span>}
                       </button>
                     </li>
                   );
