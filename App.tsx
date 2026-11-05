@@ -26,6 +26,7 @@ import AICourseCompanion from './components/AICourseCompanion';
 import LoginView from './components/LoginView';
 import TeacherDashboard from './components/TeacherDashboard';
 import ActivityView from './components/ActivityView';
+import ModuleBadges from './components/ModuleBadges';
 import type { SubmissionContext } from './components/SubmissionBox';
 import { MILESTONES, STAR_COURSES } from './milestones';
 import { Stars } from './components/SubmissionBox';
@@ -387,6 +388,15 @@ const LearningPathView: React.FC<LearningPathViewProps> = ({ path, pathId, onExi
                 <h2 id={`module-title-${currentModuleIndex}`} className="sr-only">
                   {currentModule.title}
                 </h2>
+                <ModuleBadges
+                  pathId={pathId}
+                  moduleId={currentModule.id}
+                  courseTitle={path.title}
+                  userId={userId}
+                  totalModules={path.modules.length}
+                  completedCount={completedModules.length}
+                  refreshKey={`${completedModules.length}|${groupProgress?.delivered?.length ?? 0}`}
+                />
                 {currentModule.content.map((block, index) => (
                   <div key={index}>
                     {renderContentBlock(block, handleQuizComplete, handleH5PComplete, { pathId, moduleId: currentModule.id, userId, canSubmit, isStaff, isAdmin, sessionCompleted: completedModules.includes(currentModuleIndex), onProgressChange: refreshStars })}
