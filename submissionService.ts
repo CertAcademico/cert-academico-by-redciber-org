@@ -57,26 +57,73 @@ export async function listSubmissions(pathId: string, moduleId: string): Promise
   return (data as Row[]).map(toSubmission);
 }
 
+export interface RosterEntry { groupLabel: string; memberName: string; isMe: boolean }
+
+/** Integrantes: el estudiante ve su grupo; docentes, tutores y admins ven todos. */
+export async function getRoster(pathId: string): Promise<RosterEntry[]> {
+  const { data, error } = await supabase.rpc('group_roster', { p_path: pathId });
+  if (error || !data) return [];
+  return (data as { group_label: string; member_name: string; is_me: boolean }[])
+    .map(r => ({ groupLabel: r.group_label, memberName: r.member_name, isMe: r.is_me }));
+}
+
+export async function setMyGroup(pathId: string, group: string): Promise<void> {
+  const { error } = await supabase.rpc('set_my_group', { p_path: pathId, p_group: group });
+  if (error) throw new Error('No se pudo guardar su grupo. Intente de nuevo.');
+}
+
+/** Recalcula el XP de entregas del usuario (por si algo quedó desactualizado). */
+export async function syncMyDeliverableXp(pathId: string): Promise<void> {
+  await supabase.rpc('sync_my_deliverable_xp', { p_path: pathId });
+}
+
+export interface MilestoneStatus {
+  group: string | null;
+  modulesDone: number;
+  modulesTotal: number;
+  delivered: number;
+  deliverablesTotal: number;
+  eligible: boolean;
+}
+
+export async function getMilestoneStatus(milestoneId: string): Promise<MilestoneStatus | null> {
+  const { data, error } = await supabase.rpc('milestone_status', { p_milestone: milestoneId });
+  if (error || !data) return null;
+  const d = data as Record<string, unknown>;
+  return {
+    group: (d.group as string) ?? null,
+    modulesDone: Number(d.modules_done),
+    modulesTotal: Number(d.modules_total),
+    delivered: Number(d.delivered),
+    deliverablesTotal: Number(d.deliverables_total),
+    eligible: !!d.eligible,
+  };
+}
+
+/** Sube un entregable. El grupo lo pone la base de datos (el grupo actual del estudiante). */
 export async function uploadSubmission(
-  pathId: string, moduleId: string, userId: string, file: File, groupLabel: string | null,
+  pathId: string, moduleId: string, userId: string, file: File,
 ): Promise<Submission> {
   if (file.size > SUBMISSION_MAX_MB * 1024 * 1024) throw new Error(`El archivo supera los ${SUBMISSION_MAX_MB} MB.`);
   const ext = file.name.split('.').pop()?.toLowerCase() ?? '';
   if (!SUBMISSION_ACCEPT.split(',').includes(`.${ext}`)) throw new Error('Formato no permitido. Use PDF, Word, PowerPoint, Excel o una imagen PNG/JPG.');
-  const safe = file.name.normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^A-Za-z0-9._-]+/g, '-').slice(-120);
+  const safe = file.name.normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^A-Za-z0-9._-]+/g, '-').slice(-120);
   const storagePath = `${pathId}/${userId}/${moduleId}/${Date.now()}-${safe}`;
   const { error: upErr } = await supabase.storage.from(BUCKET).upload(storagePath, file, { contentType: file.type });
   if (upErr) throw new Error('No se pudo subir el archivo. Verifique el formato y su conexión e intente de nuevo.');
   const { data, error } = await supabase
     .from('activity_submissions')
-    .insert({ path_id: pathId, module_id: moduleId, group_label: groupLabel, file_name: file.name.slice(0, 200), storage_path: storagePath, size_bytes: file.size })
+    .insert({ path_id: pathId, module_id: moduleId, file_name: file.name.slice(0, 200), storage_path: storagePath, size_bytes: file.size })
     .select(COLUMNS)
     .single();
   if (error || !data) {
     await supabase.storage.from(BUCKET).remove([storagePath]);
-    throw new Error(error?.message.includes('TOO_MANY_FILES')
+    const msg = error?.message ?? '';
+    throw new Error(msg.includes('TOO_MANY_FILES')
       ? `Ya subió ${SUBMISSION_MAX_FILES} archivos en esta actividad. Elimine uno para subir otro.`
-      : 'No se pudo registrar la entrega. Intente de nuevo.');
+      : msg.includes('GROUP_REQUIRED')
+        ? 'Primero elija su grupo.'
+        : 'No se pudo registrar la entrega. Intente de nuevo.');
   }
   return toSubmission(data as Row);
 }

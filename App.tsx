@@ -27,6 +27,7 @@ import LoginView from './components/LoginView';
 import TeacherDashboard from './components/TeacherDashboard';
 import ActivityView from './components/ActivityView';
 import type { SubmissionContext } from './components/SubmissionBox';
+import { MILESTONES } from './milestones';
 import ScenarioLabView from './components/ScenarioLabView';
 import ChallengeLabView from './components/ChallengeLabView';
 import ExamView from './components/ExamView';
@@ -627,6 +628,8 @@ const LearningPathSelector: React.FC<LearningPathSelectorProps> = ({
   const achievements: { id: string; title: string }[] = [
     ...completedIds.map(id => ({ id, title: cleanCourseTitle(((paths[id] ?? levelPaths[id]) as LearningPathType).title) })),
     ...(routeDone ? [{ id: ROUTE_CERTIFICATE_ID, title: ROUTE_CERTIFICATE_TITLE }] : []),
+    // Badges de alcance (p. ej. Fase 1 de CERTs y CSIRTs): se emiten desde la actividad del curso.
+    ...certificates.filter(c => MILESTONES[c.pathId]).map(c => ({ id: c.pathId, title: MILESTONES[c.pathId].title })),
   ];
 
   const openOrIssue = async (id: string, title: string) => {

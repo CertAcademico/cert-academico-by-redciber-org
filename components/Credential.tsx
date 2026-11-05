@@ -3,6 +3,7 @@ import { BRAND, FREE_ROUTE, appUrl } from '../platform';
 import { LEVEL_NAMES, LEVEL_PATHS } from '../expertise';
 import { ROUTE_CERTIFICATE_ID } from '../certificateService';
 import type { Certificate } from '../certificateService';
+import { MILESTONES } from '../milestones';
 
 // Color principal del badge por curso (el resto usa el azul de la marca).
 const BADGE_COLORS: Record<string, [string, string]> = {
@@ -14,6 +15,7 @@ const BADGE_COLORS: Record<string, [string, string]> = {
   artificial_intelligence: ['#d97706', '#78350f'],
   ia_ofensiva_insider: ['#ea580c', '#7c2d12'],
   cert_csirt: ['#0d9488', '#134e4a'],
+  cert_csirt_fase1: ['#14b8a6', '#0f766e'],
   auditoria_ciberriesgo: ['#e11d48', '#881337'],
   cti_basico: ['#8b5cf6', '#2e1065'],
   cybercrime_intermedio: ['#b91c1c', '#431407'],
@@ -62,6 +64,7 @@ const BADGE_TITLES: Record<string, string> = {
   artificial_intelligence: 'Inteligencia Artificial y LLMs',
   ia_ofensiva_insider: 'IA Ofensiva e Insider',
   cert_csirt: 'CERTs y CSIRTs',
+  cert_csirt_fase1: 'CERTs y CSIRTs',
   auditoria_ciberriesgo: 'Auditoría del Riesgo Cibernético',
   cti_basico: 'Cyber Threat Intelligence',
   cybercrime_intermedio: 'Investigador Cibercriminal',
@@ -79,7 +82,7 @@ const BADGE_TITLES: Record<string, string> = {
 
 /** Ícono de cada curso, dibujado en una caja de 64×64. Los niveles usan el ícono de su ruta. */
 const BadgeIcon: React.FC<{ pathId: string; color: string }> = ({ pathId: rawId, color }) => {
-  const pathId = LEVEL_PATHS[rawId]?.track.levels[0] ?? rawId;
+  const pathId = LEVEL_PATHS[rawId]?.track.levels[0] ?? MILESTONES[rawId]?.pathId ?? rawId;
   const s = { fill: 'none', stroke: color, strokeWidth: 4, strokeLinecap: 'round' as const, strokeLinejoin: 'round' as const };
   switch (pathId) {
     case 'cybersecurity': // escudo con candado
@@ -118,6 +121,8 @@ export const BadgeSvg = forwardRef<SVGSVGElement, { pathId: string; title: strin
     const level = LEVEL_PATHS[pathId]?.level;
     const ribbon = isRoute
       ? `RUTA COMPLETA · ${year}`
+      : MILESTONES[pathId]
+        ? `${MILESTONES[pathId].ribbon} · ${year}`
       : level
         ? `NIVEL ${LEVEL_NAMES[level].toUpperCase()} · ${year}`
         : routeIndex >= 0

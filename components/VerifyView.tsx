@@ -4,6 +4,7 @@ import type { Certificate } from '../certificateService';
 import { fetchLearningPaths } from '../api';
 import { BadgeSvg, CertificateSheet, cleanCourseTitle } from './Credential';
 import { BRAND } from '../platform';
+import { MILESTONES } from '../milestones';
 
 /** Página pública: /app/?verificar=CÓDIGO. Muestra nombre, curso y fecha; nunca el correo. */
 const VerifyView: React.FC<{ code: string }> = ({ code }) => {
@@ -17,7 +18,7 @@ const VerifyView: React.FC<{ code: string }> = ({ code }) => {
       if (cancelled) return;
       if (!c) { setState('invalid'); return; }
       setCert(c);
-      setTitle(c.pathId === ROUTE_CERTIFICATE_ID ? ROUTE_CERTIFICATE_TITLE : cleanCourseTitle(paths[c.pathId]?.title ?? c.pathId));
+      setTitle(c.pathId === ROUTE_CERTIFICATE_ID ? ROUTE_CERTIFICATE_TITLE : MILESTONES[c.pathId]?.title ?? cleanCourseTitle(paths[c.pathId]?.title ?? c.pathId));
       setState('valid');
     });
     return () => { cancelled = true; };

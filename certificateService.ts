@@ -41,6 +41,9 @@ export async function issueCertificate(pathId: string): Promise<Certificate> {
     if (msg.includes('COURSE_NOT_COMPLETED') || msg.includes('ROUTE_NOT_COMPLETED')) {
       throw new Error('Aún no se puede emitir: completa todos los módulos, aprueba el examen del nivel (si lo tiene) y dedica al menos 10 minutos a cada curso.');
     }
+    if (msg.includes('MILESTONE_NOT_REACHED')) {
+      throw new Error('Aún no se puede emitir: complete las sesiones y verifique que su grupo haya entregado en todas.');
+    }
     if (msg.includes('PREREQUISITE_NOT_COMPLETED')) {
       throw new Error('Aún no se puede emitir: primero debes completar el nivel anterior de esta ruta.');
     }
