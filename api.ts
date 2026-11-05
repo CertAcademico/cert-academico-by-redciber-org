@@ -1070,7 +1070,6 @@ const LEARNING_PATHS_DATA: LearningPaths = {
       },
       {
         id: 'cert_s3',
-        locked: true,
         title: "Sesión 3: Modelo de Servicios — FIRST CSIRT Services Framework v2.1",
         content: [
           { type: 'text', icon: 'CheckCircleIcon', text: "Objetivo de la sesión: conocer el FIRST CSIRT Services Framework v2.1 — el estándar internacional para catalogar servicios de un CSIRT — y aplicarlo al diseño de un portafolio de servicios según el mandato y la constituencia de una organización." },
@@ -1087,7 +1086,48 @@ const LEARNING_PATHS_DATA: LearningPaths = {
               { term: 'Transferencia de Conocimiento', definition: 'Capacitación, sensibilización y desarrollo de buenas prácticas hacia la constituencia.' },
             ]
           },
-          { type: 'text', icon: 'CalendarIcon', text: "Actividad presencial: en equipos, diseñar el portafolio de servicios (eligiendo entre las 5 áreas del framework) para un escenario asignado — hospital, banco regional, universidad o ministerio — justificando qué servicios son prioritarios según el mandato y los recursos disponibles." },
+          {
+            type: 'activity',
+            title: 'Mercado de servicios FIRST',
+            duration: '45–50 min',
+            groupSize: 'Los mismos 6 grupos de la Sesión 2',
+            goal: 'Cada grupo sigue con el CSIRT que fundó en el Taller RFC 2350 y "compra" su portafolio de servicios con un presupuesto de fichas (personas, dinero y herramientas). A mitad del ejercicio llega una Carta de giro —un recorte, una nueva obligación o un incidente— que obliga a ajustar el portafolio. Ningún CSIRT puede comprarlo todo: hay que priorizar según el mandato y la constituencia.',
+            downloads: [
+              {
+                label: 'Hoja de trabajo del estudiante (.docx)',
+                href: '/materiales/certs-csirts/hoja-estudiante-portafolio-servicios.docx',
+                note: 'Reglas, presupuesto de cada grupo, catálogo de los 21 servicios con su costo en fichas y el Lienzo del portafolio para completar.',
+              },
+            ],
+            steps: [
+              { title: 'Repasen su CSIRT', minutes: '3 min', detail: 'Relean la misión, la constituencia y la autoridad de su RFC 2350 de la Sesión 2. Busquen su presupuesto en la hoja de trabajo.' },
+              { title: 'Compren su portafolio', minutes: '12 min', detail: 'Recorran el catálogo de 21 servicios y llenen el Lienzo. 2.1 Recepción de reportes de incidentes es obligatorio. Justifiquen cada compra con su constituencia y marquen con ★ los 3 servicios prioritarios del primer año.' },
+              { title: 'Carta de giro', minutes: '8 min', detail: 'El docente entrega a cada grupo un hecho inesperado. Ajusten el portafolio y anoten qué cambió y por qué.' },
+              { title: 'Galería', minutes: '15 min', detail: 'Peguen su lienzo en la pared. Recorran los demás y dejen en cada uno una nota ★ (lo mejor resuelto) y una nota ? (una pregunta). Un integrante se queda defendiendo el lienzo del grupo.' },
+              { title: 'Cierre', minutes: '5–10 min', detail: 'Respondan las preguntas recibidas. El docente compara los portafolios: ¿por qué el CSIRT más grande no es necesariamente el que más servicios debe ofrecer?' },
+            ],
+            groupsTitle: 'Grupos, CSIRT y presupuesto',
+            groups: [
+              { name: 'Grupo A — CSIRT universitario', items: ['Universidad Andina de Tecnología', '10 fichas'] },
+              { name: 'Grupo B — CSIRT financiero', items: ['Banco Regional del Pacífico', '16 fichas'] },
+              { name: 'Grupo C — CSIRT sectorial de salud', items: ['Ministerio de Salud', '12 fichas'] },
+              { name: 'Grupo D — Infraestructura crítica', items: ['Electrificadora Nacional S.A.', '12 fichas'] },
+              { name: 'Grupo E — CSIRT municipal', items: ['Alcaldía de una ciudad intermedia', '8 fichas'] },
+              { name: 'Grupo F — Proveedor de servicios', items: ['NubeSur (internet y nube)', '14 fichas'] },
+            ],
+            closing: 'Entregable: el Lienzo del portafolio con sus 3 servicios prioritarios (★). Guárdenlo: es la base del anteproyecto de la Sesión 7.',
+          },
+          {
+            type: 'flashcards',
+            title: 'Los 21 servicios, área por área',
+            cards: [
+              { front: '1. Gestión de eventos (2 servicios)', back: 'Monitoreo y detección · Análisis de eventos.' },
+              { front: '2. Gestión de incidentes (6 servicios)', back: 'Recepción de reportes · Análisis de incidentes · Análisis forense y de artefactos · Mitigación y recuperación · Coordinación de incidentes · Apoyo en gestión de crisis.' },
+              { front: '3. Gestión de vulnerabilidades (6 servicios)', back: 'Descubrimiento e investigación · Recepción de reportes · Análisis · Coordinación · Divulgación · Respuesta a vulnerabilidades.' },
+              { front: '4. Conocimiento de la situación (3 servicios)', back: 'Adquisición de datos · Análisis y síntesis · Comunicación (alertas y boletines).' },
+              { front: '5. Transferencia de conocimiento (4 servicios)', back: 'Sensibilización · Formación y educación · Ejercicios · Asesoría técnica y de políticas.' },
+            ]
+          },
           {
             type: 'memory',
             title: 'Asociar cada área de servicio con su definición',
@@ -1118,7 +1158,6 @@ const LEARNING_PATHS_DATA: LearningPaths = {
       },
       {
         id: 'cert_s4',
-        locked: true,
         title: "Sesión 4: Madurez Organizacional — SIM3 y el Marco de ENISA",
         content: [
           { type: 'text', icon: 'QuestionMarkCircleIcon', text: "Objetivo de la sesión: aplicar el modelo SIM3 (Security Incident Management Maturity Model) y el Marco de Madurez de ENISA para evaluar el nivel de madurez organizacional, humano, de herramientas y de procesos de un CSIRT." },
@@ -1134,7 +1173,39 @@ const LEARNING_PATHS_DATA: LearningPaths = {
               { term: 'Procesos', definition: 'Procedimientos documentados y repetibles para cada servicio ofrecido (gestión de incidentes, de vulnerabilidades, etc.).' },
             ]
           },
-          { type: 'text', icon: 'CalendarIcon', text: "Actividad presencial: usando una rúbrica SIM3 simplificada entregada por el docente, cada grupo autoevalúa (0-4) los 4 pilares de un CSIRT real o de un caso de estudio, identificando 2 brechas prioritarias y una acción concreta de mejora para cada una." },
+          { type: 'text', icon: 'ShieldCheckIcon', text: "La escala SIM3 de 0 a 4 mide qué tan formalizado está cada parámetro: 0 = no existe; 1 = implícito (se hace, pero no está escrito); 2 = explícito interno (escrito, solo para el equipo); 3 = formalizado (aprobado por la dirección); 4 = evaluado (además, revisado o auditado periódicamente). Por eso SIM3 no premia al CSIRT más grande, sino al que tiene sus cosas escritas, aprobadas y revisadas." },
+          {
+            type: 'activity',
+            title: 'Auditoría cruzada SIM3',
+            duration: '45–50 min',
+            groupSize: 'Los mismos 6 grupos de las Sesiones 2 y 3',
+            goal: 'Ha pasado un año desde que fundaron su CSIRT. Cada grupo audita el CSIRT de otro grupo con una rúbrica de 12 parámetros inspirada en SIM3 y una Ficha de evidencias que entrega el docente; luego el grupo auditado puede apelar los puntajes y, con el informe que recibió, arma el plan de mejora de su propio CSIRT. Cada puntaje debe salir de la evidencia, no de la impresión.',
+            downloads: [
+              {
+                label: 'Hoja de trabajo del estudiante (.docx)',
+                href: '/materiales/certs-csirts/hoja-estudiante-auditoria-sim3.docx',
+                note: 'La escala SIM3, el Informe de auditoría de 12 parámetros, el Perfil de madurez por pilares, la regla del nivel ENISA y el Plan de mejora.',
+              },
+            ],
+            steps: [
+              { title: 'Reciban la ficha', minutes: '2 min', detail: 'El docente entrega a cada grupo la Ficha de evidencias del CSIRT que va a auditar: A audita a B, B a C, C a D, D a E, E a F y F a A.' },
+              { title: 'Auditen', minutes: '18 min', detail: 'Puntúen los 12 parámetros (3 por pilar) de 0 a 4 y anoten en una frase la razón de cada puntaje. Pregúntense en orden: ¿existe? ¿está escrito? ¿lo aprobó la dirección? ¿alguien lo revisa?' },
+              { title: 'Perfil de madurez', minutes: '3 min', detail: 'Calculen el promedio de cada pilar (Organización, Humano, Herramientas, Procesos), sombreen el perfil y ubiquen el nivel ENISA aproximado: Básico, Intermedio o Avanzado.' },
+              { title: 'Entrega y apelación', minutes: '10 min', detail: 'Entreguen el informe al grupo auditado. Ese grupo puede apelar hasta 2 puntajes con argumentos basados en la evidencia; los auditores aceptan o sostienen su puntaje, explicando por qué.' },
+              { title: 'Plan de mejora', minutes: '10 min', detail: 'Con el informe sobre su propio CSIRT, elijan 2 brechas prioritarias y escriban una acción concreta para cada una: qué, quién, para cuándo y el puntaje meta.' },
+              { title: 'Cierre', minutes: '5–10 min', detail: 'Cada grupo dice su pilar más débil y su primera acción. El docente muestra por qué madurez no es lo mismo que tamaño.' },
+            ],
+            groupsTitle: 'Quién audita a quién',
+            groups: [
+              { name: 'Grupo A audita a…', items: ['B — Banco Regional del Pacífico'] },
+              { name: 'Grupo B audita a…', items: ['C — Ministerio de Salud'] },
+              { name: 'Grupo C audita a…', items: ['D — Electrificadora Nacional S.A.'] },
+              { name: 'Grupo D audita a…', items: ['E — Alcaldía de una ciudad intermedia'] },
+              { name: 'Grupo E audita a…', items: ['F — NubeSur'] },
+              { name: 'Grupo F audita a…', items: ['A — Universidad Andina de Tecnología'] },
+            ],
+            closing: 'Entregables: el Informe de auditoría del CSIRT que auditaron y el Plan de mejora del propio. El nivel de madurez objetivo a 2 años se retoma en el anteproyecto de la Sesión 7.',
+          },
           {
             type: 'h5p_check',
             title: 'Autoevaluación: madurez SIM3/ENISA',
@@ -1173,11 +1244,10 @@ const LEARNING_PATHS_DATA: LearningPaths = {
       },
       {
         id: 'cert_s5',
-        locked: true,
         title: "Sesión 5: Gestión Operativa de Incidentes — NIST SP 800-61",
         content: [
-          { type: 'text', icon: 'AlarmIcon', text: "Objetivo de la sesión: dominar el ciclo de vida de gestión de incidentes de NIST SP 800-61 (rev. 3) y aplicarlo en un ejercicio de simulación (tabletop) ante un incidente de ransomware." },
-          { type: 'text', icon: 'BugIcon', text: "NIST SP 800-61 — el 'Computer Security Incident Handling Guide' — define un ciclo de 4 fases: Preparación; Detección y Análisis; Contención, Erradicación y Recuperación; y Actividad Post-Incidente. La revisión 3 alinea este ciclo con el NIST Cybersecurity Framework 2.0, integrando la gestión de incidentes en la gestión de riesgo de toda la organización." },
+          { type: 'text', icon: 'AlarmIcon', text: "Objetivo de la sesión: dominar el ciclo de vida de gestión de incidentes de NIST SP 800-61 y aplicarlo en un ejercicio de simulación (tabletop) ante un incidente de ransomware." },
+          { type: 'text', icon: 'BugIcon', text: "NIST SP 800-61 — en su revisión 2, el 'Computer Security Incident Handling Guide' — define el ciclo clásico de 4 fases: Preparación; Detección y Análisis; Contención, Erradicación y Recuperación; y Actividad Post-Incidente. La revisión 3 (abril de 2025) reorganiza las recomendaciones según las 6 funciones del NIST Cybersecurity Framework 2.0 (Gobernar, Identificar, Proteger, Detectar, Responder y Recuperar), integrando la respuesta a incidentes en la gestión de riesgos de toda la organización. El ciclo de 4 fases sigue siendo la forma más usada de organizar el trabajo operativo de un CSIRT." },
           { type: 'text', icon: 'BugIcon', text: "El triage — clasificar la severidad y prioridad de un incidente apenas se detecta — es la decisión más crítica de la fase de Detección y Análisis: de ella depende cuántos recursos se movilizan y qué tan rápido se escala a niveles directivos." },
           {
             type: 'interactive',
@@ -1189,7 +1259,48 @@ const LEARNING_PATHS_DATA: LearningPaths = {
               { term: 'Actividad Post-Incidente', definition: 'Lecciones aprendidas, informe final y actualización de procedimientos para prevenir recurrencias.' },
             ]
           },
-          { type: 'text', icon: 'CalendarIcon', text: "Actividad presencial: ejercicio de mesa (tabletop exercise) guiado por el docente sobre un incidente simulado de ransomware; el curso se divide en roles (líder de incidente, analista técnico, comunicaciones, enlace legal) y debe tomar decisiones en cada fase del ciclo NIST en tiempo limitado." },
+          {
+            type: 'activity',
+            title: 'Simulacro de ransomware: Operación Medianoche',
+            duration: '60–70 min',
+            groupSize: 'Los mismos 6 grupos, de 3–4 personas con roles',
+            goal: 'Todos los grupos son el equipo de respuesta de la Secretaría de Hacienda de Villa Esperanza (ficticia), atacada con ransomware el último fin de semana antes de que venza un impuesto. El docente revela la historia en 7 inyecciones, una por fase del ciclo NIST, y cada equipo tiene 4 minutos para decidir. Algunos roles reciben tarjetas secretas con información que solo ellos conocen: decidan si la comparten y cuándo.',
+            downloads: [
+              {
+                label: 'Hoja de trabajo del estudiante (.docx)',
+                href: '/materiales/certs-csirts/hoja-estudiante-simulacro-ransomware.docx',
+                note: 'Roles, reglas del juego, matriz de prioridad (triage), la Bitácora de decisiones y la plantilla de revisión post-incidente.',
+              },
+            ],
+            steps: [
+              { title: 'Repartan los roles', minutes: '2 min', detail: 'Líder del incidente, Analista técnico, Comunicaciones y Enlace legal y regulatorio. En grupos de 3, una persona asume Comunicaciones y Legal. Anoten los nombres en la bitácora.' },
+              { title: 'Chequeo de preparación', minutes: '3 min', detail: 'Inyección 0: respondan SÍ, NO o NO SABEMOS sobre contactos de fuera de horario, copias de seguridad desconectadas y quién autoriza apagar el portal de pagos. Lo pondremos a prueba.' },
+              { title: 'Inyecciones 1 a 5', minutes: '~6 min cada una', detail: 'El docente lee la inyección y pone el cronómetro: 4 minutos para decidir y anotar en la bitácora qué, quién y por qué. Luego 1 o 2 grupos leen su decisión. Atentos a las tarjetas secretas en las inyecciones 2 y 3.' },
+              { title: 'Inyección 6: post-incidente', minutes: '5 min', detail: 'Escriban 3 lecciones aprendidas y 3 acciones de mejora, cada una con responsable y fecha.' },
+              { title: 'Revisión final (hot wash)', minutes: '15 min', detail: 'Se revelan los puntajes. ¿Cuándo supieron que era P1? ¿Quién decidió sobre el portal y el rescate? ¿Se compartieron las tarjetas secretas? ¿Qué brecha de la auditoría SIM3 apareció en el simulacro?' },
+            ],
+            groupsTitle: 'Las inyecciones y su fase NIST',
+            groups: [
+              { name: '0 · Jueves', items: ['Preparación'] },
+              { name: '1 · Viernes 23:10', items: ['Detección y análisis'] },
+              { name: '2 · Sábado 00:30', items: ['Contención'] },
+              { name: '3 · Sábado 03:00', items: ['Análisis y erradicación'] },
+              { name: '4 · Sábado 07:30', items: ['Contención: comunicación'] },
+              { name: '5 · Lunes 06:00', items: ['Recuperación'] },
+              { name: '6 · Dos semanas después', items: ['Actividad post-incidente'] },
+            ],
+            closing: 'Entregable: la Bitácora de decisiones completa y la revisión post-incidente. Gana el equipo con más puntos, pero lo que más cuenta es la calidad de las lecciones aprendidas. Todo el caso es ficticio.',
+          },
+          {
+            type: 'flashcards',
+            title: 'Roles del equipo de respuesta',
+            cards: [
+              { front: 'Líder del incidente', back: 'Coordina, controla el tiempo, toma la decisión final de cada paso y escala a la alta dirección. Escucha antes de decidir.' },
+              { front: 'Analista técnico', back: 'Interpreta la evidencia, propone la contención, la erradicación y la recuperación, y cuida la preservación de evidencia con cadena de custodia.' },
+              { front: 'Comunicaciones', back: 'Redacta los mensajes a funcionarios, ciudadanía y medios: veraces, oportunos y por canales oficiales.' },
+              { front: 'Enlace legal y regulatorio', back: 'Identifica a quién notificar (CSIRT nacional, autoridad de datos personales, policía) y en qué plazos, y asesora sobre el pago de rescates.' },
+            ]
+          },
           {
             type: 'quiz',
             quizData: {
@@ -1273,7 +1384,7 @@ const LEARNING_PATHS_DATA: LearningPaths = {
               { term: 'Enlace Legal/Comunicaciones', definition: 'Gestiona los aspectos normativos, de reporte regulatorio y la comunicación con la constituencia y medios.' },
             ]
           },
-          { type: 'text', icon: 'CalendarIcon', text: "Actividad presencial: cada grupo entrega el anteproyecto de diseño de un CSIRT (mandato + constituencia + hasta 3 servicios prioritarios del framework de FIRST + nivel de madurez SIM3 objetivo a 2 años) para el escenario que viene desarrollando desde la Sesión 3. Este anteproyecto es la base del proyecto final de la Sesión 8." },
+          { type: 'text', icon: 'CalendarIcon', text: "Actividad presencial: cada grupo entrega el anteproyecto de diseño de un CSIRT (mandato + constituencia + hasta 3 servicios prioritarios del framework de FIRST + nivel de madurez SIM3 objetivo a 2 años) para el CSIRT que viene desarrollando desde la Sesión 2 (portafolio de la Sesión 3, plan de mejora de la Sesión 4). Este anteproyecto es la base del proyecto final de la Sesión 8." },
           {
             type: 'h5p_check',
             title: 'Aplicación al diseño propio',
