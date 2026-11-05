@@ -557,6 +557,8 @@ interface LearningPathSelectorProps {
   showCampaign?: boolean;
   /** Texto del aviso del mapa cuando los niveles no están incluidos (registro gratuito). */
   mapNote?: string;
+  /** Muestra las estrellas del grupo en las tarjetas (no aplica al registro gratuito). */
+  showStars?: boolean;
 }
 
 // Cursos exclusivos de un público: solo los ve ese rol (y admin). Los demás roles no los ven,
@@ -624,6 +626,7 @@ const LearningPathSelector: React.FC<LearningPathSelectorProps> = ({
   onOpenMap,
   showCampaign,
   mapNote,
+  showStars = false,
 }) => {
   // Rutas del mapa con niveles publicados que este usuario puede cursar, p. ej. "Investigador Cibercriminal y Perito Forense Digital".
   const mapTracks = EXPERTISE_TRACKS.filter(t => t.levels.slice(1).some(l => l && l in levelPaths)).map(t => t.title);
@@ -636,6 +639,7 @@ const LearningPathSelector: React.FC<LearningPathSelectorProps> = ({
   const [openCredential, setOpenCredential] = useState<{ cert: Certificate; title: string } | null>(null);
   const [issuingId, setIssuingId] = useState<string | null>(null);
   const [credentialError, setCredentialError] = useState('');
+  const [groupProgress, setGroupProgress] = useState<Record<string, GroupProgress>>({});
   const firstName = userName.split(' ')[0];
   const initial = userName.charAt(0).toUpperCase();
 
@@ -647,8 +651,21 @@ const LearningPathSelector: React.FC<LearningPathSelectorProps> = ({
       setUserProgress(p);
       setCertificates(c);
       setIsStatsLoading(false);
+      if (!showStars) return;
+      // Estrellas del grupo y badges ganados con el grupo (aunque no se haya abierto la sesión).
+      for (const pid of STAR_COURSES.filter(id => id in paths)) {
+        getGroupProgress(pid).then(gp => { if (!cancelled && gp) setGroupProgress(prev => ({ ...prev, [pid]: gp })); }).catch(() => undefined);
+      }
+      for (const [mid, m] of Object.entries(MILESTONES)) {
+        if (!(m.pathId in paths) || c.some(x => x.pathId === mid)) continue;
+        getMilestoneStatus(mid)
+          .then(st => (st?.eligible ? issueCertificate(mid) : undefined))
+          .then(cert => { if (!cancelled && cert) setCertificates(prev => (prev.some(x => x.pathId === mid) ? prev : [...prev, cert])); })
+          .catch(() => undefined);
+      }
     });
     return () => { cancelled = true; };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userId]);
 
   if (isStatsLoading) return <LoadingSpinner message="Cargando tu panel..." />;
@@ -828,6 +845,36 @@ const LearningPathSelector: React.FC<LearningPathSelectorProps> = ({
                     />
                   </div>
                 </div>
+
+                {/* Estrellas del grupo por sesión */}
+                {showStars && STAR_COURSES.includes(id) && !isPathLocked && (() => {
+                  const gp = groupProgress[id];
+                  const sessions = typedPath.modules
+                    .map((m, i) => ({ m, i }))
+                    .filter(({ m }) => m.content.some(c => c.type === 'activity' && !!c.deliverable));
+                  if (!gp || sessions.length === 0) return null;
+                  if (!gp.group) {
+                    return <p className="text-xs text-amber-200 bg-black/20 rounded-lg px-3 py-2 mb-4">👥 Elige tu grupo en la Sesión 1 para ganar estrellas.</p>;
+                  }
+                  const rows = sessions.map(({ m, i }) => ({
+                    n: i + 1,
+                    earned: [!!cp?.completedModules.includes(i), gp.delivered.includes(m.id), gp.starred.includes(m.id)],
+                  }));
+                  const total = rows.reduce((a, row) => a + row.earned.filter(Boolean).length, 0);
+                  return (
+                    <div className="bg-black/20 rounded-lg px-3 py-2 mb-4">
+                      <p className="flex justify-between text-xs text-slate-300 mb-1">
+                        <span>👥 Grupo {gp.group} · estrellas</span>
+                        <span className="text-amber-300 font-bold">★ {total} de {rows.length * 3}</span>
+                      </p>
+                      <div className="flex flex-wrap gap-x-3 gap-y-0.5">
+                        {rows.map(row => (
+                          <span key={row.n} className="text-[11px] text-slate-400 whitespace-nowrap">S{row.n} <Stars size="text-xs" earned={row.earned} /></span>
+                        ))}
+                      </div>
+                    </div>
+                  );
+                })()}
 
                 {/* Footer */}
                 <div className="flex justify-between items-center text-xs text-slate-400 mb-4">
@@ -1083,6 +1130,7 @@ const App: React.FC = () => {
         levelPaths={levelPaths}
         onOpenMap={hasMap ? () => setShowMap(true) : undefined}
         showCampaign={isFreeStudent}
+        showStars={!isFreeStudent}
         mapNote={isFreeStudent ? 'Tus 7 cursos gratuitos son el Nivel Básico de cada ruta. Mira el camino completo: los niveles Intermedio y Avanzado no están incluidos en el registro gratuito.' : undefined}
         banner={isFreeStudent ? '🎁 Registro gratuito (22 de octubre – 3 de noviembre): completa los 7 cursos iniciales en orden, desde Fundamentos de Ciberseguridad hasta CERTs y CSIRTs. Cada curso terminado te da un badge verificable, y al completar los 7 obtienes tu certificado final. Los 50 mejores puntajes al 3 de noviembre acceden gratis al curso de creación de agentes defensivos y ofensivos en ciberseguridad.' : undefined}
       />
