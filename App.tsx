@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { fetchLearningPaths } from './api';
 import type { LearningPaths, LearningPath as LearningPathType, ContentBlock, Module } from './types';
 import { getSession, logoutUser } from './authService';
@@ -27,7 +27,10 @@ import LoginView from './components/LoginView';
 import TeacherDashboard from './components/TeacherDashboard';
 import ActivityView from './components/ActivityView';
 import type { SubmissionContext } from './components/SubmissionBox';
-import { MILESTONES } from './milestones';
+import { MILESTONES, STAR_COURSES } from './milestones';
+import { Stars } from './components/SubmissionBox';
+import { getGroupProgress } from './submissionService';
+import type { GroupProgress } from './submissionService';
 import ScenarioLabView from './components/ScenarioLabView';
 import ChallengeLabView from './components/ChallengeLabView';
 import ExamView from './components/ExamView';
@@ -152,6 +155,14 @@ const LearningPathView: React.FC<LearningPathViewProps> = ({ path, pathId, onExi
   const [showLibrary, setShowLibrary] = useState(false);
   const [showWall, setShowWall] = useState(false);
   const hasWall = WALL_COURSES.includes(pathId);
+  // Estrellas por sesión (cursos con entregas en grupo).
+  const hasStars = STAR_COURSES.includes(pathId);
+  const [groupProgress, setGroupProgress] = useState<GroupProgress | null>(null);
+  const refreshStars = useCallback(() => {
+    if (hasStars) getGroupProgress(pathId).then(setGroupProgress).catch(() => undefined);
+  }, [hasStars, pathId]);
+  useEffect(() => { refreshStars(); }, [refreshStars]);
+  const hasDeliverable = (m: Module) => m.content.some(c => c.type === 'activity' && !!c.deliverable);
   const [completedModules, setCompletedModules] = useState<number[]>([]);
   const [isProgressLoading, setIsProgressLoading] = useState(true);
   const moduleContentRef = useRef<HTMLDivElement>(null);
@@ -335,6 +346,12 @@ const LearningPathView: React.FC<LearningPathViewProps> = ({ path, pathId, onExi
                       >
                         <div className="w-6 h-6 flex-shrink-0">{getModuleIcon(module, index)}</div>
                         <span className="flex-grow text-xs font-semibold leading-snug">{module.title}</span>
+                        {hasStars && hasDeliverable(module) && (
+                          <Stars
+                            size="text-xs"
+                            earned={[isCompleted, !!groupProgress?.delivered.includes(module.id), !!groupProgress?.starred.includes(module.id)]}
+                          />
+                        )}
                         {module.locked && !unlockAll && <span className="text-xs shrink-0" title="Sesión aún no habilitada">🔒</span>}
                       </button>
                     </li>
@@ -363,7 +380,7 @@ const LearningPathView: React.FC<LearningPathViewProps> = ({ path, pathId, onExi
                 </h2>
                 {currentModule.content.map((block, index) => (
                   <div key={index}>
-                    {renderContentBlock(block, handleQuizComplete, handleH5PComplete, { pathId, moduleId: currentModule.id, userId, canSubmit, isStaff, isAdmin })}
+                    {renderContentBlock(block, handleQuizComplete, handleH5PComplete, { pathId, moduleId: currentModule.id, userId, canSubmit, isStaff, isAdmin, sessionCompleted: completedModules.includes(currentModuleIndex), onProgressChange: refreshStars })}
                   </div>
                 ))}
               </motion.div>

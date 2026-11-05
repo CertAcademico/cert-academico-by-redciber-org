@@ -1208,6 +1208,7 @@ const LEARNING_PATHS_DATA: LearningPaths = {
               { name: 'Grupo F audita a…', items: ['A — Universidad Andina de Tecnología'] },
             ],
             closing: 'Entregables: el Informe de auditoría del CSIRT que auditaron y el Plan de mejora del propio. El nivel de madurez objetivo a 2 años se retoma en el anteproyecto de la Sesión 7.',
+            deliverable: { label: 'Suban el Informe de auditoría y su Plan de mejora', hint: 'El informe del CSIRT que auditaron (con apelaciones) y el plan de mejora de su propio CSIRT. Pueden ser dos archivos o fotos legibles de las hojas.' },
           },
           {
             type: 'h5p_check',
@@ -1293,6 +1294,7 @@ const LEARNING_PATHS_DATA: LearningPaths = {
               { name: '6 · Dos semanas después', items: ['Actividad post-incidente'] },
             ],
             closing: 'Entregable: la Bitácora de decisiones completa y la revisión post-incidente. Gana el equipo con más puntos, pero lo que más cuenta es la calidad de las lecciones aprendidas. Todo el caso es ficticio.',
+            deliverable: { label: 'Suban la Bitácora de decisiones', hint: 'La bitácora completa del simulacro, su mensaje público y la revisión post-incidente (3 lecciones con sus acciones).' },
           },
           {
             type: 'flashcards',

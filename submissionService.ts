@@ -111,6 +111,32 @@ export async function getMilestoneStatus(milestoneId: string): Promise<Milestone
   };
 }
 
+export interface GroupProgress { group: string | null; delivered: string[]; starred: string[] }
+
+/** Sesiones que entregó el grupo del usuario y cuáles destacó el docente. */
+export async function getGroupProgress(pathId: string): Promise<GroupProgress | null> {
+  const { data, error } = await supabase.rpc('my_group_progress', { p_path: pathId });
+  if (error || !data) return null;
+  const d = data as { group: string | null; delivered: string[]; starred: string[] };
+  return { group: d.group ?? null, delivered: d.delivered ?? [], starred: d.starred ?? [] };
+}
+
+/** Grupos destacados por el docente en una sesión (solo docentes). */
+export async function listStarredGroups(pathId: string, moduleId: string): Promise<string[]> {
+  const { data, error } = await supabase.from('group_stars').select('group_label').eq('path_id', pathId).eq('module_id', moduleId);
+  if (error || !data) return [];
+  return (data as { group_label: string }[]).map(r => r.group_label);
+}
+
+/** Docente: destaca o quita la estrella de la entrega de un grupo. Devuelve si quedó destacada. */
+export async function toggleGroupStar(pathId: string, moduleId: string, group: string): Promise<boolean> {
+  const { data, error } = await supabase.rpc('toggle_group_star', { p_path: pathId, p_module: moduleId, p_group: group });
+  if (error) throw new Error(error.message.includes('NO_SUBMISSION')
+    ? 'Ese grupo todavía no ha entregado en esta sesión.'
+    : 'No se pudo guardar la estrella. Verifique que la migración de estrellas esté aplicada.');
+  return !!data;
+}
+
 /** Sube un entregable. El grupo lo pone la base de datos (el grupo actual del estudiante). */
 export async function uploadSubmission(
   pathId: string, moduleId: string, userId: string, file: File,

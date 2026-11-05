@@ -2,12 +2,13 @@ import React, { useEffect, useRef, useState } from 'react';
 import {
   listSubmissions, uploadSubmission, submissionUrl, deleteSubmission,
   getRoster, setMyGroup, syncMyDeliverableXp, getMilestoneStatus,
+  getGroupProgress, listStarredGroups, toggleGroupStar,
   SUBMISSION_ACCEPT, SUBMISSION_MAX_MB, SUBMISSION_MAX_FILES, GROUP_LABELS,
 } from '../submissionService';
 import { NotEnabledError } from '../submissionService';
 import type { Submission, RosterEntry, MilestoneStatus } from '../submissionService';
 import { issueCertificate } from '../certificateService';
-import { milestoneForModule, DELIVERABLE_XP } from '../milestones';
+import { milestonesForModule, DELIVERABLE_XP, STAR_XP } from '../milestones';
 import { formatRelativeTime } from '../utils';
 
 export interface SubmissionContext {
@@ -19,17 +20,30 @@ export interface SubmissionContext {
   /** Docente, tutor o admin: ve las entregas y los grupos de todos. */
   isStaff: boolean;
   isAdmin: boolean;
+  /** El estudiante ya completó esta sesión (primera estrella). */
+  sessionCompleted?: boolean;
+  /** Avisa que cambió el XP o las estrellas (para refrescar la barra lateral). */
+  onProgressChange?: () => void;
 }
+
+/** Tres estrellas: llenas las ganadas. */
+export const Stars: React.FC<{ earned: boolean[]; size?: string }> = ({ earned, size = 'text-base' }) => (
+  <span className={`${size} tracking-tight`} aria-label={`${earned.filter(Boolean).length} de ${earned.length} estrellas`}>
+    {earned.map((e, i) => <span key={i} className={e ? 'text-amber-300' : 'text-slate-600'}>{e ? '★' : '☆'}</span>)}
+  </span>
+);
 
 const sizeLabel = (b: number) => (b >= 1048576 ? `${(b / 1048576).toFixed(1)} MB` : `${Math.max(1, Math.round(b / 1024))} KB`);
 
 /** Caja de entrega de una actividad grupal: grupo, archivos, XP y badge de alcance. */
 const SubmissionBox: React.FC<{ ctx: SubmissionContext; label: string; hint?: string }> = ({ ctx, label, hint }) => {
-  const { pathId, moduleId, userId, canSubmit, isStaff, isAdmin } = ctx;
+  const { pathId, moduleId, userId, canSubmit, isStaff, isAdmin, sessionCompleted = false, onProgressChange } = ctx;
   const [items, setItems] = useState<Submission[] | null>(null);
   const [roster, setRoster] = useState<RosterEntry[]>([]);
-  const [milestone, setMilestone] = useState<MilestoneStatus | null>(null);
-  const [badgeCode, setBadgeCode] = useState('');
+  const [statuses, setStatuses] = useState<Record<string, MilestoneStatus>>({});
+  const [badges, setBadges] = useState<Record<string, string>>({});
+  const [starred, setStarred] = useState(false);
+  const [starredGroups, setStarredGroups] = useState<string[]>([]);
   const [changingGroup, setChangingGroup] = useState(false);
   const [pendingGroup, setPendingGroup] = useState('');
   const [savingGroup, setSavingGroup] = useState(false);
@@ -38,11 +52,28 @@ const SubmissionBox: React.FC<{ ctx: SubmissionContext; label: string; hint?: st
   const [error, setError] = useState('');
   const [ok, setOk] = useState('');
   const inputRef = useRef<HTMLInputElement>(null);
-  const ms = milestoneForModule(pathId, moduleId);
+  const milestones = milestonesForModule(pathId, moduleId);
+
+  // Badges: se emiten solos en cuanto se cumplen los requisitos (el servidor los valida).
+  const refreshMilestones = () => {
+    if (!canSubmit) return;
+    for (const [id] of milestones) {
+      getMilestoneStatus(id).then(st => {
+        if (!st) return;
+        setStatuses(prev => ({ ...prev, [id]: st }));
+        if (st.eligible) {
+          issueCertificate(id).then(c => setBadges(prev => ({ ...prev, [id]: c.code }))).catch(() => undefined);
+        }
+      });
+    }
+  };
 
   const refreshMeta = () => {
     getRoster(pathId).then(setRoster);
-    if (ms && canSubmit) getMilestoneStatus(ms[0]).then(setMilestone);
+    if (canSubmit) getGroupProgress(pathId).then(gp => setStarred(!!gp?.starred.includes(moduleId)));
+    if (isStaff) listStarredGroups(pathId, moduleId).then(setStarredGroups);
+    refreshMilestones();
+    onProgressChange?.();
   };
 
   useEffect(() => {
@@ -57,6 +88,12 @@ const SubmissionBox: React.FC<{ ctx: SubmissionContext; label: string; hint?: st
     return () => { cancelled = true; };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pathId, moduleId]);
+
+  // Al completar la sesión (quiz aprobado), revisar de nuevo los badges.
+  useEffect(() => {
+    if (sessionCompleted) refreshMilestones();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [sessionCompleted]);
 
   if (!canSubmit && !isStaff) return null;
 
@@ -119,13 +156,11 @@ const SubmissionBox: React.FC<{ ctx: SubmissionContext; label: string; hint?: st
     } catch (err) { alert((err as Error).message); }
   };
 
-  const claimBadge = async () => {
-    if (!ms) return;
-    setError('');
+  const toggleStar = async (g: string) => {
     try {
-      const cert = await issueCertificate(ms[0]);
-      setBadgeCode(cert.code);
-    } catch (err) { setError((err as Error).message); }
+      const on = await toggleGroupStar(pathId, moduleId, g);
+      setStarredGroups(prev => (on ? [...prev, g] : prev.filter(x => x !== g)));
+    } catch (err) { alert((err as Error).message); }
   };
 
   const row = (s: Submission, showAuthor: boolean) => (
@@ -227,29 +262,40 @@ const SubmissionBox: React.FC<{ ctx: SubmissionContext; label: string; hint?: st
             </>
           )}
 
-          {/* Badge de alcance */}
-          {ms && milestone && (
-            <div className="mt-4 bg-amber-500/10 border border-amber-500/40 rounded-xl p-4">
-              <p className="text-sm font-bold text-amber-200 mb-2">🏅 Badge de alcance: {ms[1].title}</p>
-              {badgeCode ? (
-                <p className="text-sm text-emerald-300">¡Badge obtenido! Código de verificación <strong>{badgeCode}</strong>. Lo verá con sus demás badges en el panel de inicio.</p>
-              ) : (
-                <>
-                  <ul className="text-sm text-slate-200 space-y-1 mb-3">
-                    <li>{milestone.modulesDone >= milestone.modulesTotal ? '✅' : '⬜'} Sesiones completadas por usted: {milestone.modulesDone} de {milestone.modulesTotal}</li>
-                    <li>{milestone.delivered >= milestone.deliverablesTotal ? '✅' : '⬜'} Entregas de su grupo: {milestone.delivered} de {milestone.deliverablesTotal}</li>
-                  </ul>
-                  <button
-                    onClick={claimBadge}
-                    disabled={!milestone.eligible}
-                    className="bg-amber-500 hover:bg-amber-400 disabled:opacity-40 text-slate-900 font-bold rounded-xl px-5 py-2 text-sm"
-                  >
-                    {milestone.eligible ? 'Obtener mi badge' : 'Aún no disponible'}
-                  </button>
-                </>
-              )}
+          {/* Estrellas de la sesión */}
+          {myGroup && (
+            <div className="mt-4 bg-slate-900/50 rounded-xl p-4">
+              <div className="flex flex-wrap items-center gap-3 mb-2">
+                <Stars earned={[sessionCompleted, groupDelivered, starred]} size="text-2xl" />
+                <span className="text-sm font-bold text-white">Estrellas de esta sesión</span>
+              </div>
+              <ul className="text-sm text-slate-300 space-y-0.5">
+                <li>{sessionCompleted ? '★' : '☆'} Completar la sesión (aprobar el quiz) · 10 XP</li>
+                <li>{groupDelivered ? '★' : '☆'} Su grupo sube el entregable · +{DELIVERABLE_XP} XP cada integrante</li>
+                <li>{starred ? '★' : '☆'} El docente destaca la entrega del grupo · +{STAR_XP} XP cada integrante</li>
+              </ul>
             </div>
           )}
+
+          {/* Badges de la sesión y de la fase */}
+          {milestones.map(([id, m]) => {
+            const st = statuses[id];
+            if (!st) return null;
+            const code = badges[id];
+            return (
+              <div key={id} className="mt-3 bg-amber-500/10 border border-amber-500/40 rounded-xl p-4">
+                <p className="text-sm font-bold text-amber-200 mb-1">🏅 {m.title}</p>
+                {code ? (
+                  <p className="text-sm text-emerald-300">¡Badge obtenido! Código <strong>{code}</strong>. Está con sus demás badges en el panel de inicio.</p>
+                ) : (
+                  <ul className="text-sm text-slate-200 space-y-0.5">
+                    <li>{st.modulesDone >= st.modulesTotal ? '✅' : '⬜'} {st.modulesTotal === 1 ? 'Sesión completada por usted' : `Sesiones completadas por usted: ${st.modulesDone} de ${st.modulesTotal}`}</li>
+                    <li>{st.delivered >= st.deliverablesTotal ? '✅' : '⬜'} {st.deliverablesTotal === 1 ? 'Entrega de su grupo' : `Entregas de su grupo: ${st.delivered} de ${st.deliverablesTotal}`}</li>
+                  </ul>
+                )}
+              </div>
+            );
+          })}
         </>
       )}
 
@@ -268,9 +314,20 @@ const SubmissionBox: React.FC<{ ctx: SubmissionContext; label: string; hint?: st
               const files = others.filter(s => (s.groupLabel ?? '—') === g);
               return (
                 <div key={g} className="mb-3">
-                  <p className="text-xs font-bold uppercase tracking-widest text-amber-200 mb-1">
-                    Grupo {g} {files.length > 0 ? '· ✅ entregó' : '· ⏳ sin entrega'}
-                  </p>
+                  <div className="flex flex-wrap items-center gap-3 mb-1">
+                    <p className="text-xs font-bold uppercase tracking-widest text-amber-200">
+                      Grupo {g} {files.length > 0 ? '· ✅ entregó' : '· ⏳ sin entrega'}
+                    </p>
+                    {files.length > 0 && g !== '—' && (
+                      <button
+                        onClick={() => toggleStar(g)}
+                        className={`text-xs rounded-lg px-2.5 py-1 border ${starredGroups.includes(g) ? 'bg-amber-400 text-slate-900 border-amber-300 font-bold' : 'text-amber-200 border-amber-500/50 hover:bg-amber-500/10'}`}
+                        title={`Destacar da +${STAR_XP} XP a cada integrante del grupo`}
+                      >
+                        {starredGroups.includes(g) ? '★ Destacada' : '☆ Destacar'}
+                      </button>
+                    )}
+                  </div>
                   {members.length > 0 && <p className="text-xs text-slate-400 mb-1.5">{members.join(' · ')}</p>}
                   {files.length > 0 && <ul className="space-y-2">{files.map(s => row(s, true))}</ul>}
                 </div>

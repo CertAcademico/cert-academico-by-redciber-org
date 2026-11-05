@@ -15,7 +15,6 @@ const BADGE_COLORS: Record<string, [string, string]> = {
   artificial_intelligence: ['#d97706', '#78350f'],
   ia_ofensiva_insider: ['#ea580c', '#7c2d12'],
   cert_csirt: ['#0d9488', '#134e4a'],
-  cert_csirt_fase1: ['#14b8a6', '#0f766e'],
   auditoria_ciberriesgo: ['#e11d48', '#881337'],
   cti_basico: ['#8b5cf6', '#2e1065'],
   cybercrime_intermedio: ['#b91c1c', '#431407'],
@@ -64,7 +63,6 @@ const BADGE_TITLES: Record<string, string> = {
   artificial_intelligence: 'Inteligencia Artificial y LLMs',
   ia_ofensiva_insider: 'IA Ofensiva e Insider',
   cert_csirt: 'CERTs y CSIRTs',
-  cert_csirt_fase1: 'CERTs y CSIRTs',
   auditoria_ciberriesgo: 'Auditoría del Riesgo Cibernético',
   cti_basico: 'Cyber Threat Intelligence',
   cybercrime_intermedio: 'Investigador Cibercriminal',
@@ -115,7 +113,7 @@ const BadgeIcon: React.FC<{ pathId: string; color: string }> = ({ pathId: rawId,
 /** Badge digital en SVG (400×460): hexágono con ícono del curso, título y posición en la ruta. */
 export const BadgeSvg = forwardRef<SVGSVGElement, { pathId: string; title: string; year: string; size?: number }>(
   ({ pathId, title, year, size = 220 }, ref) => {
-    const [c1, c2] = BADGE_COLORS[pathId] ?? ['#2563eb', '#1e3a8a'];
+    const [c1, c2] = BADGE_COLORS[pathId] ?? MILESTONES[pathId]?.colors ?? ['#2563eb', '#1e3a8a'];
     const isRoute = pathId === ROUTE_CERTIFICATE_ID;
     const routeIndex = FREE_ROUTE.indexOf(pathId);
     const level = LEVEL_PATHS[pathId]?.level;
@@ -128,7 +126,7 @@ export const BadgeSvg = forwardRef<SVGSVGElement, { pathId: string; title: strin
         : routeIndex >= 0
         ? `CURSO ${routeIndex + 1} DE ${FREE_ROUTE.length} · ${year}`
         : `CURSO COMPLETADO · ${year}`;
-    const lines = wrap((BADGE_TITLES[pathId] ?? cleanCourseTitle(title)).toUpperCase(), 17).slice(0, 3);
+    const lines = wrap((BADGE_TITLES[pathId] ?? (MILESTONES[pathId] ? BADGE_TITLES[MILESTONES[pathId].pathId] : undefined) ?? cleanCourseTitle(title)).toUpperCase(), 17).slice(0, 3);
     const id = `b-${pathId}`;
     const hex = 'M200 22 L367 118 V310 L200 406 L33 310 V118 Z';
     const font = 'Arial, Helvetica, sans-serif';
