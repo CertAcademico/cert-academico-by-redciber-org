@@ -43,6 +43,7 @@ const SubmissionBox: React.FC<{ ctx: SubmissionContext; label: string; hint?: st
   const [statuses, setStatuses] = useState<Record<string, MilestoneStatus>>({});
   const [badges, setBadges] = useState<Record<string, string>>({});
   const [starred, setStarred] = useState(false);
+  const [deliveredByGroup, setDeliveredByGroup] = useState(false);
   const [starredGroups, setStarredGroups] = useState<string[]>([]);
   const [changingGroup, setChangingGroup] = useState(false);
   const [pendingGroup, setPendingGroup] = useState('');
@@ -70,7 +71,10 @@ const SubmissionBox: React.FC<{ ctx: SubmissionContext; label: string; hint?: st
 
   const refreshMeta = () => {
     getRoster(pathId).then(setRoster);
-    if (canSubmit) getGroupProgress(pathId).then(gp => setStarred(!!gp?.starred.includes(moduleId)));
+    if (canSubmit) getGroupProgress(pathId).then(gp => {
+      setStarred(!!gp?.starred.includes(moduleId));
+      setDeliveredByGroup(!!gp?.delivered.includes(moduleId));
+    });
     if (isStaff) listStarredGroups(pathId, moduleId).then(setStarredGroups);
     refreshMilestones();
     onProgressChange?.();
@@ -100,8 +104,10 @@ const SubmissionBox: React.FC<{ ctx: SubmissionContext; label: string; hint?: st
   const myGroup = roster.find(r => r.isMe)?.groupLabel ?? null;
   const mates = myGroup ? roster.filter(r => r.groupLabel === myGroup) : [];
   const mine = (items ?? []).filter(s => s.userId === userId);
-  const groupDelivered = !!myGroup && (items ?? []).some(s => s.groupLabel === myGroup);
+  // Lo que subió cualquier integrante del grupo cuenta para todos.
+  const groupDelivered = !!myGroup && (deliveredByGroup || (items ?? []).some(s => s.groupLabel === myGroup));
   const others = (items ?? []).filter(s => s.userId !== userId);
+  const teamFiles = myGroup ? others.filter(s => s.groupLabel === myGroup) : [];
 
   const chooseGroup = async () => {
     const g = pendingGroup;
@@ -249,7 +255,7 @@ const SubmissionBox: React.FC<{ ctx: SubmissionContext; label: string; hint?: st
                 {groupDelivered && <span className="text-sm text-emerald-300">✅ Su grupo ya entregó esta sesión</span>}
               </div>
               <p className="text-xs text-slate-400 mb-3">
-                PDF, Word, PowerPoint, Excel o imagen · hasta {SUBMISSION_MAX_MB} MB · máximo {SUBMISSION_MAX_FILES} archivos. Basta con que una persona del grupo lo suba: todos reciben el XP. Solo lo ven usted y los docentes.
+                PDF, Word, PowerPoint, Excel o imagen · hasta {SUBMISSION_MAX_MB} MB · máximo {SUBMISSION_MAX_FILES} archivos. Cualquier integrante puede subirlo y basta con una entrega: todos reciben el XP, las estrellas y el badge. Lo ven su grupo y los docentes.
               </p>
             </>
           )}
@@ -259,6 +265,12 @@ const SubmissionBox: React.FC<{ ctx: SubmissionContext; label: string; hint?: st
             <>
               <p className="text-sm font-semibold text-slate-200 mb-2">Sus archivos</p>
               <ul className="space-y-2 mb-2">{mine.map(s => row(s, false))}</ul>
+            </>
+          )}
+          {items !== null && !isStaff && teamFiles.length > 0 && (
+            <>
+              <p className="text-sm font-semibold text-slate-200 mb-2">Subidos por su grupo</p>
+              <ul className="space-y-2 mb-2">{teamFiles.map(s => row(s, true))}</ul>
             </>
           )}
 

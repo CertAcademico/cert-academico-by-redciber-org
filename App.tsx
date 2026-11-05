@@ -29,7 +29,7 @@ import ActivityView from './components/ActivityView';
 import type { SubmissionContext } from './components/SubmissionBox';
 import { MILESTONES, STAR_COURSES } from './milestones';
 import { Stars } from './components/SubmissionBox';
-import { getGroupProgress } from './submissionService';
+import { getGroupProgress, getMilestoneStatus } from './submissionService';
 import type { GroupProgress } from './submissionService';
 import ScenarioLabView from './components/ScenarioLabView';
 import ChallengeLabView from './components/ChallengeLabView';
@@ -159,8 +159,17 @@ const LearningPathView: React.FC<LearningPathViewProps> = ({ path, pathId, onExi
   const hasStars = STAR_COURSES.includes(pathId);
   const [groupProgress, setGroupProgress] = useState<GroupProgress | null>(null);
   const refreshStars = useCallback(() => {
-    if (hasStars) getGroupProgress(pathId).then(setGroupProgress).catch(() => undefined);
-  }, [hasStars, pathId]);
+    if (!hasStars) return;
+    getGroupProgress(pathId).then(setGroupProgress).catch(() => undefined);
+    // Badges ganados gracias al grupo: se emiten aunque el estudiante no abra esa sesión.
+    if (!canSubmit) return;
+    for (const [id, m] of Object.entries(MILESTONES)) {
+      if (m.pathId !== pathId) continue;
+      getMilestoneStatus(id)
+        .then(st => (st?.eligible ? issueCertificate(id) : undefined))
+        .catch(() => undefined);
+    }
+  }, [hasStars, pathId, canSubmit]);
   useEffect(() => { refreshStars(); }, [refreshStars]);
   const hasDeliverable = (m: Module) => m.content.some(c => c.type === 'activity' && !!c.deliverable);
   const [completedModules, setCompletedModules] = useState<number[]>([]);

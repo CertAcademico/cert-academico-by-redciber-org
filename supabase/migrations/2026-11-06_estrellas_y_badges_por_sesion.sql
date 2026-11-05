@@ -6,6 +6,7 @@
 --   ⭐ el docente destaca la entrega del grupo (+20 XP para cada integrante)
 -- Cada sesión superada (completada + entrega del grupo) da un badge verificable.
 -- Las sesiones 4 y 5 también tienen entregable.
+-- Todos los integrantes del grupo ven la entrega del grupo (archivos, estrellas y badges).
 -- Correr completa en Supabase → SQL Editor, DESPUÉS de 2026-11-05. Es idempotente.
 -- ─────────────────────────────────────────────────────────────
 
@@ -172,3 +173,39 @@ $$;
 
 revoke execute on function public.my_group_progress(text) from public, anon;
 grant execute on function public.my_group_progress(text) to authenticated;
+
+-- ═════════════════════════════════════════════════════════════
+-- Todo el grupo ve la entrega del grupo
+-- Antes cada estudiante veía solo los archivos que él mismo subió, así que sus
+-- compañeros no veían la entrega ni sus estrellas. Ahora los integrantes del
+-- mismo grupo ven y descargan los archivos del grupo (borrar sigue siendo solo del autor).
+-- ─────────────────────────────────────────────────────────────
+create or replace function public.my_group_label(p_path text)
+returns text
+language sql
+stable
+security definer
+set search_path = public
+as $$ select group_label from public.course_groups where path_id = p_path and user_id = auth.uid(); $$;
+
+revoke execute on function public.my_group_label(text) from public, anon;
+grant execute on function public.my_group_label(text) to authenticated;
+
+drop policy if exists "submissions: read own or staff" on public.activity_submissions;
+drop policy if exists "submissions: read own, group or staff" on public.activity_submissions;
+create policy "submissions: read own, group or staff"
+  on public.activity_submissions for select to authenticated
+  using (user_id = auth.uid()
+         or public.is_teacher()
+         or group_label = public.my_group_label(path_id));
+
+drop policy if exists "activity-submissions: read own or staff" on storage.objects;
+drop policy if exists "activity-submissions: read own, group or staff" on storage.objects;
+create policy "activity-submissions: read own, group or staff"
+  on storage.objects for select to authenticated
+  using (bucket_id = 'activity-submissions'
+         and ((storage.foldername(name))[2] = auth.uid()::text
+              or public.is_teacher()
+              or exists (select 1 from public.activity_submissions s
+                         where s.storage_path = storage.objects.name
+                           and s.group_label = public.my_group_label(s.path_id))));
