@@ -4,6 +4,7 @@ import {
   getRoster, setMyGroup, syncMyDeliverableXp, getMilestoneStatus,
   SUBMISSION_ACCEPT, SUBMISSION_MAX_MB, SUBMISSION_MAX_FILES, GROUP_LABELS,
 } from '../submissionService';
+import { NotEnabledError } from '../submissionService';
 import type { Submission, RosterEntry, MilestoneStatus } from '../submissionService';
 import { issueCertificate } from '../certificateService';
 import { milestoneForModule, DELIVERABLE_XP } from '../milestones';
@@ -30,6 +31,9 @@ const SubmissionBox: React.FC<{ ctx: SubmissionContext; label: string; hint?: st
   const [milestone, setMilestone] = useState<MilestoneStatus | null>(null);
   const [badgeCode, setBadgeCode] = useState('');
   const [changingGroup, setChangingGroup] = useState(false);
+  const [pendingGroup, setPendingGroup] = useState('');
+  const [savingGroup, setSavingGroup] = useState(false);
+  const [notEnabled, setNotEnabled] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
   const [ok, setOk] = useState('');
@@ -44,7 +48,10 @@ const SubmissionBox: React.FC<{ ctx: SubmissionContext; label: string; hint?: st
   useEffect(() => {
     let cancelled = false;
     setItems(null);
-    listSubmissions(pathId, moduleId).then(s => { if (!cancelled) setItems(s); });
+    setNotEnabled(false);
+    listSubmissions(pathId, moduleId)
+      .then(s => { if (!cancelled) setItems(s); })
+      .catch(err => { if (!cancelled) { setItems([]); if (err instanceof NotEnabledError) setNotEnabled(true); } });
     if (canSubmit) syncMyDeliverableXp(pathId).catch(() => undefined);
     refreshMeta();
     return () => { cancelled = true; };
@@ -59,16 +66,27 @@ const SubmissionBox: React.FC<{ ctx: SubmissionContext; label: string; hint?: st
   const groupDelivered = !!myGroup && (items ?? []).some(s => s.groupLabel === myGroup);
   const others = (items ?? []).filter(s => s.userId !== userId);
 
-  const chooseGroup = async (g: string) => {
-    if (!g) return;
+  const chooseGroup = async () => {
+    const g = pendingGroup;
+    if (!g) { setError('Elija la letra de su grupo.'); return; }
     if (myGroup && !confirm(`¿Cambiarse al Grupo ${g}? Recibirá el XP de las entregas de ese grupo y dejará de recibir el del Grupo ${myGroup}.`)) return;
-    setError('');
+    setError(''); setOk('');
+    setSavingGroup(true);
     try {
       await setMyGroup(pathId, g);
+      // Muestra el grupo de inmediato, sin esperar a recargar la lista de integrantes.
+      setRoster(prev => [...prev.filter(r => !r.isMe), { groupLabel: g, memberName: 'Usted', isMe: true }]);
       setChangingGroup(false);
+      setPendingGroup('');
+      setOk(`✅ Quedó en el Grupo ${g}.`);
       refreshMeta();
-      listSubmissions(pathId, moduleId).then(setItems);
-    } catch (err) { setError((err as Error).message); }
+      listSubmissions(pathId, moduleId).then(setItems).catch(() => undefined);
+    } catch (err) {
+      if (err instanceof NotEnabledError) setNotEnabled(true);
+      setError((err as Error).message);
+    } finally {
+      setSavingGroup(false);
+    }
   };
 
   const onFile = async (file: File | undefined) => {
@@ -130,15 +148,24 @@ const SubmissionBox: React.FC<{ ctx: SubmissionContext; label: string; hint?: st
   const staffGroups = [...new Set([...roster.map(r => r.groupLabel), ...others.map(s => s.groupLabel ?? '—')])].sort();
 
   const groupSelect = (
-    <select
-      defaultValue=""
-      onChange={e => chooseGroup(e.target.value)}
-      className="bg-slate-900 border border-slate-600 rounded-lg px-3 py-2 text-sm text-white"
-      aria-label="Elegir grupo"
-    >
-      <option value="" disabled>Elija su grupo…</option>
-      {GROUP_LABELS.filter(g => g !== myGroup).map(g => <option key={g} value={g}>Grupo {g}</option>)}
-    </select>
+    <>
+      <select
+        value={pendingGroup}
+        onChange={e => { setPendingGroup(e.target.value); setError(''); }}
+        className="bg-slate-900 border border-slate-600 rounded-lg px-3 py-2 text-sm text-white"
+        aria-label="Elegir grupo"
+      >
+        <option value="">Elija su grupo…</option>
+        {GROUP_LABELS.filter(g => g !== myGroup).map(g => <option key={g} value={g}>Grupo {g}</option>)}
+      </select>
+      <button
+        onClick={chooseGroup}
+        disabled={!pendingGroup || savingGroup}
+        className="bg-amber-500 hover:bg-amber-400 disabled:opacity-40 text-slate-900 font-bold rounded-xl px-4 py-2 text-sm"
+      >
+        {savingGroup ? 'Guardando…' : 'Guardar grupo'}
+      </button>
+    </>
   );
 
   return (
@@ -146,6 +173,13 @@ const SubmissionBox: React.FC<{ ctx: SubmissionContext; label: string; hint?: st
       <p className="text-xs font-bold uppercase tracking-widest text-emerald-300 mb-1">📤 Entregable · +{DELIVERABLE_XP} XP para cada integrante del grupo</p>
       <h4 className="text-lg font-bold text-white mb-1">{label}</h4>
       {hint && <p className="text-sm text-slate-300 mb-4">{hint}</p>}
+
+      {notEnabled && (
+        <p className="text-sm text-amber-200 bg-amber-500/10 border border-amber-500/40 rounded-xl px-4 py-3 mb-4">
+          ⚠️ La entrega de archivos aún no está activada en el servidor.{' '}
+          {isStaff ? 'Falta ejecutar la migración supabase/migrations/2026-11-05_entregables_actividades.sql en Supabase → SQL Editor.' : 'Avise al docente.'}
+        </p>
+      )}
 
       {canSubmit && (
         <>

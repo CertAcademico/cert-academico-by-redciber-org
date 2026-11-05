@@ -32,6 +32,13 @@ export const SUBMISSION_MAX_FILES = 5;
 export const SUBMISSION_ACCEPT = '.pdf,.docx,.pptx,.xlsx,.png,.jpg,.jpeg';
 export const GROUP_LABELS = ['A', 'B', 'C', 'D', 'E', 'F'];
 
+/** El servidor aún no tiene la migración de entregables (tabla o función inexistente). */
+export class NotEnabledError extends Error {
+  constructor() { super('La entrega de archivos aún no está activada en el servidor. Avise al docente o al administrador.'); }
+}
+const isNotEnabled = (e: { code?: string; message?: string } | null) =>
+  !!e && (['PGRST202', 'PGRST205', '42P01', '42883'].includes(e.code ?? '') || /schema cache|does not exist/i.test(e.message ?? ''));
+
 const COLUMNS = 'id, user_id, author_name, group_label, file_name, storage_path, size_bytes, created_at';
 
 const toSubmission = (r: Row): Submission => ({
@@ -53,6 +60,7 @@ export async function listSubmissions(pathId: string, moduleId: string): Promise
     .eq('path_id', pathId)
     .eq('module_id', moduleId)
     .order('created_at', { ascending: false });
+  if (isNotEnabled(error)) throw new NotEnabledError();
   if (error || !data) return [];
   return (data as Row[]).map(toSubmission);
 }
@@ -69,7 +77,10 @@ export async function getRoster(pathId: string): Promise<RosterEntry[]> {
 
 export async function setMyGroup(pathId: string, group: string): Promise<void> {
   const { error } = await supabase.rpc('set_my_group', { p_path: pathId, p_group: group });
-  if (error) throw new Error('No se pudo guardar su grupo. Intente de nuevo.');
+  if (isNotEnabled(error)) throw new NotEnabledError();
+  if (error) throw new Error(error.message.includes('NO_ACCESS')
+    ? 'Su cuenta no puede entregar en este curso.'
+    : 'No se pudo guardar su grupo. Intente de nuevo.');
 }
 
 /** Recalcula el XP de entregas del usuario (por si algo quedó desactualizado). */
