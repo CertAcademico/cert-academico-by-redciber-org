@@ -1,7 +1,9 @@
 import React from 'react';
 import type { ActivityContent } from '../types';
+import SubmissionBox from './SubmissionBox';
+import type { SubmissionContext } from './SubmissionBox';
 
-const ActivityView: React.FC<{ data: ActivityContent }> = ({ data }) => (
+const ActivityView: React.FC<{ data: ActivityContent; submission?: SubmissionContext }> = ({ data, submission }) => (
   <div className="my-4 p-6 md:p-8 bg-slate-800/50 rounded-lg text-left">
     <p className="text-xs font-bold uppercase tracking-widest text-amber-300 mb-2">Actividad grupal presencial</p>
     <h3 className="text-2xl md:text-3xl font-bold text-white mb-3">{data.title}</h3>
@@ -63,6 +65,10 @@ const ActivityView: React.FC<{ data: ActivityContent }> = ({ data }) => (
 
     {data.closing && (
       <p className="text-sm text-slate-300 bg-slate-900/60 border-l-4 border-amber-400 rounded-r-lg px-4 py-3">{data.closing}</p>
+    )}
+
+    {data.deliverable && submission && (
+      <SubmissionBox ctx={submission} label={data.deliverable.label} hint={data.deliverable.hint} />
     )}
   </div>
 );

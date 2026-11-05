@@ -26,6 +26,7 @@ import AICourseCompanion from './components/AICourseCompanion';
 import LoginView from './components/LoginView';
 import TeacherDashboard from './components/TeacherDashboard';
 import ActivityView from './components/ActivityView';
+import type { SubmissionContext } from './components/SubmissionBox';
 import ScenarioLabView from './components/ScenarioLabView';
 import ChallengeLabView from './components/ChallengeLabView';
 import ExamView from './components/ExamView';
@@ -69,6 +70,7 @@ const renderContentBlock = (
   block: ContentBlock,
   onComplete: () => void,
   onH5PComplete: (score: number, maxScore: number) => void,
+  submission?: SubmissionContext,
 ) => {
   switch (block.type) {
     case 'text': {
@@ -97,7 +99,7 @@ const renderContentBlock = (
     case 'h5p_check':
       return <H5PCheckView data={block} onComplete={onH5PComplete} />;
     case 'activity':
-      return <ActivityView data={block} />;
+      return <ActivityView data={block} submission={submission} />;
     case 'scenario':
       return <ScenarioLabView data={block} onComplete={onComplete} />;
     case 'challenge':
@@ -138,9 +140,13 @@ interface LearningPathViewProps {
   unlockAll: boolean;
   /** Puede agregar y eliminar materiales de la biblioteca. */
   isAdmin: boolean;
+  /** Docente, tutor o admin: ve los entregables de todos. */
+  isStaff: boolean;
+  /** Puede subir entregables (el registro gratuito no). */
+  canSubmit: boolean;
 }
 
-const LearningPathView: React.FC<LearningPathViewProps> = ({ path, pathId, onExit, userId, unlockAll, isAdmin }) => {
+const LearningPathView: React.FC<LearningPathViewProps> = ({ path, pathId, onExit, userId, unlockAll, isAdmin, isStaff, canSubmit }) => {
   const [currentModuleIndex, setCurrentModuleIndex] = useState(0);
   const [showLibrary, setShowLibrary] = useState(false);
   const [showWall, setShowWall] = useState(false);
@@ -355,7 +361,7 @@ const LearningPathView: React.FC<LearningPathViewProps> = ({ path, pathId, onExi
                 </h2>
                 {currentModule.content.map((block, index) => (
                   <div key={index}>
-                    {renderContentBlock(block, handleQuizComplete, handleH5PComplete)}
+                    {renderContentBlock(block, handleQuizComplete, handleH5PComplete, { pathId, moduleId: currentModule.id, userId, canSubmit, isStaff, isAdmin })}
                   </div>
                 ))}
               </motion.div>
@@ -1052,6 +1058,8 @@ const App: React.FC = () => {
       userId={currentUser.id}
       unlockAll={isAdmin || isFreeStudent}
       isAdmin={isAdmin}
+      isStaff={isAdmin || currentUser.role === 'teacher' || currentUser.role === 'tutor'}
+      canSubmit={!isFreeStudent}
     />
   );
 };

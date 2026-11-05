@@ -94,6 +94,8 @@ export interface ActivityContent {
   groupsTitle?: string;
   groups?: { name: string; items: string[] }[];
   closing?: string;
+  /** Si existe, muestra la caja para subir el entregable de la actividad. */
+  deliverable?: { label: string; hint?: string };
 }
 
 /** Laboratorio de escenario: una historia con decisiones ramificadas y puntaje. */

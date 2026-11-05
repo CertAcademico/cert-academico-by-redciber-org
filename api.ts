@@ -973,6 +973,7 @@ const LEARNING_PATHS_DATA: LearningPaths = {
               { name: 'Grupo F — Variados', items: ['Costa Rica', 'Israel', 'España', 'Panamá'] },
             ],
             closing: 'Entregable: la Tabla del grupo completa y un hallazgo para compartir. Si encuentran más de un CSIRT para un país, anoten ambos: es justamente lo que discutiremos en el cierre.',
+            deliverable: { label: 'Suban la Tabla del grupo', hint: 'La hoja de trabajo con la tabla de sus 4 países completa (Word o PDF; también sirve una foto legible de la hoja impresa).' },
           },
           {
             type: 'quiz',
@@ -1039,6 +1040,7 @@ const LEARNING_PATHS_DATA: LearningPaths = {
               { name: 'Grupo F — Proveedor de servicios', items: ['NubeSur (internet y nube)'] },
             ],
             closing: 'Entregable: el RFC 2350 simplificado de su CSIRT y la lista de revisión completada para otro grupo. Recuerden: un buen RFC 2350 dice tanto a quién sirve el equipo como a quién NO.',
+            deliverable: { label: 'Suban su RFC 2350 y la retroalimentación', hint: 'El RFC 2350 simplificado de su CSIRT y la lista de revisión que completaron para el otro grupo (pueden ser dos archivos).' },
           },
           {
             type: 'flashcards',
@@ -1116,6 +1118,7 @@ const LEARNING_PATHS_DATA: LearningPaths = {
               { name: 'Grupo F — Proveedor de servicios', items: ['NubeSur (internet y nube)', '14 fichas'] },
             ],
             closing: 'Entregable: el Lienzo del portafolio con sus 3 servicios prioritarios (★). Guárdenlo: es la base del anteproyecto de la Sesión 7.',
+            deliverable: { label: 'Suban el Lienzo del portafolio', hint: 'El lienzo completo con los 3 servicios prioritarios (★) y lo que cambiaron por la Carta de giro. Si lo hicieron en papel, una foto legible sirve.' },
           },
           {
             type: 'flashcards',
