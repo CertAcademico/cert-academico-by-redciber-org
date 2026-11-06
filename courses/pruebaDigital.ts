@@ -17,7 +17,7 @@ const WORKBOOK = {
 const PRESENTATION = {
   type: 'resource' as const,
   title: '📊 Presentación de la jornada',
-  description: '19 diapositivas con el caso, el ABC técnico, el marco internacional, la evidencia digital en la Ley 906, la cadena de custodia, el semáforo probatorio, la audiencia y el decálogo. Ábrala para seguir la clase o para repasar.',
+  description: 'La guía de toda la jornada, bloque por bloque: el caso, los conceptos, los retos de la plataforma y cada actividad en grupo con sus pasos, tiempos, grupos y entregable. Ábrala para seguir la clase o para repasar.',
   href: `${MAT}/presentacion-prueba-digital.html`,
   cta: 'Abrir presentación',
 };
