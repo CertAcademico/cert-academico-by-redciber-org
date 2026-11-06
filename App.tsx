@@ -590,7 +590,7 @@ const COURSE_WINDOWS_BY_ROLE: Partial<Record<UserRole, Record<string, { opensAt:
     auditoria_ciberriesgo: { opensAt: '2026-10-15T08:00:00-05:00', closesAt: '2026-10-22T23:59:59-05:00' },
   },
   // Grupo de estudiantes EAN del curso de CTI.
-  // Abogados de la Universidad Libre: jornada de Prueba Digital del sábado 7 de noviembre (7:00 a 20:00).
+  // Abogados de la Universidad Libre: jornada de Prueba Digital del sábado 7 de noviembre (8:00 a 20:00).
   law_student: {
     prueba_digital: { opensAt: '2026-11-06T00:00:00-05:00', closesAt: '2026-11-07T23:59:59-05:00' },
   },

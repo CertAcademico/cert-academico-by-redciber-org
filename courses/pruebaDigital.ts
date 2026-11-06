@@ -1,6 +1,6 @@
 import type { LearningPath } from '../types';
 
-// Curso de un día para abogados: Prueba Digital (Universidad Libre, 7 de noviembre de 2026, 7:00 a 20:00).
+// Curso de un día para abogados: Prueba Digital (Universidad Libre, 7 de noviembre de 2026, 8:00 a 20:00).
 // Hilo conductor: el caso ficticio de la Ferretería El Roble. Cada grupo (A a F) cuida una evidencia
 // durante todo el día y la defiende en la audiencia simulada del Bloque 7.
 // Las entregas, estrellas y badges deben coincidir con milestones.ts y con
@@ -34,15 +34,15 @@ const EVIDENCE_GROUPS = [
 
 export const PRUEBA_DIGITAL: LearningPath = {
   title: 'Prueba Digital para Abogados: del Pantallazo a la Audiencia',
-  description: 'Jornada intensiva (7:00 a 20:00) para la Maestría en Derecho Penal: el ABC técnico de la evidencia digital y su recorrido por el sistema penal acusatorio, con estándares internacionales y cooperación. Un mismo caso de principio a fin, retos interactivos, trabajo en grupo y una audiencia simulada.',
+  description: 'Jornada intensiva (8:00 a 20:00) para la Maestría en Derecho Penal: el ABC técnico de la evidencia digital y su recorrido por el sistema penal acusatorio, con estándares internacionales y cooperación. Un mismo caso de principio a fin, retos interactivos, trabajo en grupo y una audiencia simulada.',
   lastUpdated: 'Noviembre 2026',
   modules: [
     // ───────────────────────────── BLOQUE 1 ─────────────────────────────
     {
       id: 'pd_b1',
-      title: 'Bloque 1 · 7:00 — El caso: una ferretería, un correo y $48 millones',
+      title: 'Bloque 1 · 8:00 — El caso: una ferretería, un correo y $48 millones',
       content: [
-        { type: 'text', icon: 'CalendarIcon', text: 'Bienvenidos a la jornada de la Maestría en Derecho Penal. Hoy tenemos 8 bloques, de 7:00 a 20:00. Ustedes dominan el proceso penal; aquí el ABC es técnico, no se necesita saber de tecnología: vamos del ABC hasta una audiencia simulada. Cada bloque tiene retos que suman XP, y en los bloques 1 a 7 su grupo sube un entregable que le da estrellas y un badge. Al aprobar la evaluación final recibe su certificado.' },
+        { type: 'text', icon: 'CalendarIcon', text: 'Bienvenidos a la jornada de la Maestría en Derecho Penal. Hoy tenemos 8 bloques, de 8:00 a 20:00, con pausas a las 10:00 y a las 15:30 y almuerzo de 12:45 a 14:00. Ustedes dominan el proceso penal; aquí el ABC es técnico, no se necesita saber de tecnología: vamos del ABC hasta una audiencia simulada. Cada bloque tiene retos que suman XP, y en los bloques 1 a 7 su grupo sube un entregable que le da estrellas y un badge. Al aprobar la evaluación final recibe su certificado.' },
         PRESENTATION,
         { type: 'text', icon: 'AlarmIcon', text: 'El caso que nos acompañará todo el día (ficticio): Marta Rojas es dueña de la Ferretería El Roble, en Bogotá. El lunes 2 de noviembre recibe un correo de «Aceros del Norte», su proveedor de siempre, que le informa una nueva cuenta bancaria. Marta paga $48.500.000. Dos días después el proveedor la llama: nunca recibió el dinero.' },
         { type: 'text', icon: 'SpyIcon', text: 'Lo peor llega el jueves: un número desconocido le escribe por WhatsApp. «Si denuncias, publicamos los datos de tus clientes». Adjunta una foto de la base de clientes de la ferretería. Esa noche aparece un perfil falso de la ferretería en redes sociales con datos de algunos clientes. Marta sospecha de Julián, un empleado que despidió en septiembre.' },
@@ -99,7 +99,7 @@ export const PRUEBA_DIGITAL: LearningPath = {
     // ───────────────────────────── BLOQUE 2 ─────────────────────────────
     {
       id: 'pd_b2',
-      title: 'Bloque 2 · 8:00 — ABC técnico: dónde vive la evidencia',
+      title: 'Bloque 2 · 8:45 — ABC técnico: dónde vive la evidencia',
       content: [
         { type: 'text', icon: 'ServerIcon', text: 'Objetivo: entender, sin tecnicismos, dónde está la evidencia digital, por qué es frágil y cómo se demuestra que no fue alterada.' },
         { type: 'text', icon: 'BrainCircuitIcon', text: 'Regla de oro: la evidencia digital casi nunca está en un solo lugar. Un WhatsApp está en el celular de Marta, en el del remitente y, en parte, en los registros del proveedor. Un correo está en el buzón, en los servidores que lo transportaron y en sus encabezados. Por eso el abogado pregunta siempre: ¿dónde más está?' },
@@ -191,7 +191,7 @@ GPS ....................... 4.6097 N, 74.0817 W`,
     // ───────────────────────────── BLOQUE 3 ─────────────────────────────
     {
       id: 'pd_b3',
-      title: 'Bloque 3 · 9:45 — El mundo: cómo se prueba lo digital fuera de Colombia',
+      title: 'Bloque 3 · 10:15 — El mundo: cómo se prueba lo digital fuera de Colombia',
       content: [
         { type: 'text', icon: 'ShieldCheckIcon', text: 'Objetivo: conocer los acuerdos y estándares internacionales que usan jueces, fiscales y peritos en todo el mundo, y ver que Colombia hace parte de esa red.' },
         { type: 'text', icon: 'AlarmIcon', text: 'Hilo del caso: el correo del falso proveedor se envió desde una cuenta de un servicio de correo con servidores en Estados Unidos (evidencia del Grupo E). Los datos de quién creó esa cuenta no están en Colombia. ¿Cómo se piden?' },
@@ -276,7 +276,7 @@ GPS ....................... 4.6097 N, 74.0817 W`,
     // ───────────────────────────── BLOQUE 4 ─────────────────────────────
     {
       id: 'pd_b4',
-      title: 'Bloque 4 · 11:15 — Colombia: la evidencia digital en el sistema penal acusatorio',
+      title: 'Bloque 4 · 11:30 — Colombia: la evidencia digital en el sistema penal acusatorio',
       content: [
         { type: 'text', icon: 'DocumentTextIcon', text: 'Objetivo: recorrer la evidencia digital por todas las etapas de la Ley 906 de 2004, desde la indagación hasta el juicio oral: qué acto de investigación se necesita, qué control judicial exige y cómo entra al juicio sin ser excluida.' },
         { type: 'text', icon: 'ShieldCheckIcon', text: 'La base sustancial: la Ley 527 de 1999 reconoce el mensaje de datos (art. 2), prohíbe negarle valor por ser electrónico (art. 5), lo hace admisible como prueba (art. 10) y fija los criterios de valoración: confiabilidad en su generación, archivo o comunicación, conservación de la integridad e identificación del iniciador (art. 11). La Corte Constitucional la avaló en la Sentencia C-662 de 2000. La Ley 906 incluye el mensaje de datos entre los elementos materiales probatorios y evidencia física (art. 275, lit. g).' },
@@ -541,19 +541,19 @@ Date: Mon, 2 Nov 2026 10:14:02 -0500`,
     // ───────────────────────────── BLOQUE 7 ─────────────────────────────
     {
       id: 'pd_b7',
-      title: 'Bloque 7 · 17:15 — Audiencia simulada: preparatoria y juicio oral',
+      title: 'Bloque 7 · 17:00 — Audiencia simulada: preparatoria y juicio oral',
       content: [
         { type: 'text', icon: 'HappyUsersIcon', text: 'Objetivo: poner a prueba todo lo aprendido en dos momentos del proceso penal. Primero, la audiencia preparatoria: la defensa pide excluir o inadmitir la evidencia y el juez decide. Después, el juicio oral: la Fiscalía la acredita con su perito y la defensa lo contrainterroga.' },
         { type: 'text', icon: 'AlarmIcon', text: 'Hilo del caso: la Fiscalía imputó a Julián Pardo por acceso abusivo a un sistema informático, violación de datos personales y extorsión. La defensa dice que todo es un montaje: «los pantallazos se editan en un minuto», «el computador lo usaba todo el mundo», «el correo pudo enviarlo cualquiera».' },
         {
           type: 'activity',
           title: 'La audiencia del caso Ferretería El Roble',
-          duration: '70 min',
+          duration: '75 min',
           groupSize: '3 audiencias de 2 grupos, más jueces',
           goal: 'En cada sala, un grupo actúa como Fiscalía y representación de víctimas y el otro como defensa. Primero la defensa solicita la exclusión o inadmisibilidad de la evidencia (preparatoria); si se admite, la Fiscalía la acredita con su perito y la defensa contrainterroga (juicio oral). Luego cambian los papeles con la evidencia del otro grupo. Dos personas de cada sala actúan como juez.',
           downloads: [WORKBOOK],
           steps: [
-            { title: 'Preparen', minutes: '10 min', detail: 'Con su Semáforo probatorio, preparen 3 minutos de presentación: qué es la evidencia, cómo se obtuvo, cómo se preservó y qué prueba. Elijan quién hace de perito.' },
+            { title: 'Preparen', minutes: '15 min', detail: 'Con su Semáforo probatorio, preparen 3 minutos de presentación: qué es la evidencia, cómo se obtuvo, cómo se preservó y qué prueba. Elijan quién hace de perito.' },
             { title: 'Primera ronda', minutes: '20 min', detail: 'Preparatoria: la defensa sustenta su solicitud de exclusión (2 min), réplica de la Fiscalía (2 min), decisión del juez (1 min). Juicio: interrogatorio directo al perito (2 min), contrainterrogatorio (2 min), redirecto (1 min).' },
             { title: 'Segunda ronda', minutes: '20 min', detail: 'Se invierten los papeles con la evidencia del segundo grupo.' },
             { title: 'Acta', minutes: '10 min', detail: 'Cada grupo escribe el acta: qué se pidió excluir y qué decidió el juez, la pregunta más fuerte del contrainterrogatorio y qué faltó para acreditar la evidencia.' },
