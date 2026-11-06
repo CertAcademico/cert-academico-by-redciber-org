@@ -1,0 +1,426 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Prueba Digital para Abogados · CERT Académico</title>
+<meta name="description" content="Presentación del curso Prueba Digital para Abogados (Universidad Libre, Maestría en Derecho Penal) de CERT Académico by RedCiber.org.">
+<style>
+  :root {
+    color-scheme: dark;
+    --bg: #0b0f1c;
+    --surface-1: #0f1424;
+    --surface-2: #161d33;
+    --line: #26304d;
+    --text-primary: #f1f2f6;
+    --text-secondary: #b9bfd3;
+    --text-muted: #8a91a8;
+    --accent: #38bdf8;
+    --accent-soft: rgba(56, 189, 248, .12);
+    --series-1: #9085e9;
+    --warn: #f5b84b;
+    --good: #4ade80;
+    --bad: #f87171;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; background: var(--bg); color: var(--text-primary);
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif; }
+  body { overflow: hidden; }
+
+  .deck { position: relative; height: 100%; }
+  .slide { position: absolute; inset: 0; display: none; padding: clamp(20px, 5vw, 64px) clamp(16px, 6vw, 88px) 84px;
+    overflow-y: auto; background: radial-gradient(ellipse at top right, rgba(56,189,248,.10), transparent 55%), var(--bg); }
+  .slide.active { display: flex; flex-direction: column; animation: in .35s ease; }
+  @keyframes in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+
+  .kicker { font-size: 13px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--accent); margin-bottom: 10px; }
+  h1 { font-size: clamp(32px, 5.4vw, 60px); line-height: 1.05; font-weight: 800; letter-spacing: -.02em; }
+  h2 { font-size: clamp(26px, 3.6vw, 42px); line-height: 1.12; font-weight: 800; letter-spacing: -.01em; margin-bottom: 18px; }
+  h3 { font-size: 18px; font-weight: 700; margin-bottom: 6px; }
+  p, li { font-size: clamp(15px, 1.5vw, 19px); line-height: 1.55; color: var(--text-secondary); }
+  .lead { font-size: clamp(17px, 1.9vw, 23px); color: var(--text-secondary); max-width: 980px; margin-bottom: 22px; }
+  strong { color: var(--text-primary); }
+  .grow { flex: 1; }
+
+  .grid { display: grid; gap: 14px; }
+  .g2 { grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
+  .g3 { grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); }
+  .g4 { grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); }
+  .card { background: var(--surface-1); border: 1px solid var(--line); border-radius: 16px; padding: 18px 20px; }
+  .card p { font-size: 15px; }
+  .card .tag { display: inline-block; font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase;
+    color: var(--accent); margin-bottom: 6px; }
+
+  .stat { background: var(--surface-1); border: 1px solid var(--line); border-radius: 16px; padding: 20px; }
+  .stat .num { white-space: nowrap; font-size: clamp(30px, 3.8vw, 50px); font-weight: 800; color: var(--text-primary); letter-spacing: -.02em; line-height: 1; }
+  .stat .lbl { margin-top: 8px; font-size: 15px; color: var(--text-secondary); }
+  .stat .src { margin-top: 8px; font-size: 12px; color: var(--text-muted); }
+
+  .src-line { margin-top: auto; padding-top: 18px; font-size: 12px; color: var(--text-muted); }
+  .src-line a { color: var(--text-muted); }
+
+  /* Flujo de pasos (ciclo, kill chain) */
+  .flow { display: grid; gap: 10px; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); counter-reset: s; }
+  .flow .step { position: relative; background: var(--surface-1); border: 1px solid var(--line); border-radius: 14px; padding: 16px 14px 14px; }
+  .flow .step::before { counter-increment: s; content: counter(s); position: absolute; top: -12px; left: 12px; width: 26px; height: 26px;
+    border-radius: 50%; background: var(--accent); color: #0b1a2b; font-weight: 800; font-size: 13px; display: grid; place-items: center; }
+  .flow .step h3 { font-size: 16px; margin-top: 6px; }
+  .flow .step p { font-size: 14px; }
+
+  /* Pirámide del dolor */
+  .pyramid { display: flex; flex-direction: column; align-items: center; gap: 6px; margin: 8px 0; }
+  .pyramid div { height: 44px; display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 0 16px;
+    border-radius: 6px; font-weight: 700; font-size: 15px; color: #0b1a2b; }
+  .pyramid span.pain { font-weight: 600; font-size: 13px; opacity: .85; }
+
+  /* Gráficos de barras: una serie, un tono (validado), etiquetas directas, tooltip por barra */
+  .bars { display: grid; gap: 12px; max-width: 860px; }
+  .bar-row { display: grid; grid-template-columns: minmax(150px, 230px) 1fr; align-items: center; gap: 12px; }
+  .bar-row .name { font-size: 15px; color: var(--text-secondary); text-align: right; }
+  .bar-track { position: relative; height: 26px; }
+  .bar { height: 100%; background: var(--series-1); border-radius: 0 4px 4px 0; min-width: 4px; transition: filter .15s; }
+  .bar:hover { filter: brightness(1.18); }
+  .bar-val { white-space: nowrap; position: absolute; top: 50%; transform: translateY(-50%); margin-left: 8px; font-size: 14px; font-weight: 700; color: var(--text-primary); }
+  .chart-title { font-size: 15px; font-weight: 700; color: var(--text-primary); margin-bottom: 12px; }
+
+  /* Diamante */
+  .diamond { position: relative; width: min(560px, 92vw); aspect-ratio: 700 / 480; margin: 6px auto; }
+  .diamond svg { width: 100%; height: 100%; }
+
+  /* TLP */
+  .tlp { display: grid; grid-template-columns: 170px 1fr; gap: 10px; align-items: center; }
+  .tlp .chip { font-family: ui-monospace, Menlo, monospace; font-weight: 800; font-size: 14px; padding: 8px 10px; border-radius: 8px;
+    background: #000; text-align: center; }
+
+  table { width: 100%; border-collapse: collapse; font-size: 15px; }
+  th, td { text-align: left; padding: 9px 10px; border-bottom: 1px solid var(--line); color: var(--text-secondary); vertical-align: top; }
+  th { color: var(--text-primary); font-size: 13px; letter-spacing: .06em; text-transform: uppercase; }
+  code, .mono { font-family: ui-monospace, Menlo, monospace; font-size: .92em; color: #bae6fd; }
+
+  .callout { border: 1px solid rgba(56,189,248,.45); background: var(--accent-soft); border-radius: 14px; padding: 14px 18px; margin-top: 16px; }
+  .callout p { color: var(--text-primary); }
+  .ex { background: #070a14; border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; font-family: ui-monospace, Menlo, monospace;
+    font-size: 14px; line-height: 1.6; color: #c7f9d4; white-space: pre-wrap; }
+
+  ol.refs { padding-left: 20px; display: grid; gap: 6px; }
+  ol.refs li { font-size: 14px; }
+  ol.refs a { color: var(--accent); }
+
+  /* Barra de navegación */
+  .nav { position: fixed; left: 0; right: 0; bottom: 0; height: 60px; display: flex; align-items: center; gap: 12px; padding: 0 16px;
+    background: rgba(11,15,28,.92); border-top: 1px solid var(--line); backdrop-filter: blur(6px); z-index: 10; }
+  .nav button { background: var(--surface-2); color: var(--text-primary); border: 1px solid var(--line); border-radius: 10px;
+    padding: 8px 14px; font-size: 15px; cursor: pointer; }
+  .nav button:hover:not(:disabled) { border-color: var(--accent); }
+  .nav button:disabled { opacity: .35; cursor: default; }
+  .nav .brand { font-size: 13px; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .nav .count { margin-left: auto; font-size: 14px; color: var(--text-secondary); font-variant-numeric: tabular-nums; }
+  .progress { position: fixed; left: 0; top: 0; height: 3px; background: var(--accent); z-index: 11; transition: width .3s; }
+
+  @media (max-width: 640px) {
+    .bar-row { grid-template-columns: 1fr; gap: 4px; }
+    .bar-row .name { text-align: left; }
+    .tlp { grid-template-columns: 1fr; }
+    .nav .brand { display: none; }
+  }
+  @media print {
+    body { overflow: visible; }
+    .nav, .progress { display: none; }
+    .slide { position: relative; display: flex !important; min-height: 100vh; page-break-after: always; overflow: visible; }
+  }
+</style>
+</head>
+<body>
+<div class="progress" id="progress"></div>
+<main class="deck" id="deck">
+
+<section class="slide" aria-label="Portada">
+  <div class="grow"></div>
+  <p class="kicker">Universidad Libre · Maestría en Derecho Penal · Sábado 7 de noviembre · 7:00 a 20:00</p>
+  <h1>Prueba Digital para Abogados: del pantallazo a la audiencia</h1>
+  <p class="lead" style="margin-top:18px">El ABC técnico de la evidencia digital y su recorrido por el sistema penal acusatorio. Un caso, seis evidencias, ocho bloques y una audiencia simulada.</p>
+  <div class="grow"></div>
+  <p class="src-line">CERT Académico by RedCiber.org · Use las flechas ← → o deslice para avanzar.</p>
+</section>
+
+<section class="slide" aria-label="La jornada">
+  <p class="kicker">La jornada</p>
+  <h2>8 bloques, un mismo caso</h2>
+  <div class="flow">
+    <div class="step"><h3>7:00 · El caso</h3><p>Una ferretería, un correo y $48 millones</p></div>
+    <div class="step"><h3>8:00 · ABC técnico</h3><p>Dónde vive la evidencia</p></div>
+    <div class="step"><h3>9:45 · El mundo</h3><p>Budapest, UNCITRAL, ISO 27037, EE. UU., UE, España</p></div>
+    <div class="step"><h3>11:15 · Colombia</h3><p>La evidencia digital en la Ley 906</p></div>
+    <div class="step"><h3>14:00 · Custodia</h3><p>Recolección y cadena de custodia</p></div>
+    <div class="step"><h3>15:45 · ¿Vale?</h3><p>Semáforo probatorio y prueba ilícita</p></div>
+    <div class="step"><h3>17:15 · Audiencia</h3><p>Preparatoria y juicio oral simulados</p></div>
+    <div class="step"><h3>18:45 · Cierre</h3><p>Decálogo y evaluación final</p></div>
+  </div>
+  <p class="src-line">Pausas: 9:30 · almuerzo 12:45 · 15:30</p>
+</section>
+
+<section class="slide" aria-label="Cómo se juega">
+  <p class="kicker">Reglas del día</p>
+  <h2>Cómo se juega hoy</h2>
+  <div class="grid g2">
+    <div class="card"><span class="tag">1 · Entrar</span><h3>Regístrese con el código del evento</h3><p>Pestaña «Registrarse» de la plataforma, con el código que da el docente.</p></div>
+    <div class="card"><span class="tag">2 · Grupo</span><h3>Elija su grupo (A a F)</h3><p>Una sola vez, en la caja de entrega del Bloque 1. Vale para todo el día.</p></div>
+    <div class="card"><span class="tag">3 · Estrellas</span><h3>3 estrellas por bloque</h3><p>★ completar los retos · ★ entregar la hoja del grupo · ★ entrega destacada por el docente.</p></div>
+    <div class="card"><span class="tag">4 · Logros</span><h3>Badge y certificado</h3><p>Un badge verificable por bloque y el certificado al aprobar la evaluación final.</p></div>
+  </div>
+</section>
+
+<section class="slide" aria-label="Los hechos">
+  <p class="kicker">Bloque 1 · 7:00 · El caso (ficticio)</p>
+  <h2>Ferretería El Roble: los hechos</h2>
+  <table>
+    <tr><th>Fecha</th><th>Qué pasó</th></tr>
+    <tr><td><strong>Septiembre</strong></td><td>Marta despide a Julián Pardo. Nadie desactiva su usuario del computador.</td></tr>
+    <tr><td><strong>30 oct · 22:31</strong></td><td>Acceso nocturno con el usuario «jpardo». A las 22:47, foto de la base de clientes.</td></tr>
+    <tr><td><strong>2 nov · 10:14</strong></td><td>Correo de «Aceros del Norte» con una nueva cuenta bancaria. Marta paga $48.500.000.</td></tr>
+    <tr><td><strong>4 nov</strong></td><td>El proveedor real cobra: nunca recibió el pago.</td></tr>
+    <tr><td><strong>5 nov · 20:15</strong></td><td>Extorsión por WhatsApp con la foto de la base de clientes y perfil falso en redes con datos de 20 clientes.</td></tr>
+  </table>
+  <div class="callout"><p>Ustedes acompañan a la Fiscalía y representan a Marta como víctima: conviertan lo que pasó en evidencia que resista la exclusión y se acredite en juicio.</p></div>
+</section>
+
+<section class="slide" aria-label="Seis evidencias">
+  <p class="kicker">Bloque 1 · El caso</p>
+  <h2>Seis evidencias, seis grupos</h2>
+  <div class="grid g3">
+    <div class="card"><span class="tag">Grupo A</span><h3>El chat de WhatsApp</h3><p>Celular de Marta y mensajes de extorsión.</p></div>
+    <div class="card"><span class="tag">Grupo B</span><h3>El correo del falso proveedor</h3><p>Encabezados del mensaje.</p></div>
+    <div class="card"><span class="tag">Grupo C</span><h3>La transferencia</h3><p>Comprobante, extracto y cuenta destino.</p></div>
+    <div class="card"><span class="tag">Grupo D</span><h3>El computador de la caja</h3><p>Registros de inicio de sesión del usuario «jpardo».</p></div>
+    <div class="card"><span class="tag">Grupo E</span><h3>El correo en la nube</h3><p>Servidor en EE. UU.: cooperación internacional.</p></div>
+    <div class="card"><span class="tag">Grupo F</span><h3>La publicación en redes</h3><p>Perfil falso con datos de clientes.</p></div>
+  </div>
+</section>
+
+<section class="slide" aria-label="Rasgos de la evidencia digital">
+  <p class="kicker">Bloque 2 · 8:00 · ABC técnico</p>
+  <h2>Tres rasgos de la evidencia digital</h2>
+  <div class="grid g3">
+    <div class="stat"><div class="num" style="color:var(--bad)">Volátil</div><div class="lbl">Se borra o se sobrescribe. Los proveedores guardan registros solo por un tiempo.</div></div>
+    <div class="stat"><div class="num" style="color:var(--warn)">Copiable</div><div class="lbl">Se copia sin dejar rastro y la copia es idéntica al original.</div></div>
+    <div class="stat"><div class="num" style="color:var(--accent)">Alterable</div><div class="lbl">Se modifica fácilmente: hay que poder demostrar que no cambió.</div></div>
+  </div>
+  <div class="callout"><p>Pregunta de abogado: <strong>¿dónde más está?</strong> Un chat vive en dos celulares y en copias en la nube; un correo, en el buzón, en los servidores y en sus encabezados.</p></div>
+</section>
+
+<section class="slide" aria-label="El hash">
+  <p class="kicker">Bloque 2 · ABC técnico</p>
+  <h2>El hash: la huella digital de un archivo</h2>
+  <div class="grid g2">
+    <div class="stat"><div class="num">64</div><div class="lbl">caracteres tiene siempre un SHA-256, sin importar el tamaño del archivo.</div></div>
+    <div>
+      <p><strong>captura_03.png — viernes, 08:40</strong></p>
+      <div class="ex" style="color:var(--good)">bbd59f43c703d838656ee96699e9da7364f2423414ee663af5a59fbd058066d9</div>
+      <p style="margin-top:12px"><strong>captura_03.png — hoy, verificado por el perito</strong></p>
+      <div class="ex" style="color:var(--bad)">115ee338a1fb572c58dc23c297cd5f14714bd35c1b0ed3cb46b284f2b30fc532</div>
+    </div>
+  </div>
+  <div class="callout"><p>Si cambia un solo carácter, el hash cambia por completo. Si coincide, la copia es idéntica: eso es <strong>integridad</strong>.</p></div>
+</section>
+
+<section class="slide" aria-label="Línea de tiempo internacional">
+  <p class="kicker">Bloque 3 · 9:45 · El mundo</p>
+  <h2>Treinta años de reglas para la prueba digital</h2>
+  <table>
+    <tr><th>Año</th><th>Hito</th></tr>
+    <tr><td><strong>1996</strong></td><td>Ley Modelo UNCITRAL de comercio electrónico: equivalencia funcional (base de la Ley 527 de 1999)</td></tr>
+    <tr><td><strong>2001</strong></td><td>Convenio de Budapest sobre ciberdelincuencia</td></tr>
+    <tr><td><strong>2002</strong></td><td>RFC 3227: orden de volatilidad</td></tr>
+    <tr><td><strong>2007</strong></td><td>EE. UU.: Lorraine v. Markel, guía para autenticar evidencia electrónica</td></tr>
+    <tr><td><strong>2012</strong></td><td>ISO/IEC 27037: identificar, recolectar, adquirir y preservar</td></tr>
+    <tr><td><strong>2014</strong></td><td>UE: Reglamento eIDAS (reformado en 2024)</td></tr>
+    <tr><td><strong>2015</strong></td><td>España: STS 300/2015, si se impugna un chat, quien lo aporta prueba su autenticidad</td></tr>
+    <tr><td><strong>2017</strong></td><td>EE. UU.: Regla 902(14), copias de datos verificadas con hash</td></tr>
+    <tr><td><strong>2018</strong></td><td>Colombia: Ley 1928 aprueba el Convenio de Budapest</td></tr>
+    <tr><td><strong>2022</strong></td><td>Segundo Protocolo de Budapest</td></tr>
+    <tr><td><strong>2026</strong></td><td>UE: rige el Reglamento 2023/1543 de prueba electrónica</td></tr>
+  </table>
+</section>
+
+<section class="slide" aria-label="Cooperación internacional">
+  <p class="kicker">Bloque 3 · El mundo · Grupo E</p>
+  <h2>Datos en otro país: conservar, luego pedir</h2>
+  <div class="flow">
+    <div class="step"><h3>Conservar</h3><p>Pedir al proveedor que no borre (Budapest, arts. 16 y 29).</p></div>
+    <div class="step"><h3>Contactar</h3><p>Red 24/7 de puntos de contacto (art. 35).</p></div>
+    <div class="step"><h3>Pedir</h3><p>Asistencia judicial recíproca (art. 31).</p></div>
+    <div class="step"><h3>Recibir</h3><p>Con cadena de custodia y hash.</p></div>
+  </div>
+  <div class="callout"><p>La vía formal toma meses; los registros de un proveedor pueden borrarse en semanas. Por eso, <strong>primero se conserva</strong>.</p></div>
+</section>
+
+<section class="slide" aria-label="Mapa normativo">
+  <p class="kicker">Bloque 4 · 11:15 · Colombia</p>
+  <h2>El mapa normativo colombiano</h2>
+  <table>
+    <tr><th>Norma</th><th>Lo esencial</th></tr>
+    <tr><td><strong>Constitución</strong></td><td>Art. 15: intimidad e inviolabilidad de las comunicaciones · Art. 29: es nula la prueba obtenida con violación del debido proceso</td></tr>
+    <tr><td><strong>Ley 527 de 1999</strong></td><td>Mensaje de datos (art. 2) · no se le niega valor por ser electrónico (art. 5) · admisible como prueba (art. 10) · criterios de valoración (art. 11) · avalada en la C-662 de 2000</td></tr>
+    <tr><td><strong>Ley 906: investigación</strong></td><td>Interceptación (art. 235) y recuperación de información en internet (art. 236), con control posterior (art. 237) · búsqueda selectiva en bases de datos, con control previo (art. 244)</td></tr>
+    <tr><td><strong>Ley 906: prueba</strong></td><td>Mensaje de datos como EMP (art. 275) · cadena de custodia (arts. 254–266) · autenticidad (art. 277) · exclusión (arts. 23 y 455) · perito y técnica novedosa (arts. 405 y 422)</td></tr>
+    <tr><td><strong>Ley 1273 de 2009 · C. P. art. 244</strong></td><td>Delitos informáticos (arts. 269A a 269J) · extorsión</td></tr>
+  </table>
+</section>
+
+<section class="slide" aria-label="Etapas del proceso penal">
+  <p class="kicker">Bloque 4 · Colombia</p>
+  <h2>La evidencia digital, etapa por etapa</h2>
+  <div class="flow">
+    <div class="step"><h3>Indagación</h3><p>Acto de investigación correcto: arts. 235, 236, 244, inspección, peritaje.</p></div>
+    <div class="step"><h3>Control</h3><p>Juez de control de garantías: previo (art. 244) o posterior (art. 237).</p></div>
+    <div class="step"><h3>Acusación</h3><p>Descubrimiento de la evidencia y de los informes periciales.</p></div>
+    <div class="step"><h3>Preparatoria</h3><p>Solicitudes de exclusión, rechazo e inadmisibilidad (arts. 359 y 360).</p></div>
+    <div class="step"><h3>Juicio oral</h3><p>Autenticación (art. 277): testigo de acreditación y perito.</p></div>
+  </div>
+  <div class="callout"><p>Sin el acto y el control correctos, la evidencia no llega al juicio: cláusula de exclusión (art. 23) y prueba derivada (art. 455: vínculo atenuado, fuente independiente, descubrimiento inevitable).</p></div>
+</section>
+
+<section class="slide" aria-label="Pantallazos">
+  <p class="kicker">Bloque 4 · Colombia</p>
+  <h2>¿Y los pantallazos?</h2>
+  <p class="lead"><strong>«Valor probatorio atenuado»</strong>: la Corte Constitucional (Sentencia T-043 de 2020) explicó que el juez no descarta el pantallazo, pero lo valora junto con otras pruebas porque es fácil de modificar.</p>
+  <h3>El pantallazo nunca va solo. Acompáñelo de:</h3>
+  <div class="grid g4">
+    <div class="card"><p>Extracción forense del celular con hash</p></div>
+    <div class="card"><p>Respuesta o certificación del proveedor</p></div>
+    <div class="card"><p>Testigo de acreditación: quien recibió el mensaje</p></div>
+    <div class="card"><p>Metadatos y otras evidencias que coinciden</p></div>
+  </div>
+</section>
+
+<section class="slide" aria-label="ISO 27037">
+  <p class="kicker">Bloque 5 · 14:00 · Cadena de custodia</p>
+  <h2>Lo que pide ISO/IEC 27037</h2>
+  <div class="grid g2">
+    <div class="card"><span class="tag">De la evidencia</span><h3>Pertinente · Confiable · Suficiente</h3></div>
+    <div class="card"><span class="tag">Del proceso</span><p><strong>Auditable:</strong> queda registro de cada paso · <strong>Repetible:</strong> el mismo perito obtiene lo mismo · <strong>Reproducible:</strong> otro perito también · <strong>Justificable:</strong> se puede explicar por qué se hizo así.</p></div>
+  </div>
+  <div class="callout"><p>La cadena de custodia (Ley 906, arts. 254 a 266) registra quién tuvo la evidencia, cuándo, dónde y qué hizo con ella. Una falla le resta credibilidad y obliga a demostrar la autenticidad por otros medios.</p></div>
+</section>
+
+<section class="slide" aria-label="Qué hacer con el celular">
+  <p class="kicker">Bloque 5 · Cadena de custodia</p>
+  <h2>El celular de Marta: qué hacer y qué no</h2>
+  <div class="grid g2">
+    <div class="card"><span class="tag" style="color:var(--good)">Sí</span><ul style="padding-left:18px"><li>Dejarlo encendido y aislarlo de la red</li><li>Mantenerlo cargado</li><li>Anotar hora, estado y quién lo entrega</li><li>Entregarlo a un perito con acta</li></ul></div>
+    <div class="card"><span class="tag" style="color:var(--bad)">No</span><ul style="padding-left:18px"><li>Apagarlo «para que no lleguen más»</li><li>Reenviar o responder los mensajes</li><li>Usar aplicaciones de origen dudoso</li><li>Entrar a cuentas ajenas para «buscar pruebas»</li></ul></div>
+  </div>
+</section>
+
+<section class="slide" aria-label="Semáforo probatorio">
+  <p class="kicker">Bloque 6 · 15:45 · ¿Vale o no vale?</p>
+  <h2>El semáforo probatorio: cuatro preguntas</h2>
+  <table>
+    <tr><th>Pregunta</th><th>Qué se revisa</th></tr>
+    <tr><td><strong>¿Es auténtica?</strong></td><td>Es lo que digo que es y viene de quien digo</td></tr>
+    <tr><td><strong>¿Está íntegra?</strong></td><td>Llegó sin cambios: hash y cadena de custodia</td></tr>
+    <tr><td><strong>¿Es lícita?</strong></td><td>Se obtuvo respetando derechos y con el control judicial debido</td></tr>
+    <tr><td><strong>¿Es pertinente?</strong></td><td>Se relaciona con los hechos y es idónea para probarlos</td></tr>
+  </table>
+  <div class="callout"><p>Verde, amarillo o rojo en cada pregunta. Por cada amarillo o rojo, un refuerzo: peritaje, respuesta del proveedor, testigo de acreditación u otra evidencia.</p></div>
+</section>
+
+<section class="slide" aria-label="Prueba ilícita">
+  <p class="kicker">Bloque 6 · ¿Vale o no vale?</p>
+  <h2>Prueba ilícita: el atajo que hunde el caso</h2>
+  <div class="grid g2">
+    <div class="card"><span class="tag" style="color:var(--bad)">Ilícita</span><p>El sobrino entra al correo de Julián con una contraseña adivinada (y puede ser delito: art. 269A).</p></div>
+    <div class="card"><span class="tag" style="color:var(--bad)">Ilícita</span><p>Instalar una aplicación espía en el celular de otra persona.</p></div>
+    <div class="card"><span class="tag" style="color:var(--good)">Lícita</span><p>Marta graba la pantalla de su propio celular mostrando el chat.</p></div>
+    <div class="card"><span class="tag" style="color:var(--good)">Lícita</span><p>Datos del titular de la cuenta obtenidos por la Fiscalía con los requisitos legales.</p></div>
+  </div>
+  <div class="callout"><p>Constitución, art. 29: «Es nula, de pleno derecho, la prueba obtenida con violación del debido proceso».</p></div>
+</section>
+
+<section class="slide" aria-label="Audiencia simulada">
+  <p class="kicker">Bloque 7 · 17:15 · Audiencia simulada</p>
+  <h2>Preparatoria y juicio oral: tres salas, dos rondas</h2>
+  <div class="grid g3">
+    <div class="card"><span class="tag">Sala 1</span><h3>Grupos A y B</h3><p>Chat de WhatsApp · Correo del falso proveedor</p></div>
+    <div class="card"><span class="tag">Sala 2</span><h3>Grupos C y D</h3><p>Transferencia · Computador de la caja</p></div>
+    <div class="card"><span class="tag">Sala 3</span><h3>Grupos E y F</h3><p>Correo en la nube · Publicación en redes</p></div>
+  </div>
+  <div class="flow" style="margin-top:18px">
+    <div class="step"><h3>Preparatoria · 5 min</h3><p>La defensa pide excluir, la Fiscalía replica y el juez decide.</p></div>
+    <div class="step"><h3>Directo · 2 min</h3><p>La Fiscalía acredita la evidencia con su perito.</p></div>
+    <div class="step"><h3>Contrainterrogatorio · 2 min</h3><p>La defensa ataca el método y la cadena.</p></div>
+    <div class="step"><h3>Redirecto · 1 min</h3><p>La Fiscalía rehabilita al perito.</p></div>
+  </div>
+</section>
+
+<section class="slide" aria-label="Decálogo">
+  <p class="kicker">Bloque 8 · 18:45 · Cierre</p>
+  <h2>Decálogo del abogado frente a la prueba digital</h2>
+  <div class="grid g2">
+    <div class="card"><p><strong>1.</strong> Pregunte dónde más está.</p></div>
+    <div class="card"><p><strong>2.</strong> Conserve antes de analizar.</p></div>
+    <div class="card"><p><strong>3.</strong> No toque el original.</p></div>
+    <div class="card"><p><strong>4.</strong> Hash desde el primer minuto.</p></div>
+    <div class="card"><p><strong>5.</strong> Todo se documenta.</p></div>
+    <div class="card"><p><strong>6.</strong> El pantallazo nunca va solo.</p></div>
+    <div class="card"><p><strong>7.</strong> La licitud no se negocia.</p></div>
+    <div class="card"><p><strong>8.</strong> Piense en la preparatoria.</p></div>
+    <div class="card"><p><strong>9.</strong> Autenticidad no es autoría.</p></div>
+    <div class="card"><p><strong>10.</strong> Piense en el mundo.</p></div>
+  </div>
+</section>
+
+<section class="slide" aria-label="Cierre">
+  <div class="grow"></div>
+  <p class="kicker">Cierre</p>
+  <h1>Autenticidad no es autoría</h1>
+  <p class="lead" style="margin-top:18px">Que un mensaje sea real no prueba quién lo escribió. La prueba digital fuerte es la que se sostiene con otras.</p>
+  <div class="grow"></div>
+  <p class="src-line">CERT Académico by RedCiber.org · Material educativo. El caso Ferretería El Roble es ficticio; las normas citadas son reales: verifique siempre su texto vigente.</p>
+</section>
+
+</main>
+
+<nav class="nav" aria-label="Navegación de diapositivas">
+  <button id="prev" aria-label="Diapositiva anterior">←</button>
+  <button id="next" aria-label="Diapositiva siguiente">→</button>
+  <span class="brand">Prueba Digital para Abogados · CERT Académico by RedCiber.org</span>
+  <span class="count" id="count" aria-live="polite"></span>
+</nav>
+
+<script>
+  (function () {
+    var slides = Array.prototype.slice.call(document.querySelectorAll('.slide'));
+    var prev = document.getElementById('prev'), next = document.getElementById('next');
+    var count = document.getElementById('count'), progress = document.getElementById('progress');
+    var i = 0;
+    function fromHash() { var n = parseInt((location.hash || '').replace('#', ''), 10); return n >= 1 && n <= slides.length ? n - 1 : 0; }
+    function show(n) {
+      i = Math.max(0, Math.min(slides.length - 1, n));
+      slides.forEach(function (s, k) { s.classList.toggle('active', k === i); });
+      count.textContent = (i + 1) + ' / ' + slides.length;
+      progress.style.width = ((i + 1) / slides.length * 100) + '%';
+      prev.disabled = i === 0; next.disabled = i === slides.length - 1;
+      if (location.hash !== '#' + (i + 1)) history.replaceState(null, '', '#' + (i + 1));
+      slides[i].scrollTop = 0;
+    }
+    prev.addEventListener('click', function () { show(i - 1); });
+    next.addEventListener('click', function () { show(i + 1); });
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'ArrowRight' || e.key === 'PageDown' || e.key === ' ') { e.preventDefault(); show(i + 1); }
+      if (e.key === 'ArrowLeft' || e.key === 'PageUp') { e.preventDefault(); show(i - 1); }
+      if (e.key === 'Home') show(0);
+      if (e.key === 'End') show(slides.length - 1);
+    });
+    var x0 = null;
+    document.addEventListener('touchstart', function (e) { x0 = e.touches[0].clientX; }, { passive: true });
+    document.addEventListener('touchend', function (e) {
+      if (x0 === null) return; var dx = e.changedTouches[0].clientX - x0;
+      if (Math.abs(dx) > 50) show(i + (dx < 0 ? 1 : -1)); x0 = null;
+    });
+    window.addEventListener('hashchange', function () { show(fromHash()); });
+    show(fromHash());
+  })();
+</script>
+</body>
+</html>

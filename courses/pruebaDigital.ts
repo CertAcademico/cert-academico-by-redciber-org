@@ -13,6 +13,15 @@ const WORKBOOK = {
   note: 'El caso completo, la evidencia de cada grupo y las hojas de trabajo de las 6 actividades del día.',
 };
 
+// Presentación de la jornada en HTML (se abre en el navegador, también en el celular).
+const PRESENTATION = {
+  type: 'resource' as const,
+  title: '📊 Presentación de la jornada',
+  description: '19 diapositivas con el caso, el ABC técnico, el marco internacional, la evidencia digital en la Ley 906, la cadena de custodia, el semáforo probatorio, la audiencia y el decálogo. Ábrala para seguir la clase o para repasar.',
+  href: `${MAT}/presentacion-prueba-digital.html`,
+  cta: 'Abrir presentación',
+};
+
 // Las mismas 6 evidencias acompañan a cada grupo todo el día.
 const EVIDENCE_GROUPS = [
   { name: 'Grupo A — El chat de WhatsApp', items: ['Celular de Marta', 'Mensajes de extorsión'] },
@@ -34,6 +43,7 @@ export const PRUEBA_DIGITAL: LearningPath = {
       title: 'Bloque 1 · 7:00 — El caso: una ferretería, un correo y $48 millones',
       content: [
         { type: 'text', icon: 'CalendarIcon', text: 'Bienvenidos a la jornada de la Maestría en Derecho Penal. Hoy tenemos 8 bloques, de 7:00 a 20:00. Ustedes dominan el proceso penal; aquí el ABC es técnico, no se necesita saber de tecnología: vamos del ABC hasta una audiencia simulada. Cada bloque tiene retos que suman XP, y en los bloques 1 a 7 su grupo sube un entregable que le da estrellas y un badge. Al aprobar la evaluación final recibe su certificado.' },
+        PRESENTATION,
         { type: 'text', icon: 'AlarmIcon', text: 'El caso que nos acompañará todo el día (ficticio): Marta Rojas es dueña de la Ferretería El Roble, en Bogotá. El lunes 2 de noviembre recibe un correo de «Aceros del Norte», su proveedor de siempre, que le informa una nueva cuenta bancaria. Marta paga $48.500.000. Dos días después el proveedor la llama: nunca recibió el dinero.' },
         { type: 'text', icon: 'SpyIcon', text: 'Lo peor llega el jueves: un número desconocido le escribe por WhatsApp. «Si denuncias, publicamos los datos de tus clientes». Adjunta una foto de la base de clientes de la ferretería. Esa noche aparece un perfil falso de la ferretería en redes sociales con datos de algunos clientes. Marta sospecha de Julián, un empleado que despidió en septiembre.' },
         { type: 'text', icon: 'HappyUsersIcon', text: 'Ustedes acompañan a la Fiscalía y representan a Marta como víctima. Su misión: convertir lo que pasó en evidencia que resista una solicitud de exclusión y que pueda acreditarse en juicio oral. Al final del día deberán sostenerla en audiencia frente a la defensa. Cada grupo será responsable de UNA evidencia durante toda la jornada.' },
@@ -617,13 +627,7 @@ Date: Mon, 2 Nov 2026 10:14:02 -0500`,
             { front: '10. Piense en el mundo', back: 'Si los datos están fuera del país, use la cooperación internacional (Convenio de Budapest) y pida conservación primero.' },
           ],
         },
-        {
-          type: 'resource',
-          title: '📊 Presentación del curso',
-          description: 'Las diapositivas de la jornada, con el caso, las normas colombianas e internacionales y el decálogo. Úsela para repasar.',
-          href: `${MAT}/presentacion-prueba-digital-unilibre.pptx`,
-          cta: 'Descargar presentación',
-        },
+        PRESENTATION,
         { type: 'text', icon: 'CheckCircleIcon', text: 'Evaluación final: 12 preguntas al azar de un banco de 20. Se aprueba con 70% y puede reintentar con otras preguntas. Al aprobar, termina el curso y puede reclamar su certificado.' },
         {
           type: 'exam',
