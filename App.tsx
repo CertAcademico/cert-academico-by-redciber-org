@@ -520,6 +520,11 @@ const pathThemes: Record<string, { card: string; title: string; bar: string }> =
     title: 'text-rose-400',
     bar: 'from-rose-500 to-orange-400',
   },
+  prueba_digital: {
+    card: 'from-sky-900/50 to-slate-900/50 ring-sky-700 hover:ring-sky-500 hover:shadow-sky-500/30',
+    title: 'text-sky-300',
+    bar: 'from-sky-500 to-indigo-400',
+  },
   ia_ofensiva_insider: {
     card: 'from-orange-900/50 to-slate-900/50 ring-orange-700 hover:ring-orange-500 hover:shadow-orange-500/30',
     title: 'text-orange-400',
@@ -567,6 +572,7 @@ const EXCLUSIVE_PATHS: Record<string, UserRole> = {
   cert_csirt: 'cert_student', // Ministerios de Hacienda (registro abierto)
   auditoria_ciberriesgo: 'auditor', // Comités de riesgo de cooperativas financieras de Antioquia
   cti_basico: 'cti_student', // Grupo de estudiantes EAN del curso de CTI
+  prueba_digital: 'law_student', // Abogados, Universidad Libre (jornada del 7 de noviembre)
 };
 
 // Calendario por rol: cada curso se abre solo dentro de su ventana (hora de Colombia, UTC-5);
@@ -584,6 +590,10 @@ const COURSE_WINDOWS_BY_ROLE: Partial<Record<UserRole, Record<string, { opensAt:
     auditoria_ciberriesgo: { opensAt: '2026-10-15T08:00:00-05:00', closesAt: '2026-10-22T23:59:59-05:00' },
   },
   // Grupo de estudiantes EAN del curso de CTI.
+  // Abogados de la Universidad Libre: jornada de Prueba Digital del sábado 7 de noviembre (7:00 a 20:00).
+  law_student: {
+    prueba_digital: { opensAt: '2026-11-06T00:00:00-05:00', closesAt: '2026-11-07T23:59:59-05:00' },
+  },
   cti_student: {
     cti_basico: { opensAt: '2026-10-24T00:00:00-05:00', closesAt: '2026-11-30T23:59:59-05:00' },
   },
@@ -854,7 +864,7 @@ const LearningPathSelector: React.FC<LearningPathSelectorProps> = ({
                     .filter(({ m }) => m.content.some(c => c.type === 'activity' && !!c.deliverable));
                   if (!gp || sessions.length === 0) return null;
                   if (!gp.group) {
-                    return <p className="text-xs text-amber-200 bg-black/20 rounded-lg px-3 py-2 mb-4">👥 Elige tu grupo en la Sesión 1 para ganar estrellas.</p>;
+                    return <p className="text-xs text-amber-200 bg-black/20 rounded-lg px-3 py-2 mb-4">👥 Elige tu grupo en la primera actividad para ganar estrellas.</p>;
                   }
                   const rows = sessions.map(({ m, i }) => ({
                     n: i + 1,

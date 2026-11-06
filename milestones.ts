@@ -1,6 +1,6 @@
 // Badges de alcance y estrellas por sesión.
 // Deben coincidir con milestone_rules(), deliverable_xp() y star_xp() en
-// supabase/migrations/2026-11-07_sesiones_6_y_7.sql.
+// supabase/migrations/2026-11-08_curso_prueba_digital.sql.
 
 export interface Milestone {
   pathId: string;
@@ -21,6 +21,15 @@ const session = (n: number, name: string, colors: [string, string]): Milestone =
   modules: [`cert_s${n}`],
 });
 
+// Prueba Digital para Abogados: un badge por cada bloque con entrega (1 a 7).
+const block = (n: number, name: string, colors: [string, string]): Milestone => ({
+  pathId: 'prueba_digital',
+  title: `Prueba Digital — Bloque ${n}: ${name}`,
+  ribbon: `BLOQUE ${n} SUPERADO`,
+  colors,
+  modules: [`pd_b${n}`],
+});
+
 export const MILESTONES: Record<string, Milestone> = {
   cert_csirt_s1: session(1, 'Ecosistema global de CSIRTs', ['#0ea5e9', '#0c4a6e']),
   cert_csirt_s2: session(2, 'Mandato y RFC 2350', ['#6366f1', '#312e81']),
@@ -36,6 +45,13 @@ export const MILESTONES: Record<string, Milestone> = {
     colors: ['#14b8a6', '#0f766e'],
     modules: ['cert_s1', 'cert_s2', 'cert_s3'],
   },
+  prueba_digital_b1: block(1, 'El caso y la evidencia', ['#0ea5e9', '#0c4a6e']),
+  prueba_digital_b2: block(2, 'ABC técnico de la evidencia', ['#6366f1', '#312e81']),
+  prueba_digital_b3: block(3, 'Marco internacional', ['#8b5cf6', '#4c1d95']),
+  prueba_digital_b4: block(4, 'Marco colombiano', ['#eab308', '#713f12']),
+  prueba_digital_b5: block(5, 'Cadena de custodia', ['#ef4444', '#7f1d1d']),
+  prueba_digital_b6: block(6, 'Admisibilidad y valoración', ['#22c55e', '#14532d']),
+  prueba_digital_b7: block(7, 'Audiencia simulada', ['#ec4899', '#831843']),
 };
 
 /** Badges que dependen de este módulo (el de la sesión y, si aplica, el de la fase). */
@@ -43,7 +59,7 @@ export const milestonesForModule = (pathId: string, moduleId: string): [string, 
   Object.entries(MILESTONES).filter(([, m]) => m.pathId === pathId && m.modules.includes(moduleId));
 
 /** Cursos con entregas en grupo y estrellas por sesión. */
-export const STAR_COURSES = ['cert_csirt'];
+export const STAR_COURSES = ['cert_csirt', 'prueba_digital'];
 
 /** XP que recibe cada integrante del grupo por cada entrega (igual a deliverable_xp()). */
 export const DELIVERABLE_XP = 30;

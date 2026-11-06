@@ -17,6 +17,7 @@ const BADGE_COLORS: Record<string, [string, string]> = {
   cert_csirt: ['#0d9488', '#134e4a'],
   auditoria_ciberriesgo: ['#e11d48', '#881337'],
   cti_basico: ['#8b5cf6', '#2e1065'],
+  prueba_digital: ['#0284c7', '#1e1b4b'],
   cybercrime_intermedio: ['#b91c1c', '#431407'],
   cybercrime_avanzado: ['#7f1d1d', '#0c0a09'],
   forensic_intermedio: ['#15803d', '#052e16'],
@@ -65,6 +66,7 @@ const BADGE_TITLES: Record<string, string> = {
   cert_csirt: 'CERTs y CSIRTs',
   auditoria_ciberriesgo: 'Auditoría del Riesgo Cibernético',
   cti_basico: 'Cyber Threat Intelligence',
+  prueba_digital: 'Prueba Digital para Abogados',
   cybercrime_intermedio: 'Investigador Cibercriminal',
   cybercrime_avanzado: 'Investigador Cibercriminal',
   forensic_intermedio: 'Perito Forense Digital',
@@ -103,6 +105,8 @@ const BadgeIcon: React.FC<{ pathId: string; color: string }> = ({ pathId: rawId,
       return (<g {...s}><rect x="13" y="10" width="38" height="48" rx="5" /><rect x="23" y="5" width="18" height="10" rx="3" /><path d="M22 36 L29 43 L43 27" /></g>);
     case 'cti_basico': // ojo de inteligencia
       return (<g {...s}><path d="M4 32 C14 15 50 15 60 32 C50 49 14 49 4 32 Z" /><circle cx="32" cy="32" r="10" /><circle cx="32" cy="32" r="3.5" fill={color} /></g>);
+    case 'prueba_digital': // balanza de la justicia
+      return (<g {...s}><path d="M32 8 V56 M20 56 H44 M12 18 H52" /><path d="M12 18 L4 36 H20 Z M52 18 L44 36 H60 Z" /><circle cx="32" cy="8" r="2.5" fill={color} /></g>);
     case ROUTE_CERTIFICATE_ID: // trofeo
       return (<g {...s}><path d="M20 8 H44 V22 C44 32 39 39 32 39 C25 39 20 32 20 22 Z" /><path d="M20 13 H11 C11 23 15 28 21 28 M44 13 H53 C53 23 49 28 43 28" /><path d="M32 39 V49 M23 57 H41 M26 49 H38" /></g>);
     default: // visto bueno genérico

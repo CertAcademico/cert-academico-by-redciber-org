@@ -37,13 +37,14 @@ export async function registerUser(
   email: string,
   password: string,
   captchaToken?: string,
+  accessCode?: string,
 ): Promise<RegisterResult> {
   const cleanEmail = email.toLowerCase().trim();
   const { data, error } = await supabase.auth.signUp({
     email: cleanEmail,
     password,
     options: {
-      data: { name: name.trim(), data_consent_version: POLICY_VERSION },
+      data: { name: name.trim(), data_consent_version: POLICY_VERSION, ...(accessCode?.trim() ? { access_code: accessCode.trim() } : {}) },
       emailRedirectTo: confirmRedirect(),
       captchaToken,
     },
@@ -60,6 +61,9 @@ export async function registerUser(
       throw new Error('Hay muchos registros en este momento. Espera unos minutos e intenta de nuevo.');
     }
     // Supabase envuelve las excepciones del trigger handle_new_user() en un mensaje genérico.
+    if (accessCode?.trim() && (error.message.includes('INVALID_ACCESS_CODE') || error.message.includes('Database error saving new user'))) {
+      throw new Error('No fue posible completar el registro. Revisa el código del evento (te lo da el docente) y acepta la Política de Tratamiento de Datos Personales.');
+    }
     if (error.message.includes('REGISTRATION_CLOSED') || error.message.includes('CONSENT_REQUIRED') || error.message.includes('Database error saving new user')) {
       throw new Error('No fue posible completar el registro. El registro gratuito está abierto hasta el martes 3 de noviembre y requiere aceptar la Política de Tratamiento de Datos Personales.');
     }

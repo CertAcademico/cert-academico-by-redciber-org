@@ -43,6 +43,7 @@ const ROLE_OPTIONS: { value: UserRole; label: string }[] = [
   { value: 'cert_student', label: 'Estudiante CERTs/CSIRTs' },
   { value: 'auditor', label: 'Auditor (cooperativas)' },
   { value: 'cti_student', label: 'Estudiante CTI' },
+  { value: 'law_student', label: 'Abogado · Prueba Digital' },
   { value: 'free_student', label: 'Registro gratuito (ruta completa)' },
 ];
 
@@ -238,6 +239,7 @@ const ROLE_LABELS: Record<string, string> = {
   free_student: 'Registro gratuito',
   student: 'EAN · Hacking Ético',
   cti_student: 'CTI',
+  law_student: 'Prueba Digital',
   cert_student: 'CERTs/CSIRTs',
   auditor: 'Auditor',
   teacher: 'Docente',

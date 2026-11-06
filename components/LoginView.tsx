@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { registerUser, loginUser, resendConfirmation, EmailNotConfirmedError } from '../authService';
 import type { SessionUser } from '../authService';
-import { isRegistrationOpen } from '../platform';
+import { isRegistrationOpen, isEventRegistrationOpen } from '../platform';
 import PrivacyPolicyView from './PrivacyPolicyView';
 import Turnstile, { CAPTCHA_ENABLED } from './Turnstile';
 
@@ -37,6 +37,9 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLogin }) => {
   const [regConsent, setRegConsent] = useState(false);
   const [showPolicy, setShowPolicy] = useState(false);
   const registrationOpen = isRegistrationOpen();
+  // Tras el cierre del registro gratuito, solo se registra quien tiene el código de un evento.
+  const eventOpen = !registrationOpen && isEventRegistrationOpen();
+  const [regCode, setRegCode] = useState('');
 
   // CAPTCHA: cada token sirve una vez, así que tras cada intento se monta un widget nuevo.
   const [captchaToken, setCaptchaToken] = useState<string | null>(null);
@@ -76,11 +79,12 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLogin }) => {
     if (!regName || !regEmail || !regPassword || !regConfirm) { setError('Completa todos los campos.'); return; }
     if (regPassword.length < 8) { setError('La contraseña debe tener al menos 8 caracteres.'); return; }
     if (regPassword !== regConfirm) { setError('Las contraseñas no coinciden.'); return; }
+    if (eventOpen && !regCode.trim()) { setError('Escribe el código del evento que te dio el docente.'); return; }
     if (!regConsent) { setError('Debes aceptar la Política de Tratamiento de Datos Personales para registrarte.'); return; }
     if (captchaMissing) { setError('Completa la verificación de seguridad.'); return; }
     setIsLoading(true);
     try {
-      const result = await registerUser(regName, regEmail, regPassword, captchaToken ?? undefined);
+      const result = await registerUser(regName, regEmail, regPassword, captchaToken ?? undefined, eventOpen ? regCode : undefined);
       if ('user' in result) {
         onLogin(result.user);
       } else {
@@ -258,6 +262,26 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLogin }) => {
                   <p className="text-xs text-emerald-300 bg-emerald-500/10 border border-emerald-500/30 rounded-lg px-3 py-2 -mt-1">
                     🎁 Registro gratuito del 22 de octubre al 3 de noviembre: accede a los 7 cursos iniciales, desde Fundamentos de Ciberseguridad hasta CERTs y CSIRTs. Gana un badge verificable por cada curso y tu certificado al completar la ruta. 🏆 Los 50 mejores puntajes al 3 de noviembre acceden gratis al curso de creación de agentes defensivos y ofensivos en ciberseguridad.
                   </p>
+                ) : eventOpen ? (
+                  <>
+                    <p className="text-xs text-sky-200 bg-sky-500/10 border border-sky-500/30 rounded-lg px-3 py-2 -mt-1">
+                      ⚖️ ¿Vienes al curso Prueba Digital para Abogados? Regístrate con el código que te da el docente. El curso está abierto hasta el sábado 7 de noviembre.
+                    </p>
+                    <div>
+                      <label className="text-[11px] font-bold text-slate-400 uppercase tracking-widest block mb-1.5">
+                        Código del evento
+                      </label>
+                      <input
+                        type="text"
+                        value={regCode}
+                        onChange={e => setRegCode(e.target.value)}
+                        className={`${inputCls} uppercase`}
+                        placeholder="Te lo da el docente"
+                        autoComplete="off"
+                        required
+                      />
+                    </div>
+                  </>
                 ) : (
                   <p className="text-xs text-amber-300 bg-amber-500/10 border border-amber-500/30 rounded-lg px-3 py-2 -mt-1">
                     El registro gratuito cerró el 3 de noviembre. Si ya tienes una cuenta, inicia sesión.
@@ -350,7 +374,7 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLogin }) => {
 
                 <button
                   type="submit"
-                  disabled={isLoading || !registrationOpen}
+                  disabled={isLoading || !(registrationOpen || eventOpen)}
                   className="w-full mt-2 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold rounded-xl transition-all text-sm"
                 >
                   {isLoading ? 'Creando cuenta...' : 'Crear mi Cuenta →'}

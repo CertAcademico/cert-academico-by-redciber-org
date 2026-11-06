@@ -200,7 +200,7 @@ export type LearningPaths = Record<string, LearningPath>;
 
 // --- Auth & Progress ---
 
-export type UserRole = 'student' | 'teacher' | 'tutor' | 'admin' | 'cert_student' | 'auditor' | 'cti_student' | 'free_student';
+export type UserRole = 'student' | 'teacher' | 'tutor' | 'admin' | 'cert_student' | 'auditor' | 'cti_student' | 'free_student' | 'law_student';
 
 export interface UserProfile {
   id: string;

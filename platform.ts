@@ -20,6 +20,13 @@ export const REGISTRATION_DEADLINE = '2026-11-03T23:59:59-05:00';
 
 export const isRegistrationOpen = (now = Date.now()) => now <= Date.parse(REGISTRATION_DEADLINE);
 
+/**
+ * Registro con código de un evento (curso Prueba Digital, Universidad Libre). El código se valida
+ * en handle_new_user() (supabase/migrations/2026-11-08_curso_prueba_digital.sql); acá solo la fecha.
+ */
+export const EVENT_REGISTRATION_DEADLINE = '2026-11-07T23:59:59-05:00';
+export const isEventRegistrationOpen = (now = Date.now()) => now <= Date.parse(EVENT_REGISTRATION_DEADLINE);
+
 /** Versión de la política que acepta quien se registra (se guarda con su consentimiento). */
 export const POLICY_VERSION = '2026-10-24';
 
