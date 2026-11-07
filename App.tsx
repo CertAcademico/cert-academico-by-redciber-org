@@ -581,19 +581,19 @@ const EXCLUSIVE_PATHS: Record<string, UserRole> = {
 const COURSE_WINDOWS_BY_ROLE: Partial<Record<UserRole, Record<string, { opensAt: string; closesAt: string }>>> = {
   // Cohorte de pregrado, Universidad EAN.
   student: {
-    // Cursos 1 y 2 extendidos, y curso 3 abierto, hasta el 24 de octubre.
-    cybersecurity: { opensAt: '2026-10-05T00:00:00-05:00', closesAt: '2026-10-24T23:59:59-05:00' },
-    cybercrime: { opensAt: '2026-10-13T00:00:00-05:00', closesAt: '2026-10-24T23:59:59-05:00' },
-    cybercriminology: { opensAt: '2026-10-20T00:00:00-05:00', closesAt: '2026-10-24T23:59:59-05:00' },
+    // Cursos 1 a 3 reabiertos hasta el 20 de noviembre para que terminen y obtengan sus badges.
+    cybersecurity: { opensAt: '2026-10-05T00:00:00-05:00', closesAt: '2026-11-20T23:59:59-05:00' },
+    cybercrime: { opensAt: '2026-10-13T00:00:00-05:00', closesAt: '2026-11-20T23:59:59-05:00' },
+    cybercriminology: { opensAt: '2026-10-20T00:00:00-05:00', closesAt: '2026-11-20T23:59:59-05:00' },
   },
   auditor: {
     auditoria_ciberriesgo: { opensAt: '2026-10-15T08:00:00-05:00', closesAt: '2026-10-22T23:59:59-05:00' },
   },
-  // Grupo de estudiantes EAN del curso de CTI.
   // Abogados de la Universidad Libre: jornada de Prueba Digital del sábado 7 de noviembre (8:00 a 20:00).
   law_student: {
     prueba_digital: { opensAt: '2026-11-06T00:00:00-05:00', closesAt: '2026-11-07T23:59:59-05:00' },
   },
+  // Grupo de estudiantes EAN del curso de CTI.
   cti_student: {
     cti_basico: { opensAt: '2026-10-24T00:00:00-05:00', closesAt: '2026-11-30T23:59:59-05:00' },
   },
