@@ -69,6 +69,20 @@ import { formatRelativeTime } from './utils';
 // Content renderer
 // ---------------------------------------------------------------------------
 
+// Clase en vivo: hora en que se abre cada bloque (índice = bloque), aunque falte el reto anterior.
+const LIVE_SCHEDULE: Record<string, string[]> = {
+  prueba_digital: [
+    '2026-11-07T10:30:00-05:00', // Bloque 1
+    '2026-11-07T11:10:00-05:00', // Bloque 2 (después de la plenaria de voceros)
+    '2026-11-07T12:00:00-05:00', // Bloque 3
+    '2026-11-07T12:35:00-05:00', // Bloque 4
+    '2026-11-07T14:00:00-05:00', // Bloque 5
+    '2026-11-07T14:50:00-05:00', // Bloque 6
+    '2026-11-07T15:25:00-05:00', // Bloque 7
+    '2026-11-07T16:35:00-05:00', // Bloque 8
+  ],
+};
+
 // Bloques que el estudiante debe completar (o aprobar) antes de avanzar al siguiente módulo.
 const INTERACTIVE_TYPES: ContentBlock['type'][] = ['quiz', 'flashcards', 'memory', 'h5p_check', 'scenario', 'challenge', 'exam'];
 
@@ -176,6 +190,13 @@ const LearningPathView: React.FC<LearningPathViewProps> = ({ path, pathId, onExi
   const hasDeliverable = (m: Module) => m.content.some(c => c.type === 'activity' && !!c.deliverable);
   const [completedModules, setCompletedModules] = useState<number[]>([]);
   const [isProgressLoading, setIsProgressLoading] = useState(true);
+  // Reloj para abrir los bloques de la clase en vivo a su hora.
+  const [clock, setClock] = useState(() => Date.now());
+  useEffect(() => {
+    if (!LIVE_SCHEDULE[pathId]) return;
+    const t = window.setInterval(() => setClock(Date.now()), 30000);
+    return () => window.clearInterval(t);
+  }, [pathId]);
   const moduleContentRef = useRef<HTMLDivElement>(null);
 
   // Load progress (and mark the course as touched) whenever the path changes
@@ -216,6 +237,9 @@ const LearningPathView: React.FC<LearningPathViewProps> = ({ path, pathId, onExi
   const isModuleLocked = (index: number): boolean => {
     if (isAdmin) return false; // El admin abre cualquier sesión, sin orden ni quizzes previos.
     if (path.modules[index]?.locked && !unlockAll) return true;
+    // Clase en vivo: el bloque se abre a su hora aunque no se haya hecho el reto anterior.
+    const opensAt = LIVE_SCHEDULE[pathId]?.[index];
+    if (opensAt && clock >= Date.parse(opensAt)) return false;
     const checkInteractive = (m: Module) =>
       m.content.some(
         c => INTERACTIVE_TYPES.includes(c.type),
@@ -282,7 +306,7 @@ const LearningPathView: React.FC<LearningPathViewProps> = ({ path, pathId, onExi
   const isCurrentCompleted = completedModules.includes(currentModuleIndex);
   const canGoNext =
     currentModuleIndex < path.modules.length - 1 &&
-    (!isCurrentInteractive || isCurrentCompleted) &&
+    (!isCurrentInteractive || isCurrentCompleted || !!LIVE_SCHEDULE[pathId]) &&
     !isModuleLocked(currentModuleIndex + 1);
   const isLastModule = currentModuleIndex === path.modules.length - 1;
 
