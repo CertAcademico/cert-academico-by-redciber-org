@@ -27,6 +27,7 @@ import LoginView from './components/LoginView';
 import TeacherDashboard from './components/TeacherDashboard';
 import ActivityView from './components/ActivityView';
 import ModuleBadges from './components/ModuleBadges';
+import ClassNotice from './components/ClassNotice';
 import type { SubmissionContext } from './components/SubmissionBox';
 import { MILESTONES, STAR_COURSES } from './milestones';
 import { Stars } from './components/SubmissionBox';
@@ -388,6 +389,7 @@ const LearningPathView: React.FC<LearningPathViewProps> = ({ path, pathId, onExi
                 <h2 id={`module-title-${currentModuleIndex}`} className="sr-only">
                   {currentModule.title}
                 </h2>
+                <ClassNotice pathId={pathId} />
                 <ModuleBadges
                   pathId={pathId}
                   moduleId={currentModule.id}

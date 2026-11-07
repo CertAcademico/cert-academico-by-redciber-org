@@ -42,7 +42,7 @@ export const PRUEBA_DIGITAL: LearningPath = {
       id: 'pd_b1',
       title: 'Bloque 1 · 10:30 — El caso: una ferretería, un correo y $48 millones',
       content: [
-        { type: 'text', icon: 'CalendarIcon', text: 'Bienvenidos a la jornada de la Maestría en Derecho Procesal. Hoy tenemos 8 bloques, de 10:30 a 17:00, con almuerzo de 13:00 a 13:45 y una pausa de 14:30 a 14:45. Ustedes dominan el derecho procesal; aquí el ABC es técnico, no se necesita saber de tecnología: vamos del ABC hasta una audiencia simulada. Cada bloque tiene retos que suman XP, y en los bloques 1 a 7 su grupo sube un entregable que le da estrellas y un badge. Al aprobar la evaluación final recibe su certificado.' },
+        { type: 'text', icon: 'CalendarIcon', text: 'Bienvenidos a la jornada de la Maestría en Derecho Procesal. Hoy tenemos 8 bloques, de 10:30 a 17:00, con almuerzo de 13:15 a 14:00 y una pausa de 14:40 a 14:50. Ustedes dominan el derecho procesal; aquí el ABC es técnico, no se necesita saber de tecnología: vamos del ABC hasta una audiencia simulada. Cada bloque tiene retos que suman XP, y en los bloques 1 a 7 su grupo sube un entregable que le da estrellas y un badge. Al aprobar la evaluación final recibe su certificado.' },
         PRESENTATION,
         { type: 'text', icon: 'AlarmIcon', text: 'El caso que nos acompañará todo el día (ficticio): Marta Rojas es dueña de la Ferretería El Roble, en Bogotá. El lunes 2 de noviembre recibe un correo de «Aceros del Norte», su proveedor de siempre, que le informa una nueva cuenta bancaria. Marta paga $48.500.000. Dos días después el proveedor la llama: nunca recibió el dinero.' },
         { type: 'text', icon: 'SpyIcon', text: 'Lo peor llega el jueves: un número desconocido le escribe por WhatsApp. «Si denuncias, publicamos los datos de tus clientes». Adjunta una foto de la base de clientes de la ferretería. Esa noche aparece un perfil falso de la ferretería en redes sociales con datos de algunos clientes. Marta sospecha de Julián, un empleado que despidió en septiembre.' },
@@ -50,7 +50,7 @@ export const PRUEBA_DIGITAL: LearningPath = {
         {
           type: 'activity',
           title: 'Formen su equipo y reciban su evidencia',
-          duration: '15 min',
+          duration: '30 min',
           groupSize: '6 grupos de 4–6 personas',
           goal: 'Conformar los 6 equipos de abogados y que cada uno conozca la evidencia que va a cuidar todo el día. La elegirán una sola vez: la usarán en todas las actividades, hasta la audiencia final.',
           downloads: [WORKBOOK],
@@ -58,7 +58,8 @@ export const PRUEBA_DIGITAL: LearningPath = {
             { title: 'Formen el grupo', minutes: '3 min', detail: 'El facilitador asigna una letra (A a F). Cada integrante elige la letra de su grupo en la caja de entrega de abajo. Se elige una sola vez para todo el día.' },
             { title: 'Lean su evidencia', minutes: '5 min', detail: 'En el Expediente del caso, busquen la ficha de su evidencia. Léanla en voz alta.' },
             { title: 'Primera intuición', minutes: '5 min', detail: 'Respondan en grupo: ¿qué creen que podría probar su evidencia? ¿Qué podría salir mal con ella?' },
-            { title: 'Un vocero', minutes: '2 min', detail: 'Elijan un vocero para las plenarias del día.' },
+            { title: 'Un vocero', minutes: '2 min', detail: 'Elijan un vocero para las plenarias del día. Suban la entrega antes de las 11:10.' },
+            { title: 'Plenaria de voceros', minutes: '15 min', detail: 'De 11:10 a 11:25: cada vocero, del Grupo A al F, presenta en 2 minutos su evidencia y su primera intuición.' },
           ],
           groupsTitle: 'Cada grupo y su evidencia',
           groups: EVIDENCE_GROUPS,
@@ -99,7 +100,7 @@ export const PRUEBA_DIGITAL: LearningPath = {
     // ───────────────────────────── BLOQUE 2 ─────────────────────────────
     {
       id: 'pd_b2',
-      title: 'Bloque 2 · 11:00 — ABC técnico: dónde vive la evidencia',
+      title: 'Bloque 2 · 11:25 — ABC técnico: dónde vive la evidencia',
       content: [
         { type: 'text', icon: 'ServerIcon', text: 'Objetivo: entender, sin tecnicismos, dónde está la evidencia digital, por qué es frágil y cómo se demuestra que no fue alterada.' },
         { type: 'text', icon: 'BrainCircuitIcon', text: 'Regla de oro: la evidencia digital casi nunca está en un solo lugar. Un WhatsApp está en el celular de Marta, en el del remitente y, en parte, en los registros del proveedor. Un correo está en el buzón, en los servidores que lo transportaron y en sus encabezados. Por eso el abogado pregunta siempre: ¿dónde más está?' },
@@ -191,7 +192,7 @@ GPS ....................... 4.6097 N, 74.0817 W`,
     // ───────────────────────────── BLOQUE 3 ─────────────────────────────
     {
       id: 'pd_b3',
-      title: 'Bloque 3 · 11:40 — El mundo: cómo se prueba lo digital fuera de Colombia',
+      title: 'Bloque 3 · 12:00 — El mundo: cómo se prueba lo digital fuera de Colombia',
       content: [
         { type: 'text', icon: 'ShieldCheckIcon', text: 'Objetivo: conocer los acuerdos y estándares internacionales que usan jueces, fiscales y peritos en todo el mundo, y ver que Colombia hace parte de esa red.' },
         { type: 'text', icon: 'AlarmIcon', text: 'Hilo del caso: el correo del falso proveedor se envió desde una cuenta de un servicio de correo con servidores en Estados Unidos (evidencia del Grupo E). Los datos de quién creó esa cuenta no están en Colombia. ¿Cómo se piden?' },
@@ -276,7 +277,7 @@ GPS ....................... 4.6097 N, 74.0817 W`,
     // ───────────────────────────── BLOQUE 4 ─────────────────────────────
     {
       id: 'pd_b4',
-      title: 'Bloque 4 · 12:20 — Colombia: la evidencia digital en el sistema penal acusatorio',
+      title: 'Bloque 4 · 12:35 — Colombia: la evidencia digital en el sistema penal acusatorio',
       content: [
         { type: 'text', icon: 'DocumentTextIcon', text: 'Objetivo: recorrer la evidencia digital por todas las etapas de la Ley 906 de 2004, desde la indagación hasta el juicio oral: qué acto de investigación se necesita, qué control judicial exige y cómo entra al juicio sin ser excluida.' },
         { type: 'text', icon: 'ShieldCheckIcon', text: 'La base sustancial: la Ley 527 de 1999 reconoce el mensaje de datos (art. 2), prohíbe negarle valor por ser electrónico (art. 5), lo hace admisible como prueba (art. 10) y fija los criterios de valoración: confiabilidad en su generación, archivo o comunicación, conservación de la integridad e identificación del iniciador (art. 11). La Corte Constitucional la avaló en la Sentencia C-662 de 2000. La Ley 906 incluye el mensaje de datos entre los elementos materiales probatorios y evidencia física (art. 275, lit. g).' },
@@ -376,7 +377,7 @@ GPS ....................... 4.6097 N, 74.0817 W`,
     // ───────────────────────────── BLOQUE 5 ─────────────────────────────
     {
       id: 'pd_b5',
-      title: 'Bloque 5 · 13:45 — Recolección y cadena de custodia',
+      title: 'Bloque 5 · 14:00 — Recolección y cadena de custodia',
       content: [
         { type: 'text', icon: 'LockIcon', text: 'Objetivo: saber qué hacer (y qué NO hacer) en las primeras horas, y cómo documentar la cadena de custodia para que la evidencia llegue intacta al juez.' },
         { type: 'text', icon: 'ShieldCheckIcon', text: 'La norma ISO/IEC 27037 pide 3 cosas de toda evidencia: que sea pertinente, confiable y suficiente. Y del proceso, que sea auditable (queda registro), repetible (el mismo perito obtiene lo mismo), reproducible (otro perito también) y justificable (se puede explicar por qué se hizo así).' },
@@ -455,7 +456,7 @@ GPS ....................... 4.6097 N, 74.0817 W`,
     // ───────────────────────────── BLOQUE 6 ─────────────────────────────
     {
       id: 'pd_b6',
-      title: 'Bloque 6 · 14:45 — ¿Vale o no vale? Admisibilidad y valoración',
+      title: 'Bloque 6 · 14:50 — ¿Vale o no vale? Admisibilidad y valoración',
       content: [
         { type: 'text', icon: 'CheckCircleIcon', text: 'Objetivo: aprender a revisar una prueba digital con 4 preguntas antes de llevarla al juez, y saber cómo reforzarla.' },
         {
@@ -575,7 +576,7 @@ Date: Mon, 2 Nov 2026 10:14:02 -0500`,
     // ───────────────────────────── BLOQUE 7 ─────────────────────────────
     {
       id: 'pd_b7',
-      title: 'Bloque 7 · 15:20 — Audiencia simulada: preparatoria y juicio oral',
+      title: 'Bloque 7 · 15:25 — Audiencia simulada: preparatoria y juicio oral',
       content: [
         { type: 'text', icon: 'HappyUsersIcon', text: 'Objetivo: poner a prueba todo lo aprendido en dos momentos del proceso penal. Primero, la audiencia preparatoria: la defensa pide excluir o inadmitir la evidencia y el juez decide. Después, el juicio oral: la Fiscalía la acredita con su perito y la defensa lo contrainterroga.' },
         { type: 'text', icon: 'AlarmIcon', text: 'Hilo del caso: la Fiscalía imputó a Julián Pardo por acceso abusivo a un sistema informático, violación de datos personales y extorsión. La defensa dice que todo es un montaje: «los pantallazos se editan en un minuto», «el computador lo usaba todo el mundo», «el correo pudo enviarlo cualquiera».' },
@@ -642,7 +643,7 @@ Date: Mon, 2 Nov 2026 10:14:02 -0500`,
     // ───────────────────────────── BLOQUE 8 ─────────────────────────────
     {
       id: 'pd_b8',
-      title: 'Bloque 8 · 16:30 — Cierre: el decálogo y la evaluación final',
+      title: 'Bloque 8 · 16:35 — Cierre: el decálogo y la evaluación final',
       content: [
         { type: 'text', icon: 'CheckCircleIcon', text: 'Cierre del caso: gracias al trabajo de los 6 grupos, la evidencia de la Ferretería El Roble llegó completa a la audiencia. Volvamos a la intuición del Bloque 1: ¿qué cambió en su forma de ver un pantallazo?' },
         {
