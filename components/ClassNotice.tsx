@@ -4,7 +4,7 @@ import { getGroupProgress, type GroupProgress } from '../submissionService';
 // Avisos de la clase en vivo: aparecen dentro del curso solo en su franja horaria.
 interface Notice {
   pathId: string;
-  moduleId: string; // entrega que se revisa para el grupo
+  moduleId?: string; // entrega que se revisa; si falta, la del bloque abierto
   from: string;
   to: string;
   tone: 'info' | 'warn' | 'live';
@@ -17,7 +17,7 @@ const NOTICES: Notice[] = [
     pathId: 'prueba_digital', moduleId: 'pd_b1',
     from: '2026-11-07T10:30:00-05:00', to: '2026-11-07T11:05:00-05:00', tone: 'info',
     title: '⏱ La primera actividad cierra a las 11:10',
-    text: 'Suban la «Primera intuición» en la caja de entrega del Bloque 1. Después viene la plenaria: cada vocero presenta a su grupo.',
+    text: 'Una persona del grupo sube la «Primera intuición» en la caja de entrega del Bloque 1: con una entrega basta para que todo el grupo gane el badge. Después viene la plenaria: cada vocero presenta a su grupo.',
   },
   {
     pathId: 'prueba_digital', moduleId: 'pd_b1',
@@ -31,7 +31,16 @@ const NOTICES: Notice[] = [
     title: '🎤 Plenaria: intervención de los voceros (11:10 a 11:25)',
     text: 'Cada vocero, del Grupo A al F, presenta en 2 minutos su evidencia y su primera intuición. A las 11:25 seguimos con el Bloque 2.',
   },
+  {
+    pathId: 'prueba_digital',
+    from: '2026-11-07T11:25:00-05:00', to: '2026-11-08T00:00:00-05:00', tone: 'info',
+    title: '🏅 Cómo se gana el badge de cada bloque',
+    text: 'Basta con que UNA persona del grupo suba la entrega en la caja del bloque: no hace falta que cada uno la suba. El badge le llega a cada integrante que haya elegido su grupo y completado el reto del bloque. Si no lo ve, recargue la página.',
+  },
 ];
+
+// Bloques con entrega de grupo.
+const DELIVERABLE_MODULES = ['pd_b1', 'pd_b2', 'pd_b3', 'pd_b4', 'pd_b5', 'pd_b6', 'pd_b7'];
 
 const TONES: Record<Notice['tone'], string> = {
   info: 'bg-sky-500/10 border-sky-400/40 text-sky-100',
@@ -39,7 +48,7 @@ const TONES: Record<Notice['tone'], string> = {
   live: 'bg-violet-500/15 border-violet-400/50 text-violet-100',
 };
 
-const ClassNotice: React.FC<{ pathId: string }> = ({ pathId }) => {
+const ClassNotice: React.FC<{ pathId: string; moduleId?: string }> = ({ pathId, moduleId }) => {
   const [now, setNow] = useState(() => Date.now());
   const [gp, setGp] = useState<GroupProgress | null>(null);
 
@@ -64,11 +73,13 @@ const ClassNotice: React.FC<{ pathId: string }> = ({ pathId }) => {
 
   if (!notice) return null;
 
+  const target = notice.moduleId ?? moduleId;
+  const block = target ? `Bloque ${target.replace('pd_b', '')}` : '';
   let status: string | null = null;
-  if (gp) {
-    if (!gp.group) status = '👥 Todavía no ha elegido su grupo: elíjalo en la caja de entrega del Bloque 1.';
-    else if (gp.delivered.includes(notice.moduleId)) status = `✅ Grupo ${gp.group}: su entrega ya está cargada.`;
-    else status = `⚠️ Grupo ${gp.group}: todavía no han cargado la entrega.`;
+  if (gp && target && DELIVERABLE_MODULES.includes(target)) {
+    if (!gp.group) status = '👥 Todavía no ha elegido su grupo: elíjalo en la caja de entrega del Bloque 1. Sin grupo, la entrega no le cuenta para el badge.';
+    else if (gp.delivered.includes(target)) status = `✅ Grupo ${gp.group}: la entrega del ${block} ya está cargada. No necesita subirla usted: complete el reto del bloque y el badge le llega.`;
+    else status = `⚠️ Grupo ${gp.group}: todavía no han cargado la entrega del ${block}. Basta con que una persona del grupo la suba.`;
   }
 
   return (

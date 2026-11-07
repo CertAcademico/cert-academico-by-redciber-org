@@ -389,7 +389,7 @@ const LearningPathView: React.FC<LearningPathViewProps> = ({ path, pathId, onExi
                 <h2 id={`module-title-${currentModuleIndex}`} className="sr-only">
                   {currentModule.title}
                 </h2>
-                <ClassNotice pathId={pathId} />
+                <ClassNotice pathId={pathId} moduleId={currentModule.id} />
                 <ModuleBadges
                   pathId={pathId}
                   moduleId={currentModule.id}
