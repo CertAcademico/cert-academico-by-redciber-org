@@ -42,7 +42,7 @@ export const PRUEBA_DIGITAL: LearningPath = {
       id: 'pd_b1',
       title: 'Bloque 1 · 10:30 — El caso: una ferretería, un correo y $48 millones',
       content: [
-        { type: 'text', icon: 'CalendarIcon', text: 'Bienvenidos a la jornada de la Maestría en Derecho Procesal. Hoy tenemos 8 bloques, de 10:30 a 16:40, con almuerzo de 12:15 a 14:00. Ustedes dominan el derecho procesal; aquí el ABC es técnico, no se necesita saber de tecnología: vamos del ABC hasta una audiencia simulada. Cada bloque tiene retos que suman XP, y en los bloques 1 a 7 su grupo sube un entregable que le da estrellas y un badge. Al aprobar la evaluación final recibe su certificado.' },
+        { type: 'text', icon: 'CalendarIcon', text: 'Bienvenidos a la jornada de la Maestría en Derecho Procesal. Hoy tenemos 7 bloques, de 10:30 a 16:40, con almuerzo de 12:15 a 14:00. Ustedes dominan el derecho procesal; aquí el ABC es técnico, no se necesita saber de tecnología: vamos del ABC hasta una audiencia simulada. Cada bloque tiene retos que suman XP, y en los bloques 1 a 7 su grupo sube un entregable que le da estrellas y un badge. Al aprobar la evaluación final recibe su certificado.' },
         PRESENTATION,
         { type: 'text', icon: 'AlarmIcon', text: 'El caso que nos acompañará todo el día (ficticio): Marta Rojas es dueña de la Ferretería El Roble, en Bogotá. El lunes 2 de noviembre recibe un correo de «Aceros del Norte», su proveedor de siempre, que le informa una nueva cuenta bancaria. Marta paga $48.500.000. Dos días después el proveedor la llama: nunca recibió el dinero.' },
         { type: 'text', icon: 'SpyIcon', text: 'Lo peor llega el jueves: un número desconocido le escribe por WhatsApp. «Si denuncias, publicamos los datos de tus clientes». Adjunta una foto de la base de clientes de la ferretería. Esa noche aparece un perfil falso de la ferretería en redes sociales con datos de algunos clientes. Marta sospecha de Julián, un empleado que despidió en septiembre.' },
@@ -606,7 +606,7 @@ Date: Mon, 2 Nov 2026 10:14:02 -0500`,
     // ───────────────────────────── BLOQUE 7 ─────────────────────────────
     {
       id: 'pd_b7',
-      title: 'Bloque 7 · 16:05 — Audiencia simulada: preparatoria y juicio oral',
+      title: 'Bloque 7 · 16:05 — Audiencia simulada y cierre: preparatoria, juicio y evaluación',
       content: [
         { type: 'text', icon: 'HappyUsersIcon', text: 'Objetivo: poner a prueba todo lo aprendido en dos momentos del proceso penal. Primero, la audiencia preparatoria: la defensa pide excluir o inadmitir la evidencia y el juez decide. Después, el juicio oral: la Fiscalía la acredita con su perito y la defensa lo contrainterroga.' },
         { type: 'text', icon: 'AlarmIcon', text: 'Hilo del caso: la Fiscalía imputó a Julián Pardo por acceso abusivo a un sistema informático, violación de datos personales y extorsión. La defensa dice que todo es un montaje: «los pantallazos se editan en un minuto», «el computador lo usaba todo el mundo», «el correo pudo enviarlo cualquiera».' },
@@ -685,14 +685,6 @@ Date: Mon, 2 Nov 2026 10:14:02 -0500`,
             fin: { text: 'Fin de la audiencia. La lección: una prueba digital fuerte es la que se sostiene con otras.' },
           },
         },
-      ],
-    },
-
-    // ───────────────────────────── BLOQUE 8 ─────────────────────────────
-    {
-      id: 'pd_b8',
-      title: 'Bloque 8 · 16:30 — Cierre: el decálogo y la evaluación final',
-      content: [
         { type: 'text', icon: 'CalendarIcon', text: 'La evaluación final queda abierta hasta el 30 de noviembre a las 23:59. Si no alcanza a terminarla hoy, hágala con calma desde cualquier dispositivo. Son 5 preguntas sobre la audiencia simulada, se aprueba con 60 % y, al aprobarla, recibe su certificado. Los badges que ya ganó en los bloques se conservan.' },
         { type: 'text', icon: 'CheckCircleIcon', text: 'Cierre del caso: gracias al trabajo de los 6 grupos, la evidencia de la Ferretería El Roble llegó completa a la audiencia. Volvamos a la intuición del Bloque 1: ¿qué cambió en su forma de ver un pantallazo?' },
         {
@@ -711,7 +703,8 @@ Date: Mon, 2 Nov 2026 10:14:02 -0500`,
             { front: '10. Piense en el mundo', back: 'Si los datos están fuera del país, use la cooperación internacional (Convenio de Budapest) y pida conservación primero.' },
           ],
         },
-        PRESENTATION,
+        // ── Cierre de la jornada (antes Bloque 8) ──
+        { type: 'text', icon: 'PointerIcon', text: 'Preguntas breves de cierre (plenaria, 1 minuto cada una): 1) ¿En qué verbo se rompió la evidencia de su grupo: hallar, recolectar, almacenamiento o custodia? 2) Después de la audiencia, ¿esa evidencia llega al juicio con valor pleno, atenuado o sin valor, y por qué? 3) ¿Qué haría distinto en las primeras 24 horas de un caso real? 4) ¿Qué cambió en su forma de ver un pantallazo desde el Bloque 1?' },
         { type: 'text', icon: 'CheckCircleIcon', text: 'Evaluación final: 5 preguntas al azar sobre la audiencia simulada, de un banco de 8. Se aprueba con 60 % y puede reintentar con otras preguntas. Al aprobar, termina el curso y puede reclamar su certificado.' },
         {
           type: 'exam',

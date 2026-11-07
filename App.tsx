@@ -79,6 +79,7 @@ const renderContentBlock = (
   onComplete: () => void,
   onH5PComplete: (score: number, maxScore: number) => void,
   submission?: SubmissionContext,
+  onExamPassed?: (score: number, maxScore: number) => void,
 ) => {
   switch (block.type) {
     case 'text': {
@@ -113,7 +114,7 @@ const renderContentBlock = (
     case 'challenge':
       return <ChallengeLabView data={block} onComplete={onComplete} />;
     case 'exam':
-      return <ExamView data={block} onPassed={onH5PComplete} />;
+      return <ExamView data={block} onPassed={onExamPassed ?? onH5PComplete} />;
     case 'resource':
       return (
         <div className="my-6 flex flex-col md:flex-row md:items-center justify-between gap-4 bg-violet-500/10 border border-violet-500/40 rounded-2xl p-5 text-left">
@@ -246,7 +247,21 @@ const LearningPathView: React.FC<LearningPathViewProps> = ({ path, pathId, onExi
     setCurrentModuleIndex(index);
   };
 
+  // Si el bloque tiene evaluación final, solo esa evaluación lo da por terminado.
+  const markCurrentComplete = () => {
+    setCompletedModules(prev => {
+      if (prev.includes(currentModuleIndex)) return prev;
+      markModuleComplete(userId, pathId, currentModuleIndex, path.modules.length).catch(console.error);
+      return [...new Set([...prev, currentModuleIndex])];
+    });
+  };
+  const handleExamPassed = (score: number, maxScore: number) => {
+    saveModuleScore(userId, pathId, path.modules[currentModuleIndex].id, score, maxScore).catch(console.error);
+    markCurrentComplete();
+  };
+
   const handleQuizComplete = () => {
+    if (path.modules[currentModuleIndex]?.content.some(c => c.type === 'exam')) return;
     setCompletedModules(prev => {
       if (prev.includes(currentModuleIndex)) return prev;
       markModuleComplete(userId, pathId, currentModuleIndex, path.modules.length).catch(console.error);
@@ -413,7 +428,7 @@ const LearningPathView: React.FC<LearningPathViewProps> = ({ path, pathId, onExi
                 />
                 {currentModule.content.map((block, index) => (
                   <div key={index}>
-                    {renderContentBlock(block, handleQuizComplete, handleH5PComplete, { pathId, moduleId: currentModule.id, userId, canSubmit, isStaff, isAdmin, sessionCompleted: completedModules.includes(currentModuleIndex), onProgressChange: refreshStars })}
+                    {renderContentBlock(block, handleQuizComplete, handleH5PComplete, { pathId, moduleId: currentModule.id, userId, canSubmit, isStaff, isAdmin, sessionCompleted: completedModules.includes(currentModuleIndex), onProgressChange: refreshStars }, handleExamPassed)}
                   </div>
                 ))}
               </motion.div>
