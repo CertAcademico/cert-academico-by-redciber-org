@@ -132,18 +132,28 @@ const SubmissionBox: React.FC<{ ctx: SubmissionContext; label: string; hint?: st
     }
   };
 
-  const onFile = async (file: File | undefined) => {
+  // Se pueden elegir varios archivos a la vez; se suben uno tras otro hasta el máximo permitido.
+  const onFiles = async (list: FileList | null) => {
     setError(''); setOk('');
-    if (!file) return;
+    const files = Array.from(list ?? []).slice(0, Math.max(0, SUBMISSION_MAX_FILES - mine.length));
+    if (!files.length) return;
     setBusy(true);
+    const done: string[] = [];
+    let group = '';
     try {
-      const s = await uploadSubmission(pathId, moduleId, userId, file);
-      setItems(prev => [s, ...(prev ?? [])]);
-      setOk(`✅ "${s.fileName}" quedó entregado. Cada integrante del Grupo ${s.groupLabel} recibe ${DELIVERABLE_XP} XP por esta sesión.`);
-      refreshMeta();
+      for (const file of files) {
+        const s = await uploadSubmission(pathId, moduleId, userId, file);
+        setItems(prev => [s, ...(prev ?? [])]);
+        done.push(`"${s.fileName}"`);
+        group = s.groupLabel ?? group;
+      }
     } catch (err) {
       setError((err as Error).message);
     } finally {
+      if (done.length) {
+        setOk(`✅ ${done.join(' y ')} ${done.length > 1 ? 'quedaron entregados' : 'quedó entregado'}. Cada integrante del Grupo ${group} recibe ${DELIVERABLE_XP} XP por esta sesión.`);
+        refreshMeta();
+      }
       setBusy(false);
       if (inputRef.current) inputRef.current.value = '';
     }
@@ -244,13 +254,13 @@ const SubmissionBox: React.FC<{ ctx: SubmissionContext; label: string; hint?: st
           {myGroup && (
             <>
               <div className="flex flex-wrap items-center gap-3 mb-2">
-                <input ref={inputRef} type="file" accept={SUBMISSION_ACCEPT} className="hidden" onChange={e => onFile(e.target.files?.[0])} />
+                <input ref={inputRef} type="file" multiple accept={SUBMISSION_ACCEPT} className="hidden" onChange={e => onFiles(e.target.files)} />
                 <button
                   onClick={() => inputRef.current?.click()}
                   disabled={busy || mine.length >= SUBMISSION_MAX_FILES}
                   className="bg-emerald-600 hover:bg-emerald-500 disabled:opacity-40 text-white font-bold rounded-xl px-5 py-2 text-sm"
                 >
-                  {busy ? 'Subiendo…' : 'Subir archivo'}
+                  {busy ? 'Subiendo…' : 'Subir archivos'}
                 </button>
                 {groupDelivered && <span className="text-sm text-emerald-300">✅ Su grupo ya entregó esta sesión</span>}
               </div>
