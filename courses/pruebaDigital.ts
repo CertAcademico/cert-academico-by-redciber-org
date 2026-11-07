@@ -295,6 +295,7 @@ GPS ....................... 4.6097 N, 74.0817 W`,
           ],
         },
         { type: 'text', icon: 'AlarmIcon', text: 'Sobre los pantallazos: la Corte Constitucional (Sentencia T-043 de 2020) explicó que las capturas de pantalla de WhatsApp tienen un valor probatorio atenuado, porque son fáciles de modificar: el juez las valora junto con otras pruebas. En lo penal, un pantallazo sin testigo de acreditación ni respaldo técnico es un blanco fácil para la defensa. Los delitos del caso: acceso abusivo (art. 269A), violación de datos personales (art. 269F) y transferencia no consentida de activos (art. 269J) de la Ley 1273 de 2009, y extorsión (art. 244 del Código Penal). La reparación de Marta se pide en el incidente de reparación integral (art. 102 de la Ley 906).' },
+        { type: 'text', icon: 'ShieldCheckIcon', text: 'Novedad: la Ley Estatutaria 2573 de 2026 sobre suplantación de identidad (sancionada el 19 de mayo de 2026, Diario Oficial 53.496 del 20 de mayo, revisada por la Corte Constitucional en la Sentencia C-413 de 2025). Protege a la persona suplantada frente al cobro y al reporte negativo: el operador o la entidad financiera debe suspender el cobro de inmediato (art. 8), entregarle copia de los documentos con los que aprobó el producto (art. 5, num. 7) y, si verifica la suplantación, exonerarla (art. 10). Su art. 2, lit. d) crea la carga dinámica de la prueba: prueba quien esté en mejores condiciones de hacerlo. Ojo en lo penal: la Corte la condicionó. Solo se aplica en procesos judiciales que no sean de naturaleza penal, y el juez decide si opera la inversión. En el proceso penal la carga sigue en la Fiscalía y rige la presunción de inocencia (art. 7 de la Ley 906). Lo que sí aporta al penalista: los registros de validación de identidad que la entidad debe entregar se vuelven evidencia digital clave, y la entidad también debe denunciar (art. 8, según la C-413 de 2025). Vigencia: rige seis meses después de su promulgación, hacia el 20 de noviembre de 2026; los parágrafos 1 y 2 del art. 5 rigen desde la promulgación.' },
         {
           type: 'activity',
           title: 'La ruta procesal de mi evidencia en la Ley 906',
@@ -316,7 +317,7 @@ GPS ....................... 4.6097 N, 74.0817 W`,
         {
           type: 'h5p_check',
           title: 'Reto: ¿qué control judicial necesita?',
-          description: 'Tres actuaciones de la Fiscalía en el caso. Elija el control correcto.',
+          description: 'Cuatro situaciones del caso en el proceso penal. Elija la respuesta correcta.',
           questions: [
             {
               question: 'La policía judicial, por orden del fiscal, recupera los rastros de navegación del computador de la caja (art. 236).',
@@ -342,6 +343,15 @@ GPS ....................... 4.6097 N, 74.0817 W`,
                 { id: 'pd4_3b', text: 'Fuerte: toda extracción de un celular requiere orden judicial, aun con consentimiento del titular.', isCorrect: false, score: 0 },
               ],
               feedback: 'Con la entrega voluntaria de la titular no se afecta un derecho fundamental de un tercero. La discusión se traslada a la mismidad y la autenticidad.',
+            },
+            {
+              question: 'En el juicio contra Julián Pardo, la Fiscalía sostiene que, por la Ley 2573 de 2026, la defensa debe probar que él no envió el correo falso, porque está en mejores condiciones de hacerlo. ¿Es correcto?',
+              options: [
+                { id: 'pd4_4a', text: 'No: la Corte (C-413 de 2025) limitó la carga dinámica a procesos que no son penales; en el juicio la carga es de la Fiscalía (art. 7 de la Ley 906).', isCorrect: true, score: 10 },
+                { id: 'pd4_4b', text: 'Sí: la carga dinámica de la Ley 2573 se aplica a todo proceso en el que se discuta una suplantación.', isCorrect: false, score: 0 },
+                { id: 'pd4_4c', text: 'Sí, pero solo si la defensa no presenta perito.', isCorrect: false, score: 0 },
+              ],
+              feedback: 'La Ley 2573 sirve en lo civil, en lo comercial y frente a bancos y operadores. En lo penal rige la presunción de inocencia: la Fiscalía prueba la autoría más allá de toda duda razonable.',
             },
           ],
         },

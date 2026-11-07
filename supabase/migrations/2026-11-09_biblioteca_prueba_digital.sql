@@ -18,7 +18,9 @@ select v.* from (values
   ('prueba_digital', 'link', 'Ley 1273 de 2009 — Delitos informáticos', 'Agrega al Código Penal el título «De la protección de la información y de los datos» (arts. 269A a 269J). Útil para la calificación jurídica del caso.', 'pd_b4', array['Ley 1273','delitos informáticos','norma'], 'Secretaría General del Senado', 'http://www.secretariasenado.gov.co/senado/basedoc/ley_1273_2009.html'),
   ('prueba_digital', 'link', 'Ley 1564 de 2012 — Código General del Proceso', 'Referencia complementaria: arts. 243 a 247 sobre documentos y mensajes de datos. Se aplica en lo no regulado por la Ley 906 (art. 25 de la Ley 906).', 'pd_b4', array['CGP','mensaje de datos','norma'], 'Secretaría General del Senado', 'http://www.secretariasenado.gov.co/senado/basedoc/ley_1564_2012.html'),
 
+  ('prueba_digital', 'link', 'Ley Estatutaria 2573 de 2026 — Suplantación de identidad', 'Suspensión del cobro y del reporte negativo a la víctima de suplantación, entrega de los documentos de aprobación y carga dinámica de la prueba (art. 2, lit. d), que según la C-413 de 2025 no se aplica en procesos penales. Rige seis meses después de su promulgación (20 de mayo de 2026).', 'pd_b4', array['Ley 2573','suplantación','carga de la prueba','norma'], 'Secretaría General del Senado', 'http://www.secretariasenado.gov.co/senado/basedoc/ley_2573_2026.html'),
   -- Colombia: jurisprudencia
+  ('prueba_digital', 'link', 'Sentencia C-413 de 2025 — Control previo de la Ley 2573', 'La Corte declara constitucional el proyecto y condiciona la carga dinámica de la prueba: se aplica en procesos judiciales que no son penales y el juez decide si opera la inversión.', 'pd_b4', array['jurisprudencia','Ley 2573','carga de la prueba'], 'Corte Constitucional', 'https://www.corteconstitucional.gov.co/relatoria/2025/C-413-25.htm'),
   ('prueba_digital', 'link', 'Sentencia T-043 de 2020 — Capturas de pantalla de WhatsApp', 'La Corte Constitucional trata los pantallazos de WhatsApp como prueba indiciaria y explica por qué hay que valorarlos con otros medios. Base del bloque «¿Vale o no vale?».', 'pd_b6', array['jurisprudencia','WhatsApp','valoración'], 'Corte Constitucional', 'https://www.corteconstitucional.gov.co/relatoria/2020/T-043-20.htm'),
   ('prueba_digital', 'link', 'Sentencia C-224 de 2019 — Control del Convenio de Budapest', 'La Corte declara exequibles el Convenio sobre la Ciberdelincuencia y la Ley 1928 de 2018 que lo aprueba.', 'pd_b3', array['jurisprudencia','Budapest','cooperación'], 'Corte Constitucional', 'https://www.corteconstitucional.gov.co/relatoria/2019/C-224-19.htm'),
 
@@ -40,5 +42,5 @@ where not exists (
   select 1 from public.course_resources r where r.path_id = v.path_id and r.url = v.url
 );
 
--- Comprobación: debe mostrar 18 recursos en el curso prueba_digital.
+-- Comprobación: debe mostrar 20 recursos en el curso prueba_digital.
 select count(*) as recursos_prueba_digital from public.course_resources where path_id = 'prueba_digital';
