@@ -69,7 +69,7 @@ import { formatRelativeTime } from './utils';
 // Content renderer
 // ---------------------------------------------------------------------------
 
-// Clase en vivo: hora en que se abre cada bloque (índice = bloque), aunque falte el reto anterior.
+// Clase en vivo: hora en que se abre cada bloque (índice = bloque). Antes de esa hora está cerrado.
 const LIVE_SCHEDULE: Record<string, string[]> = {
   prueba_digital: [
     '2026-11-07T10:30:00-05:00', // Bloque 1
@@ -237,9 +237,9 @@ const LearningPathView: React.FC<LearningPathViewProps> = ({ path, pathId, onExi
   const isModuleLocked = (index: number): boolean => {
     if (isAdmin) return false; // El admin abre cualquier sesión, sin orden ni quizzes previos.
     if (path.modules[index]?.locked && !unlockAll) return true;
-    // Clase en vivo: el bloque se abre a su hora aunque no se haya hecho el reto anterior.
+    // Clase en vivo: cada bloque se abre a su hora, ni antes ni dependiendo del reto anterior.
     const opensAt = LIVE_SCHEDULE[pathId]?.[index];
-    if (opensAt && clock >= Date.parse(opensAt)) return false;
+    if (opensAt) return clock < Date.parse(opensAt);
     const checkInteractive = (m: Module) =>
       m.content.some(
         c => INTERACTIVE_TYPES.includes(c.type),
