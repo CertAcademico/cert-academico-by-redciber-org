@@ -28,6 +28,7 @@ import TeacherDashboard from './components/TeacherDashboard';
 import ActivityView from './components/ActivityView';
 import ModuleBadges from './components/ModuleBadges';
 import { LIVE_SCHEDULE } from './liveSchedule';
+import SecretCard from './components/SecretCard';
 import HearingPanel from './components/HearingPanel';
 import ClassNotice from './components/ClassNotice';
 import type { SubmissionContext } from './components/SubmissionBox';
@@ -112,6 +113,9 @@ const renderContentBlock = (
       // Audiencia simulada: el docente ve además el panel con las entregas de cada sala.
       if (submission?.isStaff && submission.pathId === 'prueba_digital' && submission.moduleId === 'pd_b7') {
         return <><HearingPanel /><ActivityView data={block} submission={submission} /></>;
+      }
+      if (submission?.canSubmit && submission.pathId === 'prueba_digital' && submission.moduleId === 'pd_b7') {
+        return <><SecretCard pathId={submission.pathId} /><ActivityView data={block} submission={submission} /></>;
       }
       return <ActivityView data={block} submission={submission} />;
     case 'scenario':

@@ -108,7 +108,7 @@ const HearingPanel: React.FC = () => {
         <p className="text-lg font-bold text-white">🎯 Panel de la audiencia (solo docentes)</p>
         <button onClick={load} className="text-xs rounded-lg px-3 py-1.5 border border-violet-400/60 text-violet-100 hover:bg-violet-500/20">🔄 Actualizar</button>
       </div>
-      <p className="text-sm text-slate-300 mb-4">Abra las entregas de cada grupo con un clic. La carta sugerida sale de sus retos y de lo que entregó: úsela para orientar a la parte contraria.</p>
+      <p className="text-sm text-slate-300 mb-4">Abra las entregas de cada grupo con un clic. No lo proyecte: cada grupo ya ve su carta secreta en su propia pantalla. Úselo para seguir la audiencia y resolver polémicas.</p>
       {error && <p className="text-sm text-rose-300 mb-3">{error}</p>}
       {files === null ? <p className="text-sm text-slate-400">Cargando…</p> : SALAS.map(([x, y], i) => (
         <div key={i} className="mb-4">
