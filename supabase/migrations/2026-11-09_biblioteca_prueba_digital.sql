@@ -16,7 +16,8 @@ select v.* from (values
   ('prueba_digital', 'link', 'Ley 906 de 2004 — Código de Procedimiento Penal', 'Texto vigente con notas de vigencia. Claves para el curso: arts. 23 (cláusula de exclusión), 235 a 237 y 244 (actuaciones y control posterior), 275 (elementos materiales probatorios), 277 (autenticidad), 359 y 360 (exclusión en la preparatoria), 405, 422 y 455.', 'pd_b4', array['Ley 906','procedimiento penal','norma'], 'Secretaría General del Senado', 'http://www.secretariasenado.gov.co/senado/basedoc/ley_0906_2004.html'),
   ('prueba_digital', 'link', 'Ley 527 de 1999 — Mensajes de datos y comercio electrónico', 'Equivalencia funcional, valor probatorio de los mensajes de datos (arts. 10 y 11) y firmas digitales. Base de la discusión sobre chats, correos y capturas.', 'pd_b4', array['Ley 527','mensaje de datos','norma'], 'Secretaría General del Senado', 'http://www.secretariasenado.gov.co/senado/basedoc/ley_0527_1999.html'),
   ('prueba_digital', 'link', 'Ley 1273 de 2009 — Delitos informáticos', 'Agrega al Código Penal el título «De la protección de la información y de los datos» (arts. 269A a 269J). Útil para la calificación jurídica del caso.', 'pd_b4', array['Ley 1273','delitos informáticos','norma'], 'Secretaría General del Senado', 'http://www.secretariasenado.gov.co/senado/basedoc/ley_1273_2009.html'),
-  ('prueba_digital', 'link', 'Ley 1564 de 2012 — Código General del Proceso', 'Referencia complementaria: arts. 243 a 247 sobre documentos y mensajes de datos. Se aplica en lo no regulado por la Ley 906 (art. 25 de la Ley 906).', 'pd_b4', array['CGP','mensaje de datos','norma'], 'Secretaría General del Senado', 'http://www.secretariasenado.gov.co/senado/basedoc/ley_1564_2012.html'),
+  ('prueba_digital', 'link', 'Ley 1564 de 2012 — Código General del Proceso', 'Llena los vacíos de la Ley 906 (art. 25) y rige la ruta civil y ante la Superintendencia Financiera (art. 24, num. 2). Claves: art. 167 (carga dinámica), 173 (derecho de petición), 176 (sana crítica), 186 y 189 (prueba extraprocesal), 227 y 228 (dictamen pericial), 243 a 247 (documentos y mensajes de datos), 269 y 272 (tacha y desconocimiento) y 590 (medidas cautelares).', 'pd_b4', array['CGP','mensaje de datos','carga de la prueba','norma'], 'Secretaría General del Senado', 'http://www.secretariasenado.gov.co/senado/basedoc/ley_1564_2012.html'),
+  ('prueba_digital', 'link', 'Ley 2213 de 2022 — Uso de las TIC en los procesos judiciales', 'Vuelve permanente el Decreto 806 de 2020: expediente y audiencias virtuales y notificación personal por mensaje de datos (art. 8). Los términos corren desde el acuse de recibo o desde que se constate el acceso del destinatario.', 'pd_b4', array['CGP','notificación','mensaje de datos','norma'], 'Secretaría General del Senado', 'http://www.secretariasenado.gov.co/senado/basedoc/ley_2213_2022.html'),
 
   ('prueba_digital', 'link', 'Ley Estatutaria 2573 de 2026 — Suplantación de identidad', 'Suspensión del cobro y del reporte negativo a la víctima de suplantación, entrega de los documentos de aprobación y carga dinámica de la prueba (art. 2, lit. d), que según la C-413 de 2025 no se aplica en procesos penales. Rige seis meses después de su promulgación (20 de mayo de 2026).', 'pd_b4', array['Ley 2573','suplantación','carga de la prueba','norma'], 'Secretaría General del Senado', 'http://www.secretariasenado.gov.co/senado/basedoc/ley_2573_2026.html'),
   -- Colombia: jurisprudencia
@@ -42,5 +43,12 @@ where not exists (
   select 1 from public.course_resources r where r.path_id = v.path_id and r.url = v.url
 );
 
--- Comprobación: debe mostrar 20 recursos en el curso prueba_digital.
+-- Si la biblioteca ya se había cargado, actualiza la ficha del Código General del Proceso.
+update public.course_resources
+set description = 'Llena los vacíos de la Ley 906 (art. 25) y rige la ruta civil y ante la Superintendencia Financiera (art. 24, num. 2). Claves: art. 167 (carga dinámica), 173 (derecho de petición), 176 (sana crítica), 186 y 189 (prueba extraprocesal), 227 y 228 (dictamen pericial), 243 a 247 (documentos y mensajes de datos), 269 y 272 (tacha y desconocimiento) y 590 (medidas cautelares).',
+    tags = array['CGP','mensaje de datos','carga de la prueba','norma']
+where path_id = 'prueba_digital'
+  and url = 'http://www.secretariasenado.gov.co/senado/basedoc/ley_1564_2012.html';
+
+-- Comprobación: debe mostrar 21 recursos en el curso prueba_digital.
 select count(*) as recursos_prueba_digital from public.course_resources where path_id = 'prueba_digital';

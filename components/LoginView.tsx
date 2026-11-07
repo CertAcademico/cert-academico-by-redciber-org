@@ -265,7 +265,7 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLogin }) => {
                 ) : eventOpen ? (
                   <>
                     <p className="text-xs text-sky-200 bg-sky-500/10 border border-sky-500/30 rounded-lg px-3 py-2 -mt-1">
-                      ⚖️ ¿Vienes al curso Prueba Digital para Abogados? Regístrate con el código que te da el docente. El curso está abierto hasta el sábado 7 de noviembre.
+                      ⚖️ ¿Vienes al curso Prueba Digital para Abogados? Regístrate con el código que te da el docente hasta el sábado 7 de noviembre. El curso queda abierto hasta el 30 de noviembre para repasar.
                     </p>
                     <div>
                       <label className="text-[11px] font-bold text-slate-400 uppercase tracking-widest block mb-1.5">

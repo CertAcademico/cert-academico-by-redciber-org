@@ -34,7 +34,7 @@ const EVIDENCE_GROUPS = [
 
 export const PRUEBA_DIGITAL: LearningPath = {
   title: 'Prueba Digital para Abogados: del Pantallazo a la Audiencia',
-  description: 'Jornada intensiva (8:00 a 20:00) para la Maestría en Derecho Penal: el ABC técnico de la evidencia digital y su recorrido por el sistema penal acusatorio, con estándares internacionales y cooperación. Un mismo caso de principio a fin, retos interactivos, trabajo en grupo y una audiencia simulada.',
+  description: 'Jornada intensiva (8:00 a 20:00) para la Maestría en Derecho Penal: el ABC técnico de la evidencia digital y su recorrido por el sistema penal acusatorio y por el Código General del Proceso, con estándares internacionales y cooperación. Un mismo caso de principio a fin, retos interactivos, trabajo en grupo y una audiencia simulada.',
   lastUpdated: 'Noviembre 2026',
   modules: [
     // ───────────────────────────── BLOQUE 1 ─────────────────────────────
@@ -296,6 +296,21 @@ GPS ....................... 4.6097 N, 74.0817 W`,
         },
         { type: 'text', icon: 'AlarmIcon', text: 'Sobre los pantallazos: la Corte Constitucional (Sentencia T-043 de 2020) explicó que las capturas de pantalla de WhatsApp tienen un valor probatorio atenuado, porque son fáciles de modificar: el juez las valora junto con otras pruebas. En lo penal, un pantallazo sin testigo de acreditación ni respaldo técnico es un blanco fácil para la defensa. Los delitos del caso: acceso abusivo (art. 269A), violación de datos personales (art. 269F) y transferencia no consentida de activos (art. 269J) de la Ley 1273 de 2009, y extorsión (art. 244 del Código Penal). La reparación de Marta se pide en el incidente de reparación integral (art. 102 de la Ley 906).' },
         { type: 'text', icon: 'ShieldCheckIcon', text: 'Novedad: la Ley Estatutaria 2573 de 2026 sobre suplantación de identidad (sancionada el 19 de mayo de 2026, Diario Oficial 53.496 del 20 de mayo, revisada por la Corte Constitucional en la Sentencia C-413 de 2025). Protege a la persona suplantada frente al cobro y al reporte negativo: el operador o la entidad financiera debe suspender el cobro de inmediato (art. 8), entregarle copia de los documentos con los que aprobó el producto (art. 5, num. 7) y, si verifica la suplantación, exonerarla (art. 10). Su art. 2, lit. d) crea la carga dinámica de la prueba: prueba quien esté en mejores condiciones de hacerlo. Ojo en lo penal: la Corte la condicionó. Solo se aplica en procesos judiciales que no sean de naturaleza penal, y el juez decide si opera la inversión. En el proceso penal la carga sigue en la Fiscalía y rige la presunción de inocencia (art. 7 de la Ley 906). Lo que sí aporta al penalista: los registros de validación de identidad que la entidad debe entregar se vuelven evidencia digital clave, y la entidad también debe denunciar (art. 8, según la C-413 de 2025). Vigencia: rige seis meses después de su promulgación, hacia el 20 de noviembre de 2026; los parágrafos 1 y 2 del art. 5 rigen desde la promulgación.' },
+        { type: 'text', icon: 'DocumentTextIcon', text: 'El Código General del Proceso (Ley 1564 de 2012) también le sirve al penalista, por dos razones. Primero, llena vacíos: en lo que la Ley 906 no regula y no se oponga al proceso penal se aplican otros códigos procesales (art. 25 de la Ley 906). Segundo, Marta tiene otra ruta para recuperar sus $48.500.000: reclamar a los bancos ante un juez civil o ante la Superintendencia Financiera, que resuelve como juez las controversias entre consumidores financieros y entidades vigiladas (art. 24, num. 2, del CGP). En esa ruta la prueba se rige por el CGP.' },
+        { type: 'text', icon: 'ClosedEnvelopeIcon', text: 'El CGP y el documento electrónico: los mensajes de datos son documentos (art. 243) y se presumen auténticos mientras no sean tachados de falsos o desconocidos; esta regla se aplica «en todos los procesos y en todas las jurisdicciones» (art. 244). Pero se valoran como mensaje de datos solo si se aportan en el formato en que se generaron, enviaron o recibieron, o en otro que lo reproduzca con exactitud. La simple impresión en papel se valora como un documento común (art. 247). La contraparte puede tachar de falso lo que se le atribuye como firmado o manuscrito por ella (art. 269), o desconocer, diciendo por qué, un documento que no firmó ni manuscribió, como un correo o un chat (art. 272). Si no se establece su autenticidad, ese documento pierde eficacia. El juez aprecia todas las pruebas en conjunto, con la sana crítica (art. 176).' },
+        { type: 'text', icon: 'LockIcon', text: 'Carga dinámica y conservación en el CGP: la carga dinámica no nació con la Ley 2573. El art. 167 del CGP ya permite al juez exigir la prueba a la parte en mejor posición, por su cercanía con el material probatorio, por tenerlo en su poder o por circunstancias técnicas especiales. En el caso, el banco tiene los registros de acceso y de validación de la cuenta destino. Para que la evidencia no se pierda antes del proceso: pídala primero por derecho de petición, porque el juez no decreta las pruebas que la parte pudo conseguir así (art. 173). Si no la entregan, use la prueba extraprocesal de exhibición de documentos (art. 186) o la inspección judicial con perito, que puede practicarse sin citar a la futura contraparte (art. 189). Ya en el proceso, pida medidas cautelares innominadas para conservar los datos (art. 590, lit. c) y aporte su dictamen pericial, que la otra parte contradice en audiencia (arts. 227 y 228). Y con la Ley 2213 de 2022 la notificación personal puede hacerse por mensaje de datos; los términos corren desde el acuse de recibo o desde que se constate el acceso del destinatario (art. 8).' },
+        {
+          type: 'memory',
+          title: 'Memoria: el Código General del Proceso',
+          pairs: [
+            { term: 'CGP, art. 167', definition: 'Carga dinámica: prueba la parte en mejor posición' },
+            { term: 'CGP, art. 244', definition: 'Los mensajes de datos se presumen auténticos' },
+            { term: 'CGP, art. 247', definition: 'La impresión en papel se valora como documento común' },
+            { term: 'CGP, art. 272', definition: 'Desconocer un documento no firmado ni manuscrito' },
+            { term: 'CGP, art. 189', definition: 'Inspección y peritación antes del proceso, aun sin citar a la contraparte' },
+            { term: 'CGP, art. 590, lit. c', definition: 'Medida cautelar innominada para conservar los datos' },
+          ],
+        },
         {
           type: 'activity',
           title: 'La ruta procesal de mi evidencia en la Ley 906',
@@ -483,7 +498,7 @@ Date: Mon, 2 Nov 2026 10:14:02 -0500`,
         {
           type: 'h5p_check',
           title: 'Prueba rápida: ¿la admite el juez?',
-          description: 'Cinco situaciones del caso. Decida si la prueba está bien obtenida.',
+          description: 'Seis situaciones del caso. Decida si la prueba está bien obtenida y cómo se valora.',
           questions: [
             {
               question: 'Marta graba con su celular la pantalla mientras recorre el chat, mostrando el número del remitente, las fechas y la información del contacto.',
@@ -524,6 +539,15 @@ Date: Mon, 2 Nov 2026 10:14:02 -0500`,
                 { id: 'pd6_5b', text: 'Es prueba plena porque la publicación ya no existe.', isCorrect: false, score: 0 },
               ],
               feedback: 'Lección del Grupo F: cuando vea algo en línea, documéntelo de inmediato con URL, fecha y hora, y pida su conservación.',
+            },
+            {
+              question: 'En la demanda civil contra el banco, el abogado de Marta aporta solo la impresión en papel del correo del falso proveedor. ¿Cómo la valora el juez según el CGP?',
+              options: [
+                { id: 'pd6_6a', text: 'Como un documento común (art. 247). Para que se valore como mensaje de datos hay que aportar el archivo original (.eml) o una copia exacta, idealmente con su hash.', isCorrect: true, score: 10 },
+                { id: 'pd6_6b', text: 'Como mensaje de datos con pleno valor, porque el correo se presume auténtico.', isCorrect: false, score: 0 },
+                { id: 'pd6_6c', text: 'No la puede valorar: el CGP no admite correos impresos.', isCorrect: false, score: 0 },
+              ],
+              feedback: 'El art. 247 del CGP distingue el mensaje de datos aportado en su formato del papel que lo imprime. El papel pierde los encabezados y los metadatos que muestran la suplantación.',
             },
           ],
         },
