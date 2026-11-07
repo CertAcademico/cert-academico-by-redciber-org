@@ -27,6 +27,7 @@ import LoginView from './components/LoginView';
 import TeacherDashboard from './components/TeacherDashboard';
 import ActivityView from './components/ActivityView';
 import ModuleBadges from './components/ModuleBadges';
+import { LIVE_SCHEDULE } from './liveSchedule';
 import ClassNotice from './components/ClassNotice';
 import type { SubmissionContext } from './components/SubmissionBox';
 import { MILESTONES, STAR_COURSES } from './milestones';
@@ -69,19 +70,6 @@ import { formatRelativeTime } from './utils';
 // Content renderer
 // ---------------------------------------------------------------------------
 
-// Clase en vivo: hora en que se abre cada bloque (índice = bloque). Antes de esa hora está cerrado.
-const LIVE_SCHEDULE: Record<string, string[]> = {
-  prueba_digital: [
-    '2026-11-07T10:30:00-05:00', // Bloque 1
-    '2026-11-07T11:10:00-05:00', // Bloque 2 (después de la plenaria de voceros)
-    '2026-11-07T14:00:00-05:00', // Bloque 3
-    '2026-11-07T14:40:00-05:00', // Bloque 4
-    '2026-11-07T15:20:00-05:00', // Bloque 5
-    '2026-11-07T15:50:00-05:00', // Bloque 6
-    '2026-11-07T16:15:00-05:00', // Bloque 7
-    '2026-11-07T16:45:00-05:00', // Bloque 8
-  ],
-};
 
 // Bloques que el estudiante debe completar (o aprobar) antes de avanzar al siguiente módulo.
 const INTERACTIVE_TYPES: ContentBlock['type'][] = ['quiz', 'flashcards', 'memory', 'h5p_check', 'scenario', 'challenge', 'exam'];

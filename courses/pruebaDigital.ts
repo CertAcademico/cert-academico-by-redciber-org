@@ -1,6 +1,6 @@
 import type { LearningPath } from '../types';
 
-// Curso de un día para abogados: Prueba Digital (Universidad Libre, 7 de noviembre de 2026, 10:30 a 17:00).
+// Curso de un día para abogados: Prueba Digital (Universidad Libre, 7 de noviembre de 2026, 10:30 a 16:40).
 // Hilo conductor: el caso ficticio de la Ferretería El Roble. Cada grupo (A a F) cuida una evidencia
 // durante todo el día y la defiende en la audiencia simulada del Bloque 7.
 // Las entregas, estrellas y badges deben coincidir con milestones.ts y con
@@ -34,7 +34,7 @@ const EVIDENCE_GROUPS = [
 
 export const PRUEBA_DIGITAL: LearningPath = {
   title: 'Prueba Digital para Abogados: del Pantallazo a la Audiencia',
-  description: 'Jornada intensiva (10:30 a 17:00) para la Maestría en Derecho Procesal: el ABC técnico de la evidencia digital y su recorrido por el sistema penal acusatorio y por el Código General del Proceso, con estándares internacionales y cooperación. Un mismo caso de principio a fin, retos interactivos, trabajo en grupo y una audiencia simulada.',
+  description: 'Jornada intensiva (10:30 a 16:40) para la Maestría en Derecho Procesal: el ABC técnico de la evidencia digital y su recorrido por el sistema penal acusatorio y por el Código General del Proceso, con estándares internacionales y cooperación. Un mismo caso de principio a fin, retos interactivos, trabajo en grupo y una audiencia simulada.',
   lastUpdated: 'Noviembre 2026',
   modules: [
     // ───────────────────────────── BLOQUE 1 ─────────────────────────────
@@ -42,7 +42,7 @@ export const PRUEBA_DIGITAL: LearningPath = {
       id: 'pd_b1',
       title: 'Bloque 1 · 10:30 — El caso: una ferretería, un correo y $48 millones',
       content: [
-        { type: 'text', icon: 'CalendarIcon', text: 'Bienvenidos a la jornada de la Maestría en Derecho Procesal. Hoy tenemos 8 bloques, de 10:30 a 17:00, con almuerzo de 12:15 a 14:00. Ustedes dominan el derecho procesal; aquí el ABC es técnico, no se necesita saber de tecnología: vamos del ABC hasta una audiencia simulada. Cada bloque tiene retos que suman XP, y en los bloques 1 a 7 su grupo sube un entregable que le da estrellas y un badge. Al aprobar la evaluación final recibe su certificado.' },
+        { type: 'text', icon: 'CalendarIcon', text: 'Bienvenidos a la jornada de la Maestría en Derecho Procesal. Hoy tenemos 8 bloques, de 10:30 a 16:40, con almuerzo de 12:15 a 14:00. Ustedes dominan el derecho procesal; aquí el ABC es técnico, no se necesita saber de tecnología: vamos del ABC hasta una audiencia simulada. Cada bloque tiene retos que suman XP, y en los bloques 1 a 7 su grupo sube un entregable que le da estrellas y un badge. Al aprobar la evaluación final recibe su certificado.' },
         PRESENTATION,
         { type: 'text', icon: 'AlarmIcon', text: 'El caso que nos acompañará todo el día (ficticio): Marta Rojas es dueña de la Ferretería El Roble, en Bogotá. El lunes 2 de noviembre recibe un correo de «Aceros del Norte», su proveedor de siempre, que le informa una nueva cuenta bancaria. Marta paga $48.500.000. Dos días después el proveedor la llama: nunca recibió el dinero.' },
         { type: 'text', icon: 'SpyIcon', text: 'Lo peor llega el jueves: un número desconocido le escribe por WhatsApp. «Si denuncias, publicamos los datos de tus clientes». Adjunta una foto de la base de clientes de la ferretería. Esa noche aparece un perfil falso de la ferretería en redes sociales con datos de algunos clientes. Marta sospecha de Julián, un empleado que despidió en septiembre.' },
@@ -444,14 +444,14 @@ GPS ....................... 4.6097 N, 74.0817 W`,
         {
           type: 'activity',
           title: 'Cadena de custodia en vivo: encuentren el eslabón roto',
-          duration: '20 min',
+          duration: '15 min',
           groupSize: 'Su grupo + un grupo auditor',
           goal: 'Cada grupo diligencia el formato de cadena de custodia de su evidencia, desde que se encontró hasta que llega al laboratorio. Luego lo intercambia con otro grupo, que actúa como defensa y busca el «eslabón roto».',
           downloads: [WORKBOOK],
           steps: [
-            { title: 'Diligencien el formato', minutes: '8 min', detail: 'Usen el Formato de cadena de custodia del Expediente: qué es la evidencia, quién la encontró, fecha y hora de cada traspaso, hash, embalaje y firmas.' },
-            { title: 'Intercambien', minutes: '6 min', detail: 'Pasen su formato al grupo siguiente (A→B, B→C… F→A). Ese grupo busca vacíos: horas sin registro, firmas que faltan, hash ausente.' },
-            { title: 'Defiendan', minutes: '4 min', detail: 'El grupo auditor presenta el eslabón roto que encontró. El grupo dueño responde cómo lo corregiría o cómo lo explicaría ante el juez.' },
+            { title: 'Diligencien el formato', minutes: '6 min', detail: 'Usen el Formato de cadena de custodia del Expediente: qué es la evidencia, quién la encontró, fecha y hora de cada traspaso, hash, embalaje y firmas.' },
+            { title: 'Intercambien', minutes: '4 min', detail: 'Pasen su formato al grupo siguiente (A→B, B→C… F→A). Ese grupo busca vacíos: horas sin registro, firmas que faltan, hash ausente.' },
+            { title: 'Defiendan', minutes: '3 min', detail: 'El grupo auditor presenta el eslabón roto que encontró. El grupo dueño responde cómo lo corregiría o cómo lo explicaría ante el juez.' },
             { title: 'Suban el formato', minutes: '2 min', detail: 'Suban su formato y la nota del grupo auditor.' },
           ],
           groupsTitle: 'Quién audita a quién',
@@ -472,7 +472,7 @@ GPS ....................... 4.6097 N, 74.0817 W`,
     // ───────────────────────────── BLOQUE 6 ─────────────────────────────
     {
       id: 'pd_b6',
-      title: 'Bloque 6 · 15:50 — ¿Vale o no vale? Admisibilidad y valoración',
+      title: 'Bloque 6 · 15:45 — ¿Vale o no vale? Admisibilidad y valoración',
       content: [
         { type: 'text', icon: 'CheckCircleIcon', text: 'Objetivo: aprender a revisar una prueba digital con 4 preguntas antes de llevarla al juez, y saber cómo reforzarla.' },
         {
@@ -571,14 +571,14 @@ Date: Mon, 2 Nov 2026 10:14:02 -0500`,
         {
           type: 'activity',
           title: 'Semáforo probatorio',
-          duration: '15 min',
+          duration: '12 min',
           groupSize: 'Su grupo',
           goal: 'Cada grupo pone su evidencia en el semáforo: verde, amarillo o rojo en cada una de las 4 preguntas (autenticidad, integridad, licitud y pertinencia). Por cada amarillo o rojo proponen cómo reforzarla: peritaje, certificación del proveedor, testimonio o prueba extraprocesal.',
           downloads: [WORKBOOK],
           steps: [
-            { title: 'Califiquen', minutes: '5 min', detail: 'Pongan un color a cada pregunta y escriban una frase que lo justifique.' },
-            { title: 'Refuercen', minutes: '5 min', detail: 'Para cada amarillo o rojo, escriban qué prueba adicional pedirían y a quién.' },
-            { title: 'Preparen la audiencia', minutes: '3 min', detail: 'Escriban la pregunta más difícil que le harían al perito de la otra parte sobre su evidencia.' },
+            { title: 'Califiquen', minutes: '4 min', detail: 'Pongan un color a cada pregunta y escriban una frase que lo justifique.' },
+            { title: 'Refuercen', minutes: '4 min', detail: 'Para cada amarillo o rojo, escriban qué prueba adicional pedirían y a quién.' },
+            { title: 'Preparen la audiencia', minutes: '2 min', detail: 'Escriban la pregunta más difícil que le harían al perito de la otra parte sobre su evidencia.' },
             { title: 'Suban el semáforo', minutes: '2 min', detail: 'Una persona del grupo sube la hoja.' },
           ],
           groupsTitle: 'Cada grupo y su evidencia',
@@ -592,23 +592,23 @@ Date: Mon, 2 Nov 2026 10:14:02 -0500`,
     // ───────────────────────────── BLOQUE 7 ─────────────────────────────
     {
       id: 'pd_b7',
-      title: 'Bloque 7 · 16:15 — Audiencia simulada: preparatoria y juicio oral',
+      title: 'Bloque 7 · 16:05 — Audiencia simulada: preparatoria y juicio oral',
       content: [
         { type: 'text', icon: 'HappyUsersIcon', text: 'Objetivo: poner a prueba todo lo aprendido en dos momentos del proceso penal. Primero, la audiencia preparatoria: la defensa pide excluir o inadmitir la evidencia y el juez decide. Después, el juicio oral: la Fiscalía la acredita con su perito y la defensa lo contrainterroga.' },
         { type: 'text', icon: 'AlarmIcon', text: 'Hilo del caso: la Fiscalía imputó a Julián Pardo por acceso abusivo a un sistema informático, violación de datos personales y extorsión. La defensa dice que todo es un montaje: «los pantallazos se editan en un minuto», «el computador lo usaba todo el mundo», «el correo pudo enviarlo cualquiera».' },
         {
           type: 'activity',
           title: 'La audiencia del caso Ferretería El Roble',
-          duration: '30 min',
+          duration: '20 min',
           groupSize: '3 audiencias de 2 grupos, más jueces',
           goal: 'En cada sala, un grupo actúa como Fiscalía y representación de víctimas y el otro como defensa. Primero la defensa solicita la exclusión o inadmisibilidad de la evidencia (preparatoria); si se admite, la Fiscalía la acredita con su perito y la defensa contrainterroga (juicio oral). Luego cambian los papeles con la evidencia del otro grupo. Dos personas de cada sala actúan como juez.',
           downloads: [WORKBOOK],
           steps: [
-            { title: 'Preparen', minutes: '5 min', detail: 'Con su Semáforo probatorio, preparen 3 minutos de presentación: qué es la evidencia, cómo se obtuvo, cómo se preservó y qué prueba. Elijan quién hace de perito.' },
-            { title: 'Primera ronda', minutes: '10 min', detail: 'Preparatoria: la defensa sustenta su solicitud de exclusión (2 min), réplica de la Fiscalía (2 min), decisión del juez (1 min). Juicio: interrogatorio directo al perito (2 min), contrainterrogatorio (2 min), redirecto (1 min).' },
-            { title: 'Segunda ronda', minutes: '10 min', detail: 'Se invierten los papeles con la evidencia del segundo grupo.' },
-            { title: 'Acta', minutes: '3 min', detail: 'Cada grupo escribe el acta: qué se pidió excluir y qué decidió el juez, la pregunta más fuerte del contrainterrogatorio y qué faltó para acreditar la evidencia.' },
-            { title: 'Plenaria', minutes: '2 min', detail: 'Los jueces de cada audiencia cuentan qué decidieron y por qué.' },
+            { title: 'Preparen', minutes: '3 min', detail: 'Con su Semáforo probatorio, preparen 3 minutos de presentación: qué es la evidencia, cómo se obtuvo, cómo se preservó y qué prueba. Elijan quién hace de perito.' },
+            { title: 'Primera ronda', minutes: '7 min', detail: 'Preparatoria: la defensa sustenta su solicitud de exclusión (1 min), réplica de la Fiscalía (1 min), decisión del juez (1 min). Juicio: interrogatorio directo al perito (2 min) y contrainterrogatorio (2 min).' },
+            { title: 'Segunda ronda', minutes: '7 min', detail: 'Se invierten los papeles con la evidencia del segundo grupo.' },
+            { title: 'Acta', minutes: '2 min', detail: 'Cada grupo escribe el acta: qué se pidió excluir y qué decidió el juez, la pregunta más fuerte del contrainterrogatorio y qué faltó para acreditar la evidencia.' },
+            { title: 'Plenaria', minutes: '1 min', detail: 'Los jueces de cada audiencia cuentan qué decidieron y por qué.' },
           ],
           groupsTitle: 'Audiencias',
           groups: [
@@ -659,7 +659,7 @@ Date: Mon, 2 Nov 2026 10:14:02 -0500`,
     // ───────────────────────────── BLOQUE 8 ─────────────────────────────
     {
       id: 'pd_b8',
-      title: 'Bloque 8 · 16:45 — Cierre: el decálogo y la evaluación final',
+      title: 'Bloque 8 · 16:30 — Cierre: el decálogo y la evaluación final',
       content: [
         { type: 'text', icon: 'CheckCircleIcon', text: 'Cierre del caso: gracias al trabajo de los 6 grupos, la evidencia de la Ferretería El Roble llegó completa a la audiencia. Volvamos a la intuición del Bloque 1: ¿qué cambió en su forma de ver un pantallazo?' },
         {

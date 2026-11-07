@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { getGroupProgress, type GroupProgress } from '../submissionService';
+import { LIVE_DAYS, hhmm } from '../liveSchedule';
 
 // Avisos de la clase en vivo: aparecen dentro del curso solo en su franja horaria.
 interface Notice {
@@ -41,7 +42,7 @@ const NOTICES: Notice[] = [
     pathId: 'prueba_digital', moduleId: 'pd_b4',
     from: '2026-11-07T15:15:00-05:00', to: '2026-11-07T15:20:00-05:00', tone: 'warn',
     title: '⏰ Quedan 5 minutos: la entrega del Bloque 4 cierra a las 15:20',
-    text: 'Si su grupo no ha subido la «Ruta procesal», súbala ya. A las 15:20 empieza el Bloque 5: cadena de custodia.',
+    text: 'Si su grupo no ha subido la «Ruta procesal», súbala ya. A las 15:20 empieza el Bloque 5: cadena de custodia. La jornada termina a las 16:40.',
   },
   {
     pathId: 'prueba_digital',
@@ -85,7 +86,32 @@ const ClassNotice: React.FC<{ pathId: string; moduleId?: string }> = ({ pathId, 
     return () => { alive = false; window.clearInterval(t); };
   }, [notice?.from, pathId]);
 
-  if (!notice) return null;
+  // Cronograma activo: bloque en curso, el siguiente y la hora de cierre de la jornada.
+  const day = LIVE_DAYS[pathId];
+  let agenda: { text: string; warn: boolean } | null = null;
+  if (day && now >= Date.parse(day.blocks[0].start) && now < Date.parse(day.dayEnd)) {
+    const all = [...day.blocks, ...day.breaks].sort((a, b) => Date.parse(a.start) - Date.parse(b.start));
+    const cur = all.find(b => now >= Date.parse(b.start) && now < Date.parse(b.end));
+    const nxt = all.find(b => Date.parse(b.start) > now);
+    if (cur) {
+      const left = Math.ceil((Date.parse(cur.end) - now) / 60000);
+      agenda = {
+        warn: left <= 5,
+        text: (left <= 5 ? `⏰ Quedan ${left} min · ` : '🗓 Ahora: ')
+          + `${cur.name} (${hhmm(cur.start)} a ${hhmm(cur.end)})`
+          + (nxt ? ` · Sigue: ${nxt.name} a las ${hhmm(nxt.start)}` : '')
+          + ` · La jornada termina a las ${hhmm(day.dayEnd)}`,
+      };
+    }
+  }
+
+  const agendaBar = agenda && (
+    <p className={`mb-3 rounded-xl border px-4 py-2 text-sm font-semibold text-left ${agenda.warn ? TONES.warn : 'bg-slate-800/70 border-slate-600 text-slate-100'}`}>
+      {agenda.text}
+    </p>
+  );
+
+  if (!notice) return agendaBar || null;
 
   const target = notice.moduleId ?? moduleId;
   const block = target ? `Bloque ${target.replace('pd_b', '')}` : '';
@@ -98,11 +124,14 @@ const ClassNotice: React.FC<{ pathId: string; moduleId?: string }> = ({ pathId, 
   }
 
   return (
+    <>
+    {agendaBar}
     <div role="status" aria-live="polite" className={`mb-6 rounded-xl border px-4 py-3 text-left ${TONES[notice.tone]}`}>
       <p className="font-bold">{notice.title}</p>
       <p className="text-sm mt-1">{notice.text}</p>
       {status && <p className="text-sm font-semibold mt-2">{status}</p>}
     </div>
+    </>
   );
 };
 
