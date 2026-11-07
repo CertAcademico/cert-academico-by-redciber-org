@@ -46,6 +46,12 @@ const NOTICES: Notice[] = [
   },
   {
     pathId: 'prueba_digital',
+    from: '2026-11-07T16:00:00-05:00', to: '2026-12-01T00:00:00-05:00', tone: 'live',
+    title: '📝 La evaluación final queda abierta hasta el 30 de noviembre',
+    text: 'Si no alcanza a terminarla hoy, hágala con calma desde cualquier dispositivo hasta el 30 de noviembre a las 23:59. Al aprobarla (70 %) recibe su certificado. Los badges que ya ganó en los bloques se conservan.',
+  },
+  {
+    pathId: 'prueba_digital',
     from: '2026-11-07T11:25:00-05:00', to: '2026-11-08T00:00:00-05:00', tone: 'info',
     title: '🏅 Cómo se gana el badge de cada bloque',
     text: 'Basta con que UNA persona del grupo suba la entrega en la caja del bloque: no hace falta que cada uno la suba. El badge le llega a cada integrante que haya elegido su grupo y completado el reto del bloque. Si no lo ve, recargue la página.',

@@ -661,6 +661,7 @@ Date: Mon, 2 Nov 2026 10:14:02 -0500`,
       id: 'pd_b8',
       title: 'Bloque 8 · 16:30 — Cierre: el decálogo y la evaluación final',
       content: [
+        { type: 'text', icon: 'CalendarIcon', text: 'La evaluación final queda abierta hasta el 30 de noviembre a las 23:59. Si no alcanza a terminarla hoy, hágala con calma desde cualquier dispositivo. Se aprueba con 70 % y, al aprobarla, recibe su certificado. Los badges que ya ganó en los bloques se conservan.' },
         { type: 'text', icon: 'CheckCircleIcon', text: 'Cierre del caso: gracias al trabajo de los 6 grupos, la evidencia de la Ferretería El Roble llegó completa a la audiencia. Volvamos a la intuición del Bloque 1: ¿qué cambió en su forma de ver un pantallazo?' },
         {
           type: 'flashcards',
