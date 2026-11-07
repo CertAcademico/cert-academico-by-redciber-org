@@ -32,6 +32,18 @@ const NOTICES: Notice[] = [
     text: 'Cada vocero, del Grupo A al F, presenta en 2 minutos su evidencia y su primera intuición. A las 11:25 seguimos con el Bloque 2.',
   },
   {
+    pathId: 'prueba_digital', moduleId: 'pd_b4',
+    from: '2026-11-07T14:55:00-05:00', to: '2026-11-07T15:15:00-05:00', tone: 'info',
+    title: '⏱ La entrega del Bloque 4 cierra a las 15:20',
+    text: 'Una persona del grupo sube la «Ruta procesal» en la caja de entrega del Bloque 4. Con una entrega basta para que todo el grupo gane el badge.',
+  },
+  {
+    pathId: 'prueba_digital', moduleId: 'pd_b4',
+    from: '2026-11-07T15:15:00-05:00', to: '2026-11-07T15:20:00-05:00', tone: 'warn',
+    title: '⏰ Quedan 5 minutos: la entrega del Bloque 4 cierra a las 15:20',
+    text: 'Si su grupo no ha subido la «Ruta procesal», súbala ya. A las 15:20 empieza el Bloque 5: cadena de custodia.',
+  },
+  {
     pathId: 'prueba_digital',
     from: '2026-11-07T11:25:00-05:00', to: '2026-11-08T00:00:00-05:00', tone: 'info',
     title: '🏅 Cómo se gana el badge de cada bloque',
@@ -42,7 +54,7 @@ const NOTICES: Notice[] = [
 // Bloques con entrega de grupo.
 const DELIVERABLE_MODULES = ['pd_b1', 'pd_b2', 'pd_b3', 'pd_b4', 'pd_b5', 'pd_b6', 'pd_b7'];
 // Hora de cierre de las entregas (debe coincidir con public.deliverable_deadlines).
-const CLOSES_AT: Record<string, string> = { pd_b1: '2026-11-07T11:10:00-05:00' };
+const CLOSES_AT: Record<string, string> = { pd_b1: '2026-11-07T11:10:00-05:00', pd_b4: '2026-11-07T15:20:00-05:00' };
 
 const TONES: Record<Notice['tone'], string> = {
   info: 'bg-sky-500/10 border-sky-400/40 text-sky-100',
