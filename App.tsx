@@ -28,6 +28,7 @@ import TeacherDashboard from './components/TeacherDashboard';
 import ActivityView from './components/ActivityView';
 import ModuleBadges from './components/ModuleBadges';
 import { LIVE_SCHEDULE } from './liveSchedule';
+import FinalSummary from './components/FinalSummary';
 import SecretCard from './components/SecretCard';
 import HearingPanel from './components/HearingPanel';
 import ClassNotice from './components/ClassNotice';
@@ -426,6 +427,9 @@ const LearningPathView: React.FC<LearningPathViewProps> = ({ path, pathId, onExi
                   {currentModule.title}
                 </h2>
                 <ClassNotice pathId={pathId} moduleId={currentModule.id} />
+                {pathId === 'prueba_digital' && currentModule.id === 'pd_b7' && (
+                  <FinalSummary userId={userId} pathId={pathId} totalModules={path.modules.length} refreshKey={`${completedModules.length}`} />
+                )}
                 <ModuleBadges
                   pathId={pathId}
                   moduleId={currentModule.id}

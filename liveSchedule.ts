@@ -13,7 +13,7 @@ export const LIVE_DAYS: Record<string, LiveDay> = {
       { start: T('14:40'), end: T('15:20'), name: 'Bloque 4 · Colombia' },
       { start: T('15:20'), end: T('15:45'), name: 'Bloque 5 · Cadena de custodia' },
       { start: T('15:45'), end: T('16:05'), name: 'Bloque 6 · ¿Vale o no vale?' },
-      { start: T('16:05'), end: T('16:40'), name: 'Bloque 7 · Audiencia simulada, cierre y evaluación' },
+      { start: T('16:05'), end: T('16:40'), name: 'Bloque 7 · Cierre final y evaluación' },
     ],
     breaks: [{ start: T('12:15'), end: T('14:00'), name: '🍽️ Almuerzo' }],
     dayEnd: T('16:40'),
