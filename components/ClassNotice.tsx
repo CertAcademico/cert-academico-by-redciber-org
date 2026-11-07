@@ -41,6 +41,8 @@ const NOTICES: Notice[] = [
 
 // Bloques con entrega de grupo.
 const DELIVERABLE_MODULES = ['pd_b1', 'pd_b2', 'pd_b3', 'pd_b4', 'pd_b5', 'pd_b6', 'pd_b7'];
+// Hora de cierre de las entregas (debe coincidir con public.deliverable_deadlines).
+const CLOSES_AT: Record<string, string> = { pd_b1: '2026-11-07T11:10:00-05:00' };
 
 const TONES: Record<Notice['tone'], string> = {
   info: 'bg-sky-500/10 border-sky-400/40 text-sky-100',
@@ -79,6 +81,7 @@ const ClassNotice: React.FC<{ pathId: string; moduleId?: string }> = ({ pathId, 
   if (gp && target && DELIVERABLE_MODULES.includes(target)) {
     if (!gp.group) status = '👥 Todavía no ha elegido su grupo: elíjalo en la caja de entrega del Bloque 1. Sin grupo, la entrega no le cuenta para el badge.';
     else if (gp.delivered.includes(target)) status = `✅ Grupo ${gp.group}: la entrega del ${block} ya está cargada. No necesita subirla usted: complete el reto del bloque y el badge le llega.`;
+    else if (CLOSES_AT[target] && now >= Date.parse(CLOSES_AT[target])) status = `⛔ Las entregas del ${block} cerraron a las ${new Date(CLOSES_AT[target]).toLocaleTimeString('es-CO', { hour: '2-digit', minute: '2-digit', hour12: false, timeZone: 'America/Bogota' })}.`;
     else status = `⚠️ Grupo ${gp.group}: todavía no han cargado la entrega del ${block}. Basta con que una persona del grupo la suba.`;
   }
 
