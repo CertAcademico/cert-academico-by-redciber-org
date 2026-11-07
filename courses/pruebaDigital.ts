@@ -105,6 +105,22 @@ export const PRUEBA_DIGITAL: LearningPath = {
         { type: 'text', icon: 'ServerIcon', text: 'Objetivo: entender, sin tecnicismos, dónde está la evidencia digital, por qué es frágil y cómo se demuestra que no fue alterada.' },
         { type: 'text', icon: 'BrainCircuitIcon', text: 'Regla de oro: la evidencia digital casi nunca está en un solo lugar. Un WhatsApp está en el celular de Marta, en el del remitente y, en parte, en los registros del proveedor. Un correo está en el buzón, en los servidores que lo transportaron y en sus encabezados. Por eso el abogado pregunta siempre: ¿dónde más está?' },
         { type: 'text', icon: 'LockIcon', text: 'La evidencia digital tiene 3 características: es volátil (se borra o se sobrescribe), es fácil de copiar sin que se note y es fácil de alterar. La buena noticia: el hash permite demostrar que una copia es idéntica al original. Si cambia una coma, el hash cambia por completo.' },
+        { type: 'text', icon: 'BrainCircuitIcon', text: '¿Qué es técnicamente un hash? Es el resultado de una función matemática (función hash criptográfica) que recibe datos de cualquier tamaño (un chat, una foto, un disco duro completo) y devuelve un código de largo fijo, como una huella digital del archivo. Con SHA-256 la huella tiene siempre 256 bits, que se escriben como 64 caracteres hexadecimales (0 a 9 y a a f). Ejemplo real: «Marta pagó $48.500.000» da 2dd62012…f1d7; «Marta pagó $48.500.001» da 7a6b475a…062f. Cambió un solo dígito y la huella es completamente distinta.' },
+        { type: 'text', icon: 'ShieldCheckIcon', text: 'Las 4 propiedades que lo hacen útil como prueba: 1) Determinista: el mismo archivo siempre da el mismo hash, en cualquier computador y con cualquier programa. 2) Efecto avalancha: un cambio mínimo (un bit, una coma) produce un hash totalmente diferente. 3) Unidireccional: con el hash no se puede reconstruir el archivo; no revela su contenido. 4) Resistente a colisiones: en la práctica es imposible encontrar dos archivos distintos con el mismo SHA-256. Ojo: MD5 (32 caracteres) y SHA-1 (40 caracteres) ya tienen colisiones demostradas (2004 y 2017). Hoy se recomienda SHA-256; si el perito usó MD5, conviene que lo acompañe de SHA-256.' },
+        { type: 'text', icon: 'LockIcon', text: 'Hash no es cifrado: no tiene clave, no oculta el archivo y no se puede «descifrar». Cómo se usa en la cadena de custodia: 1) al obtener la evidencia (o la imagen forense, copia bit a bit del dispositivo) se calcula el hash y se anota en el registro de cadena de custodia; 2) el perito trabaja sobre una copia y recalcula el hash; 3) en juicio se vuelve a calcular: si coincide, la evidencia es la misma que se recolectó. Se calcula con herramientas comunes: en Windows, certutil -hashfile archivo SHA256; en Mac o Linux, shasum -a 256 archivo.' },
+        { type: 'text', icon: 'AlarmIcon', text: 'Los límites que el abogado debe conocer: el hash prueba integridad, no autoría ni veracidad. Demuestra que el archivo no cambió desde el momento en que se calculó, pero no dice quién lo creó ni si ya venía alterado antes. Tampoco depende del nombre del archivo ni de la carpeta: renombrar no cambia el hash, pero abrir y volver a guardar una foto o un documento sí puede cambiarlo. Por eso la pregunta clave en el contrainterrogatorio es: ¿cuándo y sobre qué se calculó el primer hash?' },
+        {
+          type: 'flashcards',
+          title: 'El hash en 6 tarjetas (gire cada una)',
+          cards: [
+            { front: '¿Qué es un hash?', back: 'Una huella de largo fijo calculada a partir de los datos. SHA-256: 64 caracteres, sin importar el tamaño del archivo.' },
+            { front: 'Determinista', back: 'El mismo archivo siempre da el mismo hash. Cualquiera puede verificarlo con otro programa.' },
+            { front: 'Efecto avalancha', back: 'Un cambio mínimo, como una coma, produce un hash completamente distinto.' },
+            { front: 'Unidireccional', back: 'Con el hash no se reconstruye el archivo. Por eso no es cifrado ni revela el contenido.' },
+            { front: 'MD5, SHA-1 o SHA-256', back: 'MD5 y SHA-1 tienen colisiones demostradas. Use SHA-256, o al menos acompañe MD5 de SHA-256.' },
+            { front: 'Qué NO prueba', back: 'Ni quién creó el archivo ni si era auténtico antes del primer cálculo. Prueba integridad desde ese momento.' },
+          ],
+        },
         {
           type: 'memory',
           title: 'Memoria: ¿dónde vive cada evidencia?',

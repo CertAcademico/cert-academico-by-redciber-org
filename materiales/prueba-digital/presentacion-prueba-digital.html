@@ -328,6 +328,48 @@
   <div class="callout"><p>Si cambia un solo carácter, el hash cambia por completo. Si coincide, la copia es idéntica: eso es <strong>integridad</strong>.</p></div>
 </section>
 
+<section class="slide" aria-label="Hash: el concepto técnico">
+  <p class="kicker">Bloque 2 · ABC técnico · El hash</p>
+  <h2>¿Qué es técnicamente un hash?</h2>
+  <p class="lead">Una <strong>función hash</strong> convierte datos de cualquier tamaño en una huella fija. SHA-256: 64 caracteres.</p>
+  <div class="grid g2" style="margin-top:16px">
+    <div class="card"><span class="tag">1 · Determinista</span><p>El mismo archivo da siempre el mismo hash, en cualquier equipo y con cualquier programa.</p></div>
+    <div class="card"><span class="tag">2 · Efecto avalancha</span><p>Un cambio mínimo, un bit o una coma, produce un hash completamente distinto.</p></div>
+    <div class="card"><span class="tag">3 · Unidireccional</span><p>Con el hash no se reconstruye el archivo: no es cifrado y no revela el contenido.</p></div>
+    <div class="card"><span class="tag">4 · Sin colisiones</span><p>En la práctica es imposible hallar dos archivos distintos con el mismo SHA-256.</p></div>
+  </div>
+</section>
+
+<section class="slide" aria-label="Hash: demostración en vivo">
+  <p class="kicker">Bloque 2 · ABC técnico · Demostración en vivo</p>
+  <h2>Cambie una letra y mire la huella</h2>
+  <label for="hash-in" class="hint">Texto (pruebe cambiar un dígito o una mayúscula):</label>
+  <textarea id="hash-in" rows="2" style="width:100%;font:inherit;font-size:.9em;padding:12px 14px;border-radius:12px;border:1px solid var(--line);background:var(--surface-1);color:inherit;resize:none">Marta pagó $48.500.000</textarea>
+  <p class="hint" style="margin-top:10px">SHA-256 del texto:</p>
+  <div class="ex" id="hash-out" aria-live="polite">—</div>
+  <div id="hash-drop" style="margin-top:16px;border:2px dashed var(--line);border-radius:14px;padding:14px 16px;text-align:center;cursor:pointer" tabindex="0" role="button">📄 Arrastre aquí un archivo, o haga clic para elegirlo: se calcula en este equipo, no se sube a ningún lado.</div>
+  <input type="file" id="hash-file" hidden>
+  <div class="ex" id="hash-file-out" style="margin-top:10px" aria-live="polite">Archivo: —</div>
+</section>
+
+<section class="slide" aria-label="Hash: algoritmos y límites">
+  <p class="kicker">Bloque 2 · ABC técnico · El hash</p>
+  <h2>Algoritmos, uso en custodia y límites</h2>
+  <div class="grid g3">
+    <div class="card"><span class="tag">Algoritmos</span><p><strong>MD5</strong> (32 caracteres) y <strong>SHA-1</strong> (40): colisiones demostradas en 2004 y 2017. Use <strong>SHA-256</strong> (64), o acompañe MD5 de SHA-256.</p></div>
+    <div class="card"><span class="tag">En la cadena de custodia</span><p>Hash al recolectar (o de la imagen forense bit a bit) → se anota en el registro → el perito recalcula → en juicio coincide.</p></div>
+    <div class="card"><span class="tag">Qué NO prueba</span><p>Ni autoría ni veracidad. Prueba integridad <strong>desde que se calculó</strong>. Renombrar no lo cambia; abrir y volver a guardar, sí.</p></div>
+  </div>
+  <div class="callout"><p>Windows: <code>certutil -hashfile archivo SHA256</code> · Mac o Linux: <code>shasum -a 256 archivo</code>. Pregunta clave al perito: ¿cuándo y sobre qué calculó el primer hash?</p></div>
+</section>
+
+<section class="slide reto" aria-label="Tarjetas: el hash">
+  <p class="kicker">Bloque 2 · Ahora en la plataforma</p>
+  <h2><span class="badge">▶ Tarjetas</span></h2>
+  <p class="big">El hash en 6 tarjetas (gire cada una)</p>
+  <p class="hint">Abran el <strong>Bloque 2</strong> en la plataforma y gírenlas. Suma XP.</p>
+</section>
+
 <section class="slide reto" aria-label="Juego de memoria">
   <p class="kicker">Bloque 2 · Ahora en la plataforma</p>
   <h2><span class="badge">▶ Juego de memoria</span></h2>
@@ -869,6 +911,8 @@
     prev.addEventListener('click', function () { show(i - 1); });
     next.addEventListener('click', function () { show(i + 1); });
     document.addEventListener('keydown', function (e) {
+      var tg = e.target && e.target.tagName;
+      if (tg === 'TEXTAREA' || tg === 'INPUT') return;
       if (e.key === 'ArrowRight' || e.key === 'PageDown' || e.key === ' ') { e.preventDefault(); show(i + 1); }
       if (e.key === 'ArrowLeft' || e.key === 'PageUp') { e.preventDefault(); show(i - 1); }
       if (e.key === 'Home') show(0);
@@ -903,6 +947,33 @@
       clock.className = 'clock show'; tick(); t = setInterval(tick, 500);
     });
     clock.addEventListener('click', stop);
+  })();
+</script>
+<script>
+  (function () {
+    var input = document.getElementById('hash-in'), out = document.getElementById('hash-out');
+    var drop = document.getElementById('hash-drop'), fileIn = document.getElementById('hash-file'), fileOut = document.getElementById('hash-file-out');
+    if (!input) return;
+    var ok = !!(window.crypto && crypto.subtle);
+    function hex(buf) { return Array.prototype.map.call(new Uint8Array(buf), function (b) { return ('0' + b.toString(16)).slice(-2); }).join(''); }
+    function textHash() {
+      if (!ok) { out.textContent = 'Este navegador no permite calcular el hash aquí. Ábralo desde la plataforma (https).'; return; }
+      crypto.subtle.digest('SHA-256', new TextEncoder().encode(input.value)).then(function (h) { out.textContent = hex(h); });
+    }
+    function fileHash(f) {
+      if (!f || !ok) return;
+      fileOut.textContent = 'Calculando… ' + f.name;
+      f.arrayBuffer().then(function (b) { return crypto.subtle.digest('SHA-256', b); })
+        .then(function (h) { fileOut.textContent = f.name + ' (' + Math.round(f.size / 1024) + ' KB): ' + hex(h); })
+        .catch(function () { fileOut.textContent = 'No se pudo leer el archivo.'; });
+    }
+    input.addEventListener('input', textHash);
+    drop.addEventListener('click', function () { fileIn.click(); });
+    drop.addEventListener('keydown', function (e) { if (e.key === 'Enter') fileIn.click(); });
+    fileIn.addEventListener('change', function () { fileHash(fileIn.files[0]); });
+    drop.addEventListener('dragover', function (e) { e.preventDefault(); });
+    drop.addEventListener('drop', function (e) { e.preventDefault(); fileHash(e.dataTransfer.files[0]); });
+    textHash();
   })();
 </script>
 </body>
