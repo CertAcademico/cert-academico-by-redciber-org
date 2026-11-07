@@ -47,8 +47,8 @@ const NOTICES: Notice[] = [
   {
     pathId: 'prueba_digital',
     from: '2026-11-07T16:00:00-05:00', to: '2026-12-01T00:00:00-05:00', tone: 'live',
-    title: '📝 La evaluación final queda abierta hasta el 30 de noviembre',
-    text: 'Si no alcanza a terminarla hoy, hágala con calma desde cualquier dispositivo hasta el 30 de noviembre a las 23:59. Son 5 preguntas sobre la audiencia simulada; al aprobarla (60 %) recibe su certificado. Los badges que ya ganó en los bloques se conservan.',
+    title: '📝 Practiquen la evaluación final: con ella se valida el Bloque 7',
+    text: 'Está al final del Bloque 7: 5 preguntas sobre la audiencia simulada. Se aprueba con 60 % y pueden reintentarla con otras preguntas para practicar. Al aprobarla queda completo el Bloque 7 y reciben el certificado del curso. Abierta hasta el 30 de noviembre a las 23:59.',
   },
   {
     pathId: 'prueba_digital',
