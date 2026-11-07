@@ -172,6 +172,30 @@ const SubmissionBox: React.FC<{ ctx: SubmissionContext; label: string; hint?: st
     } catch (err) { alert((err as Error).message); }
   };
 
+  // Docentes: descarga todas las entregas del bloque, con grupo y bloque en el nombre del archivo.
+  const [downloadingAll, setDownloadingAll] = useState(false);
+  const downloadAll = async () => {
+    const list = items ?? [];
+    if (!list.length) return;
+    setDownloadingAll(true);
+    try {
+      for (const s of list) {
+        const name = `grupo${s.groupLabel ?? 'X'}_${moduleId}_${s.fileName}`;
+        const a = document.createElement('a');
+        a.href = await submissionUrl(s, name);
+        a.rel = 'noopener';
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        await new Promise(r => setTimeout(r, 700));
+      }
+    } catch (err) {
+      alert((err as Error).message);
+    } finally {
+      setDownloadingAll(false);
+    }
+  };
+
   const toggleStar = async (g: string) => {
     try {
       const on = await toggleGroupStar(pathId, moduleId, g);
@@ -326,6 +350,16 @@ const SubmissionBox: React.FC<{ ctx: SubmissionContext; label: string; hint?: st
           <p className="text-sm font-bold text-emerald-200 mb-2">
             👩‍🏫 Grupos y entregas {items ? `· ${new Set(others.map(s => s.groupLabel)).size} de ${GROUP_LABELS.length} grupos entregaron` : ''}
           </p>
+          {items && items.length > 0 && (
+            <button
+              onClick={downloadAll}
+              disabled={downloadingAll}
+              className="mb-3 text-xs rounded-lg px-3 py-1.5 border border-emerald-500/50 text-emerald-200 hover:bg-emerald-500/10 disabled:opacity-50"
+              title="Descarga todos los archivos de este bloque. Si el navegador pregunta, permita descargas múltiples."
+            >
+              {downloadingAll ? 'Descargando…' : `⬇️ Descargar todas (${items.length})`}
+            </button>
+          )}
           {items === null ? (
             <p className="text-sm text-slate-400">Cargando…</p>
           ) : staffGroups.length === 0 ? (

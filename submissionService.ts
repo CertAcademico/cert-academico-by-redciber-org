@@ -168,8 +168,8 @@ export async function uploadSubmission(
 }
 
 /** Enlace firmado de 10 minutos para descargar un entregable. */
-export async function submissionUrl(s: Submission): Promise<string> {
-  const { data, error } = await supabase.storage.from(BUCKET).createSignedUrl(s.storagePath, 600, { download: s.fileName });
+export async function submissionUrl(s: Submission, downloadName?: string): Promise<string> {
+  const { data, error } = await supabase.storage.from(BUCKET).createSignedUrl(s.storagePath, 600, { download: downloadName ?? s.fileName });
   if (error || !data) throw new Error('No se pudo abrir el archivo.');
   return data.signedUrl;
 }
