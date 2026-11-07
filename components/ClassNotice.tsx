@@ -61,7 +61,8 @@ const NOTICES: Notice[] = [
 // Bloques con entrega de grupo.
 const DELIVERABLE_MODULES = ['pd_b1', 'pd_b2', 'pd_b3', 'pd_b4', 'pd_b5', 'pd_b6', 'pd_b7'];
 // Hora de cierre de las entregas (debe coincidir con public.deliverable_deadlines).
-const CLOSES_AT: Record<string, string> = { pd_b1: '2026-11-07T11:10:00-05:00', pd_b4: '2026-11-07T15:20:00-05:00' };
+// Los bloques 3 a 6 quedan abiertos hasta que los grupos terminen.
+const CLOSES_AT: Record<string, string> = { pd_b1: '2026-11-07T11:10:00-05:00' };
 
 const TONES: Record<Notice['tone'], string> = {
   info: 'bg-sky-500/10 border-sky-400/40 text-sky-100',
