@@ -160,7 +160,9 @@ export async function uploadSubmission(
       ? `Ya subió ${SUBMISSION_MAX_FILES} archivos en esta actividad. Elimine uno para subir otro.`
       : msg.includes('GROUP_REQUIRED')
         ? 'Primero elija su grupo.'
-        : 'No se pudo registrar la entrega. Intente de nuevo.');
+        : msg.includes('DELIVERABLE_CLOSED')
+          ? 'Las entregas de este bloque ya cerraron. Hable con el docente.'
+          : 'No se pudo registrar la entrega. Intente de nuevo.');
   }
   return toSubmission(data as Row);
 }
