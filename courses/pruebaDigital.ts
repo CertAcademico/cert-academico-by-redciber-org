@@ -1,6 +1,6 @@
 import type { LearningPath } from '../types';
 
-// Curso de un día para abogados: Prueba Digital (Universidad Libre, 7 de noviembre de 2026, 8:00 a 20:00).
+// Curso de un día para abogados: Prueba Digital (Universidad Libre, 7 de noviembre de 2026, 10:30 a 17:00).
 // Hilo conductor: el caso ficticio de la Ferretería El Roble. Cada grupo (A a F) cuida una evidencia
 // durante todo el día y la defiende en la audiencia simulada del Bloque 7.
 // Las entregas, estrellas y badges deben coincidir con milestones.ts y con
@@ -34,15 +34,15 @@ const EVIDENCE_GROUPS = [
 
 export const PRUEBA_DIGITAL: LearningPath = {
   title: 'Prueba Digital para Abogados: del Pantallazo a la Audiencia',
-  description: 'Jornada intensiva (8:00 a 20:00) para la Maestría en Derecho Penal: el ABC técnico de la evidencia digital y su recorrido por el sistema penal acusatorio y por el Código General del Proceso, con estándares internacionales y cooperación. Un mismo caso de principio a fin, retos interactivos, trabajo en grupo y una audiencia simulada.',
+  description: 'Jornada intensiva (10:30 a 17:00) para la Maestría en Derecho Procesal: el ABC técnico de la evidencia digital y su recorrido por el sistema penal acusatorio y por el Código General del Proceso, con estándares internacionales y cooperación. Un mismo caso de principio a fin, retos interactivos, trabajo en grupo y una audiencia simulada.',
   lastUpdated: 'Noviembre 2026',
   modules: [
     // ───────────────────────────── BLOQUE 1 ─────────────────────────────
     {
       id: 'pd_b1',
-      title: 'Bloque 1 · 8:00 — El caso: una ferretería, un correo y $48 millones',
+      title: 'Bloque 1 · 10:30 — El caso: una ferretería, un correo y $48 millones',
       content: [
-        { type: 'text', icon: 'CalendarIcon', text: 'Bienvenidos a la jornada de la Maestría en Derecho Penal. Hoy tenemos 8 bloques, de 8:00 a 20:00, con pausas a las 10:00 y a las 15:30 y almuerzo de 12:45 a 14:00. Ustedes dominan el proceso penal; aquí el ABC es técnico, no se necesita saber de tecnología: vamos del ABC hasta una audiencia simulada. Cada bloque tiene retos que suman XP, y en los bloques 1 a 7 su grupo sube un entregable que le da estrellas y un badge. Al aprobar la evaluación final recibe su certificado.' },
+        { type: 'text', icon: 'CalendarIcon', text: 'Bienvenidos a la jornada de la Maestría en Derecho Procesal. Hoy tenemos 8 bloques, de 10:30 a 17:00, con almuerzo de 13:00 a 13:45 y una pausa de 14:30 a 14:45. Ustedes dominan el derecho procesal; aquí el ABC es técnico, no se necesita saber de tecnología: vamos del ABC hasta una audiencia simulada. Cada bloque tiene retos que suman XP, y en los bloques 1 a 7 su grupo sube un entregable que le da estrellas y un badge. Al aprobar la evaluación final recibe su certificado.' },
         PRESENTATION,
         { type: 'text', icon: 'AlarmIcon', text: 'El caso que nos acompañará todo el día (ficticio): Marta Rojas es dueña de la Ferretería El Roble, en Bogotá. El lunes 2 de noviembre recibe un correo de «Aceros del Norte», su proveedor de siempre, que le informa una nueva cuenta bancaria. Marta paga $48.500.000. Dos días después el proveedor la llama: nunca recibió el dinero.' },
         { type: 'text', icon: 'SpyIcon', text: 'Lo peor llega el jueves: un número desconocido le escribe por WhatsApp. «Si denuncias, publicamos los datos de tus clientes». Adjunta una foto de la base de clientes de la ferretería. Esa noche aparece un perfil falso de la ferretería en redes sociales con datos de algunos clientes. Marta sospecha de Julián, un empleado que despidió en septiembre.' },
@@ -99,7 +99,7 @@ export const PRUEBA_DIGITAL: LearningPath = {
     // ───────────────────────────── BLOQUE 2 ─────────────────────────────
     {
       id: 'pd_b2',
-      title: 'Bloque 2 · 8:45 — ABC técnico: dónde vive la evidencia',
+      title: 'Bloque 2 · 11:00 — ABC técnico: dónde vive la evidencia',
       content: [
         { type: 'text', icon: 'ServerIcon', text: 'Objetivo: entender, sin tecnicismos, dónde está la evidencia digital, por qué es frágil y cómo se demuestra que no fue alterada.' },
         { type: 'text', icon: 'BrainCircuitIcon', text: 'Regla de oro: la evidencia digital casi nunca está en un solo lugar. Un WhatsApp está en el celular de Marta, en el del remitente y, en parte, en los registros del proveedor. Un correo está en el buzón, en los servidores que lo transportaron y en sus encabezados. Por eso el abogado pregunta siempre: ¿dónde más está?' },
@@ -154,14 +154,14 @@ GPS ....................... 4.6097 N, 74.0817 W`,
         {
           type: 'activity',
           title: 'Ficha de mi evidencia',
-          duration: '30 min',
+          duration: '25 min',
           groupSize: 'Su grupo del Bloque 1',
           goal: 'Cada grupo hace la «hoja de vida» de su evidencia: qué es, dónde está (todas las copias posibles), quién la tiene hoy, qué riesgo corre de perderse y qué haría en las próximas 24 horas para conservarla.',
           downloads: [WORKBOOK],
           steps: [
-            { title: 'Dónde vive', minutes: '12 min', detail: 'Listen todos los lugares donde existe su evidencia: dispositivos, servidores, terceros (banco, plataforma, proveedor de correo).' },
-            { title: 'Riesgos', minutes: '8 min', detail: 'Para cada lugar: ¿se puede borrar? ¿quién la controla? ¿cuánto tiempo la guardan?' },
-            { title: 'Plan de 24 horas', minutes: '7 min', detail: 'Escriban 3 acciones concretas para conservarla hoy mismo. Ejemplo: «pedir al banco que conserve los registros de la cuenta destino».' },
+            { title: 'Dónde vive', minutes: '10 min', detail: 'Listen todos los lugares donde existe su evidencia: dispositivos, servidores, terceros (banco, plataforma, proveedor de correo).' },
+            { title: 'Riesgos', minutes: '7 min', detail: 'Para cada lugar: ¿se puede borrar? ¿quién la controla? ¿cuánto tiempo la guardan?' },
+            { title: 'Plan de 24 horas', minutes: '5 min', detail: 'Escriban 3 acciones concretas para conservarla hoy mismo. Ejemplo: «pedir al banco que conserve los registros de la cuenta destino».' },
             { title: 'Suban la ficha', minutes: '3 min', detail: 'Una persona del grupo sube la ficha. Basta con una entrega por grupo.' },
           ],
           groupsTitle: 'Cada grupo y su evidencia',
@@ -191,7 +191,7 @@ GPS ....................... 4.6097 N, 74.0817 W`,
     // ───────────────────────────── BLOQUE 3 ─────────────────────────────
     {
       id: 'pd_b3',
-      title: 'Bloque 3 · 10:15 — El mundo: cómo se prueba lo digital fuera de Colombia',
+      title: 'Bloque 3 · 11:40 — El mundo: cómo se prueba lo digital fuera de Colombia',
       content: [
         { type: 'text', icon: 'ShieldCheckIcon', text: 'Objetivo: conocer los acuerdos y estándares internacionales que usan jueces, fiscales y peritos en todo el mundo, y ver que Colombia hace parte de esa red.' },
         { type: 'text', icon: 'AlarmIcon', text: 'Hilo del caso: el correo del falso proveedor se envió desde una cuenta de un servicio de correo con servidores en Estados Unidos (evidencia del Grupo E). Los datos de quién creó esa cuenta no están en Colombia. ¿Cómo se piden?' },
@@ -214,13 +214,13 @@ GPS ....................... 4.6097 N, 74.0817 W`,
         {
           type: 'activity',
           title: 'Vuelta al mundo de la prueba digital',
-          duration: '35 min',
+          duration: '30 min',
           groupSize: 'Su grupo',
           goal: 'Cada grupo investiga cómo trataría un país su evidencia del caso. ¿La aceptaría un juez de ese país? ¿Qué le pediría para creerle? Al final comparamos con Colombia.',
           downloads: [WORKBOOK],
           steps: [
-            { title: 'Busquen su país', minutes: '15 min', detail: 'Con la guía del Expediente y fuentes oficiales, identifiquen: (a) la norma principal sobre documentos o prueba electrónica, (b) quién debe probar la autenticidad y (c) un caso o regla destacada.' },
-            { title: 'Apliquen a su evidencia', minutes: '8 min', detail: '¿Qué tendría que hacer el abogado de Marta para que su evidencia valga en ese país?' },
+            { title: 'Busquen su país', minutes: '12 min', detail: 'Con la guía del Expediente y fuentes oficiales, identifiquen: (a) la norma principal sobre documentos o prueba electrónica, (b) quién debe probar la autenticidad y (c) un caso o regla destacada.' },
+            { title: 'Apliquen a su evidencia', minutes: '6 min', detail: '¿Qué tendría que hacer el abogado de Marta para que su evidencia valga en ese país?' },
             { title: 'Una frase', minutes: '2 min', detail: 'Resuman en una frase lo que Colombia podría aprender de ese país.' },
             { title: 'Plenaria', minutes: '10 min', detail: 'Cada vocero comparte su frase en 1 minuto.' },
           ],
@@ -276,7 +276,7 @@ GPS ....................... 4.6097 N, 74.0817 W`,
     // ───────────────────────────── BLOQUE 4 ─────────────────────────────
     {
       id: 'pd_b4',
-      title: 'Bloque 4 · 11:30 — Colombia: la evidencia digital en el sistema penal acusatorio',
+      title: 'Bloque 4 · 12:20 — Colombia: la evidencia digital en el sistema penal acusatorio',
       content: [
         { type: 'text', icon: 'DocumentTextIcon', text: 'Objetivo: recorrer la evidencia digital por todas las etapas de la Ley 906 de 2004, desde la indagación hasta el juicio oral: qué acto de investigación se necesita, qué control judicial exige y cómo entra al juicio sin ser excluida.' },
         { type: 'text', icon: 'ShieldCheckIcon', text: 'La base sustancial: la Ley 527 de 1999 reconoce el mensaje de datos (art. 2), prohíbe negarle valor por ser electrónico (art. 5), lo hace admisible como prueba (art. 10) y fija los criterios de valoración: confiabilidad en su generación, archivo o comunicación, conservación de la integridad e identificación del iniciador (art. 11). La Corte Constitucional la avaló en la Sentencia C-662 de 2000. La Ley 906 incluye el mensaje de datos entre los elementos materiales probatorios y evidencia física (art. 275, lit. g).' },
@@ -296,7 +296,7 @@ GPS ....................... 4.6097 N, 74.0817 W`,
         },
         { type: 'text', icon: 'AlarmIcon', text: 'Sobre los pantallazos: la Corte Constitucional (Sentencia T-043 de 2020) explicó que las capturas de pantalla de WhatsApp tienen un valor probatorio atenuado, porque son fáciles de modificar: el juez las valora junto con otras pruebas. En lo penal, un pantallazo sin testigo de acreditación ni respaldo técnico es un blanco fácil para la defensa. Los delitos del caso: acceso abusivo (art. 269A), violación de datos personales (art. 269F) y transferencia no consentida de activos (art. 269J) de la Ley 1273 de 2009, y extorsión (art. 244 del Código Penal). La reparación de Marta se pide en el incidente de reparación integral (art. 102 de la Ley 906).' },
         { type: 'text', icon: 'ShieldCheckIcon', text: 'Novedad: la Ley Estatutaria 2573 de 2026 sobre suplantación de identidad (sancionada el 19 de mayo de 2026, Diario Oficial 53.496 del 20 de mayo, revisada por la Corte Constitucional en la Sentencia C-413 de 2025). Protege a la persona suplantada frente al cobro y al reporte negativo: el operador o la entidad financiera debe suspender el cobro de inmediato (art. 8), entregarle copia de los documentos con los que aprobó el producto (art. 5, num. 7) y, si verifica la suplantación, exonerarla (art. 10). Su art. 2, lit. d) crea la carga dinámica de la prueba: prueba quien esté en mejores condiciones de hacerlo. Ojo en lo penal: la Corte la condicionó. Solo se aplica en procesos judiciales que no sean de naturaleza penal, y el juez decide si opera la inversión. En el proceso penal la carga sigue en la Fiscalía y rige la presunción de inocencia (art. 7 de la Ley 906). Lo que sí aporta al penalista: los registros de validación de identidad que la entidad debe entregar se vuelven evidencia digital clave, y la entidad también debe denunciar (art. 8, según la C-413 de 2025). Vigencia: rige seis meses después de su promulgación, hacia el 20 de noviembre de 2026; los parágrafos 1 y 2 del art. 5 rigen desde la promulgación.' },
-        { type: 'text', icon: 'DocumentTextIcon', text: 'El Código General del Proceso (Ley 1564 de 2012) también le sirve al penalista, por dos razones. Primero, llena vacíos: en lo que la Ley 906 no regula y no se oponga al proceso penal se aplican otros códigos procesales (art. 25 de la Ley 906). Segundo, Marta tiene otra ruta para recuperar sus $48.500.000: reclamar a los bancos ante un juez civil o ante la Superintendencia Financiera, que resuelve como juez las controversias entre consumidores financieros y entidades vigiladas (art. 24, num. 2, del CGP). En esa ruta la prueba se rige por el CGP.' },
+        { type: 'text', icon: 'DocumentTextIcon', text: 'El Código General del Proceso (Ley 1564 de 2012) se conecta con el proceso penal por dos razones. Primero, llena vacíos: en lo que la Ley 906 no regula y no se oponga al proceso penal se aplican otros códigos procesales (art. 25 de la Ley 906). Segundo, Marta tiene otra ruta para recuperar sus $48.500.000: reclamar a los bancos ante un juez civil o ante la Superintendencia Financiera, que resuelve como juez las controversias entre consumidores financieros y entidades vigiladas (art. 24, num. 2, del CGP). En esa ruta la prueba se rige por el CGP.' },
         { type: 'text', icon: 'ClosedEnvelopeIcon', text: 'El CGP y el documento electrónico: los mensajes de datos son documentos (art. 243) y se presumen auténticos mientras no sean tachados de falsos o desconocidos; esta regla se aplica «en todos los procesos y en todas las jurisdicciones» (art. 244). Pero se valoran como mensaje de datos solo si se aportan en el formato en que se generaron, enviaron o recibieron, o en otro que lo reproduzca con exactitud. La simple impresión en papel se valora como un documento común (art. 247). La contraparte puede tachar de falso lo que se le atribuye como firmado o manuscrito por ella (art. 269), o desconocer, diciendo por qué, un documento que no firmó ni manuscribió, como un correo o un chat (art. 272). Si no se establece su autenticidad, ese documento pierde eficacia. El juez aprecia todas las pruebas en conjunto, con la sana crítica (art. 176).' },
         { type: 'text', icon: 'LockIcon', text: 'Carga dinámica y conservación en el CGP: la carga dinámica no nació con la Ley 2573. El art. 167 del CGP ya permite al juez exigir la prueba a la parte en mejor posición, por su cercanía con el material probatorio, por tenerlo en su poder o por circunstancias técnicas especiales. En el caso, el banco tiene los registros de acceso y de validación de la cuenta destino. Para que la evidencia no se pierda antes del proceso: pídala primero por derecho de petición, porque el juez no decreta las pruebas que la parte pudo conseguir así (art. 173). Si no la entregan, use la prueba extraprocesal de exhibición de documentos (art. 186) o la inspección judicial con perito, que puede practicarse sin citar a la futura contraparte (art. 189). Ya en el proceso, pida medidas cautelares innominadas para conservar los datos (art. 590, lit. c) y aporte su dictamen pericial, que la otra parte contradice en audiencia (arts. 227 y 228). Y con la Ley 2213 de 2022 la notificación personal puede hacerse por mensaje de datos; los términos corren desde el acuse de recibo o desde que se constate el acceso del destinatario (art. 8).' },
         {
@@ -314,15 +314,15 @@ GPS ....................... 4.6097 N, 74.0817 W`,
         {
           type: 'activity',
           title: 'La ruta procesal de mi evidencia en la Ley 906',
-          duration: '35 min',
+          duration: '30 min',
           groupSize: 'Su grupo',
           goal: 'Cada grupo recorre las etapas del proceso penal con su evidencia: qué acto de investigación la obtiene, qué control judicial necesita, cómo se descubre, qué solicitud de exclusión podría presentar la defensa en la audiencia preparatoria y cómo se autentica en el juicio oral.',
           downloads: [WORKBOOK],
           steps: [
-            { title: 'Indagación e investigación', minutes: '10 min', detail: '¿Qué acto de investigación permite obtener su evidencia (arts. 235, 236, 244, inspección, entrevista, peritaje)? ¿Requiere control previo, posterior o ninguno? ¿Quién lo ejecuta?' },
-            { title: 'Descubrimiento y preparatoria', minutes: '10 min', detail: '¿Cómo se descubre? ¿Qué solicitud de exclusión o inadmisibilidad haría la defensa (arts. 23, 359, 360 y 455)? ¿Cómo la respondería la Fiscalía?' },
+            { title: 'Indagación e investigación', minutes: '8 min', detail: '¿Qué acto de investigación permite obtener su evidencia (arts. 235, 236, 244, inspección, entrevista, peritaje)? ¿Requiere control previo, posterior o ninguno? ¿Quién lo ejecuta?' },
+            { title: 'Descubrimiento y preparatoria', minutes: '8 min', detail: '¿Cómo se descubre? ¿Qué solicitud de exclusión o inadmisibilidad haría la defensa (arts. 23, 359, 360 y 455)? ¿Cómo la respondería la Fiscalía?' },
             { title: 'Juicio oral', minutes: '10 min', detail: '¿Con qué testigo de acreditación y con qué perito se autentica (art. 277)? ¿Qué preguntaría en el interrogatorio directo?' },
-            { title: 'Suban la ruta', minutes: '5 min', detail: 'Una persona del grupo sube la hoja.' },
+            { title: 'Suban la ruta', minutes: '4 min', detail: 'Una persona del grupo sube la hoja.' },
           ],
           groupsTitle: 'Cada grupo y su evidencia',
           groups: EVIDENCE_GROUPS,
@@ -376,7 +376,7 @@ GPS ....................... 4.6097 N, 74.0817 W`,
     // ───────────────────────────── BLOQUE 5 ─────────────────────────────
     {
       id: 'pd_b5',
-      title: 'Bloque 5 · 14:00 — Recolección y cadena de custodia',
+      title: 'Bloque 5 · 13:45 — Recolección y cadena de custodia',
       content: [
         { type: 'text', icon: 'LockIcon', text: 'Objetivo: saber qué hacer (y qué NO hacer) en las primeras horas, y cómo documentar la cadena de custodia para que la evidencia llegue intacta al juez.' },
         { type: 'text', icon: 'ShieldCheckIcon', text: 'La norma ISO/IEC 27037 pide 3 cosas de toda evidencia: que sea pertinente, confiable y suficiente. Y del proceso, que sea auditable (queda registro), repetible (el mismo perito obtiene lo mismo), reproducible (otro perito también) y justificable (se puede explicar por qué se hizo así).' },
@@ -427,15 +427,15 @@ GPS ....................... 4.6097 N, 74.0817 W`,
         {
           type: 'activity',
           title: 'Cadena de custodia en vivo: encuentren el eslabón roto',
-          duration: '40 min',
+          duration: '30 min',
           groupSize: 'Su grupo + un grupo auditor',
           goal: 'Cada grupo diligencia el formato de cadena de custodia de su evidencia, desde que se encontró hasta que llega al laboratorio. Luego lo intercambia con otro grupo, que actúa como defensa y busca el «eslabón roto».',
           downloads: [WORKBOOK],
           steps: [
-            { title: 'Diligencien el formato', minutes: '15 min', detail: 'Usen el Formato de cadena de custodia del Expediente: qué es la evidencia, quién la encontró, fecha y hora de cada traspaso, hash, embalaje y firmas.' },
-            { title: 'Intercambien', minutes: '10 min', detail: 'Pasen su formato al grupo siguiente (A→B, B→C… F→A). Ese grupo busca vacíos: horas sin registro, firmas que faltan, hash ausente.' },
-            { title: 'Defiendan', minutes: '10 min', detail: 'El grupo auditor presenta el eslabón roto que encontró. El grupo dueño responde cómo lo corregiría o cómo lo explicaría ante el juez.' },
-            { title: 'Suban el formato', minutes: '5 min', detail: 'Suban su formato y la nota del grupo auditor.' },
+            { title: 'Diligencien el formato', minutes: '12 min', detail: 'Usen el Formato de cadena de custodia del Expediente: qué es la evidencia, quién la encontró, fecha y hora de cada traspaso, hash, embalaje y firmas.' },
+            { title: 'Intercambien', minutes: '8 min', detail: 'Pasen su formato al grupo siguiente (A→B, B→C… F→A). Ese grupo busca vacíos: horas sin registro, firmas que faltan, hash ausente.' },
+            { title: 'Defiendan', minutes: '7 min', detail: 'El grupo auditor presenta el eslabón roto que encontró. El grupo dueño responde cómo lo corregiría o cómo lo explicaría ante el juez.' },
+            { title: 'Suban el formato', minutes: '3 min', detail: 'Suban su formato y la nota del grupo auditor.' },
           ],
           groupsTitle: 'Quién audita a quién',
           groups: [
@@ -455,7 +455,7 @@ GPS ....................... 4.6097 N, 74.0817 W`,
     // ───────────────────────────── BLOQUE 6 ─────────────────────────────
     {
       id: 'pd_b6',
-      title: 'Bloque 6 · 15:45 — ¿Vale o no vale? Admisibilidad y valoración',
+      title: 'Bloque 6 · 14:45 — ¿Vale o no vale? Admisibilidad y valoración',
       content: [
         { type: 'text', icon: 'CheckCircleIcon', text: 'Objetivo: aprender a revisar una prueba digital con 4 preguntas antes de llevarla al juez, y saber cómo reforzarla.' },
         {
@@ -554,15 +554,15 @@ Date: Mon, 2 Nov 2026 10:14:02 -0500`,
         {
           type: 'activity',
           title: 'Semáforo probatorio',
-          duration: '30 min',
+          duration: '20 min',
           groupSize: 'Su grupo',
           goal: 'Cada grupo pone su evidencia en el semáforo: verde, amarillo o rojo en cada una de las 4 preguntas (autenticidad, integridad, licitud y pertinencia). Por cada amarillo o rojo proponen cómo reforzarla: peritaje, certificación del proveedor, testimonio o prueba extraprocesal.',
           downloads: [WORKBOOK],
           steps: [
-            { title: 'Califiquen', minutes: '10 min', detail: 'Pongan un color a cada pregunta y escriban una frase que lo justifique.' },
-            { title: 'Refuercen', minutes: '10 min', detail: 'Para cada amarillo o rojo, escriban qué prueba adicional pedirían y a quién.' },
-            { title: 'Preparen la audiencia', minutes: '7 min', detail: 'Escriban la pregunta más difícil que le harían al perito de la otra parte sobre su evidencia.' },
-            { title: 'Suban el semáforo', minutes: '3 min', detail: 'Una persona del grupo sube la hoja.' },
+            { title: 'Califiquen', minutes: '7 min', detail: 'Pongan un color a cada pregunta y escriban una frase que lo justifique.' },
+            { title: 'Refuercen', minutes: '7 min', detail: 'Para cada amarillo o rojo, escriban qué prueba adicional pedirían y a quién.' },
+            { title: 'Preparen la audiencia', minutes: '4 min', detail: 'Escriban la pregunta más difícil que le harían al perito de la otra parte sobre su evidencia.' },
+            { title: 'Suban el semáforo', minutes: '2 min', detail: 'Una persona del grupo sube la hoja.' },
           ],
           groupsTitle: 'Cada grupo y su evidencia',
           groups: EVIDENCE_GROUPS,
@@ -575,23 +575,23 @@ Date: Mon, 2 Nov 2026 10:14:02 -0500`,
     // ───────────────────────────── BLOQUE 7 ─────────────────────────────
     {
       id: 'pd_b7',
-      title: 'Bloque 7 · 17:00 — Audiencia simulada: preparatoria y juicio oral',
+      title: 'Bloque 7 · 15:20 — Audiencia simulada: preparatoria y juicio oral',
       content: [
         { type: 'text', icon: 'HappyUsersIcon', text: 'Objetivo: poner a prueba todo lo aprendido en dos momentos del proceso penal. Primero, la audiencia preparatoria: la defensa pide excluir o inadmitir la evidencia y el juez decide. Después, el juicio oral: la Fiscalía la acredita con su perito y la defensa lo contrainterroga.' },
         { type: 'text', icon: 'AlarmIcon', text: 'Hilo del caso: la Fiscalía imputó a Julián Pardo por acceso abusivo a un sistema informático, violación de datos personales y extorsión. La defensa dice que todo es un montaje: «los pantallazos se editan en un minuto», «el computador lo usaba todo el mundo», «el correo pudo enviarlo cualquiera».' },
         {
           type: 'activity',
           title: 'La audiencia del caso Ferretería El Roble',
-          duration: '75 min',
+          duration: '55 min',
           groupSize: '3 audiencias de 2 grupos, más jueces',
           goal: 'En cada sala, un grupo actúa como Fiscalía y representación de víctimas y el otro como defensa. Primero la defensa solicita la exclusión o inadmisibilidad de la evidencia (preparatoria); si se admite, la Fiscalía la acredita con su perito y la defensa contrainterroga (juicio oral). Luego cambian los papeles con la evidencia del otro grupo. Dos personas de cada sala actúan como juez.',
           downloads: [WORKBOOK],
           steps: [
-            { title: 'Preparen', minutes: '15 min', detail: 'Con su Semáforo probatorio, preparen 3 minutos de presentación: qué es la evidencia, cómo se obtuvo, cómo se preservó y qué prueba. Elijan quién hace de perito.' },
-            { title: 'Primera ronda', minutes: '20 min', detail: 'Preparatoria: la defensa sustenta su solicitud de exclusión (2 min), réplica de la Fiscalía (2 min), decisión del juez (1 min). Juicio: interrogatorio directo al perito (2 min), contrainterrogatorio (2 min), redirecto (1 min).' },
-            { title: 'Segunda ronda', minutes: '20 min', detail: 'Se invierten los papeles con la evidencia del segundo grupo.' },
-            { title: 'Acta', minutes: '10 min', detail: 'Cada grupo escribe el acta: qué se pidió excluir y qué decidió el juez, la pregunta más fuerte del contrainterrogatorio y qué faltó para acreditar la evidencia.' },
-            { title: 'Plenaria', minutes: '10 min', detail: 'Los jueces de cada audiencia cuentan qué decidieron y por qué.' },
+            { title: 'Preparen', minutes: '10 min', detail: 'Con su Semáforo probatorio, preparen 3 minutos de presentación: qué es la evidencia, cómo se obtuvo, cómo se preservó y qué prueba. Elijan quién hace de perito.' },
+            { title: 'Primera ronda', minutes: '15 min', detail: 'Preparatoria: la defensa sustenta su solicitud de exclusión (2 min), réplica de la Fiscalía (2 min), decisión del juez (1 min). Juicio: interrogatorio directo al perito (2 min), contrainterrogatorio (2 min), redirecto (1 min).' },
+            { title: 'Segunda ronda', minutes: '15 min', detail: 'Se invierten los papeles con la evidencia del segundo grupo.' },
+            { title: 'Acta', minutes: '8 min', detail: 'Cada grupo escribe el acta: qué se pidió excluir y qué decidió el juez, la pregunta más fuerte del contrainterrogatorio y qué faltó para acreditar la evidencia.' },
+            { title: 'Plenaria', minutes: '7 min', detail: 'Los jueces de cada audiencia cuentan qué decidieron y por qué.' },
           ],
           groupsTitle: 'Audiencias',
           groups: [
@@ -642,7 +642,7 @@ Date: Mon, 2 Nov 2026 10:14:02 -0500`,
     // ───────────────────────────── BLOQUE 8 ─────────────────────────────
     {
       id: 'pd_b8',
-      title: 'Bloque 8 · 18:45 — Cierre: el decálogo y la evaluación final',
+      title: 'Bloque 8 · 16:30 — Cierre: el decálogo y la evaluación final',
       content: [
         { type: 'text', icon: 'CheckCircleIcon', text: 'Cierre del caso: gracias al trabajo de los 6 grupos, la evidencia de la Ferretería El Roble llegó completa a la audiencia. Volvamos a la intuición del Bloque 1: ¿qué cambió en su forma de ver un pantallazo?' },
         {

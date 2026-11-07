@@ -589,7 +589,7 @@ const COURSE_WINDOWS_BY_ROLE: Partial<Record<UserRole, Record<string, { opensAt:
   auditor: {
     auditoria_ciberriesgo: { opensAt: '2026-10-15T08:00:00-05:00', closesAt: '2026-10-22T23:59:59-05:00' },
   },
-  // Abogados de la Universidad Libre: jornada de Prueba Digital del sábado 7 de noviembre (8:00 a 20:00).
+  // Abogados de la Universidad Libre: jornada de Prueba Digital del sábado 7 de noviembre (10:30 a 17:00).
   // Abierto hasta el 30 de noviembre para repasar y terminar (el registro con el código cierra el 7).
   law_student: {
     prueba_digital: { opensAt: '2026-11-06T00:00:00-05:00', closesAt: '2026-11-30T23:59:59-05:00' },
