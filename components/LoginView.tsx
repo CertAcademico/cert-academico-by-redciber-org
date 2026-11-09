@@ -283,8 +283,8 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLogin }) => {
                     </div>
                   </>
                 ) : (
-                  <p className="text-xs text-amber-300 bg-amber-500/10 border border-amber-500/30 rounded-lg px-3 py-2 -mt-1">
-                    El registro gratuito cerró el 3 de noviembre. Si ya tienes una cuenta, inicia sesión.
+                  <p className="text-xs text-sky-200 bg-sky-500/10 border border-sky-500/30 rounded-lg px-3 py-2 -mt-1">
+                    Regístrate con el correo que te autorizó el docente (por ejemplo, tu correo institucional). Si ya tienes una cuenta, inicia sesión.
                   </p>
                 )}
                 <div>
@@ -374,7 +374,7 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLogin }) => {
 
                 <button
                   type="submit"
-                  disabled={isLoading || !(registrationOpen || eventOpen)}
+                  disabled={isLoading}
                   className="w-full mt-2 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold rounded-xl transition-all text-sm"
                 >
                   {isLoading ? 'Creando cuenta...' : 'Crear mi Cuenta →'}

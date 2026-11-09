@@ -65,7 +65,7 @@ export async function registerUser(
       throw new Error('No fue posible completar el registro. Revisa el código del evento (te lo da el docente) y acepta la Política de Tratamiento de Datos Personales.');
     }
     if (error.message.includes('REGISTRATION_CLOSED') || error.message.includes('CONSENT_REQUIRED') || error.message.includes('Database error saving new user')) {
-      throw new Error('No fue posible completar el registro. El registro gratuito está abierto hasta el martes 3 de noviembre y requiere aceptar la Política de Tratamiento de Datos Personales.');
+      throw new Error('No fue posible completar el registro. Verifica que aceptaste la Política de Tratamiento de Datos Personales y que usas el correo que te autorizó el docente; si no está autorizado, pídele que lo habilite.');
     }
     throw new Error(error.message);
   }
