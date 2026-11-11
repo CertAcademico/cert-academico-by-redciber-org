@@ -11,6 +11,7 @@ export interface StudentSummary {
   id: string;
   name: string;
   email: string;
+  role: string;
   progress: UserProgressMap;
   stats: UserStats;
 }
@@ -155,6 +156,6 @@ export async function getAllStudentsProgress(): Promise<StudentSummary[]> {
   return profiles.map(p => {
     const progress: UserProgressMap = {};
     for (const row of byUser.get(p.id) ?? []) progress[row.path_id] = rowToProgress(row);
-    return { id: p.id, name: p.name, email: p.email, progress, stats: statsFromProgress(progress) };
+    return { id: p.id, name: p.name, email: p.email, role: p.role, progress, stats: statsFromProgress(progress) };
   });
 }

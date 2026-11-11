@@ -466,6 +466,9 @@ const TeacherDashboard: React.FC<TeacherDashboardProps> = ({ paths, onExit, isAd
   const [resetResult, setResetResult] = useState<{ email: string; password: string } | null>(null);
   const [resetError, setResetError] = useState('');
   const [resettingEmail, setResettingEmail] = useState<string | null>(null);
+  // Filtro de la lista: por grupo (rol) y por texto en nombre o correo.
+  const [groupFilter, setGroupFilter] = useState('');
+  const [query, setQuery] = useState('');
 
   const loadStudents = () => {
     setIsLoading(true);
@@ -503,6 +506,15 @@ const TeacherDashboard: React.FC<TeacherDashboardProps> = ({ paths, onExit, isAd
     }
   };
 
+  const norm = (t: string) => t.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+  const visibleStudents = students.filter(st => {
+    if (groupFilter === 'cti_ean') {
+      if (st.role !== 'cti_student' || !st.email.toLowerCase().endsWith('@universidadean.edu.co')) return false;
+    } else if (groupFilter && st.role !== groupFilter) return false;
+    const q = norm(query.trim());
+    return !q || norm(st.name).includes(q) || norm(st.email).includes(q);
+  });
+
   return (
     <main className="bg-gradient-to-br from-slate-900 to-gray-800 min-h-screen text-white font-sans flex flex-col p-4">
       <div className="w-full max-w-6xl mx-auto flex-grow flex flex-col">
@@ -528,9 +540,26 @@ const TeacherDashboard: React.FC<TeacherDashboardProps> = ({ paths, onExit, isAd
           <p className="text-center text-slate-400 mt-10">Todavía no hay estudiantes registrados.</p>
         ) : (
           <div className="bg-slate-800/50 rounded-2xl p-4 md:p-6 overflow-x-auto">
-            <p className="text-slate-400 text-sm mb-4">
-              {students.length} estudiante{students.length !== 1 ? 's' : ''} registrado{students.length !== 1 ? 's' : ''}
-            </p>
+            <div className="flex flex-wrap items-center gap-3 mb-4">
+              <select
+                value={groupFilter}
+                onChange={e => setGroupFilter(e.target.value)}
+                className="bg-slate-900/80 border border-slate-700 rounded-lg px-3 py-1.5 text-sm text-white outline-none"
+              >
+                <option value="">Todos los grupos</option>
+                <option value="cti_ean">CTI · Universidad EAN</option>
+                {Object.entries(ROLE_LABELS).filter(([v]) => !['teacher', 'tutor', 'admin'].includes(v)).map(([v, l]) => <option key={v} value={v}>{l}</option>)}
+              </select>
+              <input
+                value={query}
+                onChange={e => setQuery(e.target.value)}
+                placeholder="Buscar por nombre o correo"
+                className="bg-slate-900/80 border border-slate-700 rounded-lg px-3 py-1.5 text-sm text-white outline-none flex-1 min-w-[200px]"
+              />
+              <p className="text-slate-400 text-sm">
+                {visibleStudents.length} de {students.length} estudiante{students.length !== 1 ? 's' : ''}
+              </p>
+            </div>
             <table className="w-full text-sm min-w-[720px]">
               <thead>
                 <tr className="text-left text-slate-400 border-b border-slate-700">
@@ -544,7 +573,7 @@ const TeacherDashboard: React.FC<TeacherDashboardProps> = ({ paths, onExit, isAd
                 </tr>
               </thead>
               <tbody>
-                {students
+                {visibleStudents
                   .slice()
                   .sort((a, b) => b.stats.totalXP - a.stats.totalXP)
                   .map(s => {
