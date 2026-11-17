@@ -1477,7 +1477,6 @@ const LEARNING_PATHS_DATA: LearningPaths = {
       },
       {
         id: 'cert_s8',
-        locked: true,
         title: "Sesión 8: Integración, Evaluación y Proyecto Final",
         content: [
           { type: 'text', icon: 'CheckCircleIcon', text: "Objetivo de la sesión: integrar los 7 marcos trabajados durante el curso (terminología, RFC 2350, FIRST Services Framework, SIM3/ENISA, NIST SP 800-61, TLP y redes de cooperación) en la defensa del proyecto final: el diseño completo de un CSIRT." },
