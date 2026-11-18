@@ -1276,6 +1276,11 @@ const LEARNING_PATHS_DATA: LearningPaths = {
                 href: '/materiales/certs-csirts/hoja-estudiante-simulacro-ransomware.docx',
                 note: 'Roles, reglas del juego, matriz de prioridad (triage), la Bitácora de decisiones y la plantilla de revisión post-incidente.',
               },
+              {
+                label: 'Las inyecciones y tarjetas secretas (.docx)',
+                href: '/materiales/certs-csirts/inyecciones-simulacro-ransomware.docx',
+                note: 'Para hacer el simulacro sin el docente: las 7 inyecciones en orden, con espacio para responder, las 4 tarjetas secretas y la revisión final. Lean una inyección a la vez y den 4 minutos a cada una.',
+              },
             ],
             steps: [
               { title: 'Repartan los roles', minutes: '2 min', detail: 'Líder del incidente, Analista técnico, Comunicaciones y Enlace legal y regulatorio. En grupos de 3, una persona asume Comunicaciones y Legal. Anoten los nombres en la bitácora.' },

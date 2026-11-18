@@ -51,6 +51,18 @@ const NOTICES: Notice[] = [
     text: 'Está al final del Bloque 7: 5 preguntas sobre la audiencia simulada. Se aprueba con 60 % y pueden reintentarla con otras preguntas para practicar. Al aprobarla queda completo el Bloque 7 y reciben el certificado del curso. Abierta hasta el 30 de noviembre a las 23:59.',
   },
   {
+    pathId: 'cert_csirt',
+    from: '2026-11-17T00:00:00-05:00', to: '2026-11-20T18:00:00-05:00', tone: 'live',
+    title: '📌 Cierre del curso: viernes 20 de noviembre a las 23:59',
+    text: 'Las 8 sesiones ya están abiertas y puede hacerlas en el orden que quiera. Para el certificado: 1) en cada sesión, complete las actividades y apruebe el quiz; 2) su grupo sube el entregable de las Sesiones 1 a 7 (con una entrega por grupo basta: +XP y badge para todos); 3) cierre con la Evaluación Integral de la Sesión 8. El certificado se emite al completar las 8 sesiones.',
+  },
+  {
+    pathId: 'cert_csirt',
+    from: '2026-11-20T18:00:00-05:00', to: '2026-11-21T00:00:00-05:00', tone: 'warn',
+    title: '⏰ Últimas horas: el curso cierra hoy a las 23:59',
+    text: 'Revise en el menú qué sesiones le faltan (las completas tienen ✓), suba los entregables pendientes de su grupo y presente la Evaluación Integral de la Sesión 8. El certificado se emite al completar las 8 sesiones.',
+  },
+  {
     pathId: 'prueba_digital',
     from: '2026-11-07T11:25:00-05:00', to: '2026-11-08T00:00:00-05:00', tone: 'info',
     title: '🏅 Cómo se gana el badge de cada bloque',

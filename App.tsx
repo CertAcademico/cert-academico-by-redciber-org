@@ -165,6 +165,9 @@ interface LearningPathViewProps {
   canSubmit: boolean;
 }
 
+// Cursos en cierre (CERTs y CSIRTs, CTI · UEAN): se puede entrar a cualquier sesión en cualquier orden.
+const OPEN_ORDER_PATHS = ['cert_csirt', 'cti_basico'];
+
 const LearningPathView: React.FC<LearningPathViewProps> = ({ path, pathId, onExit, userId, unlockAll, isAdmin, isStaff, canSubmit }) => {
   const [currentModuleIndex, setCurrentModuleIndex] = useState(0);
   const [showLibrary, setShowLibrary] = useState(false);
@@ -239,6 +242,8 @@ const LearningPathView: React.FC<LearningPathViewProps> = ({ path, pathId, onExi
     // Clase en vivo: cada bloque se abre a su hora, ni antes ni dependiendo del reto anterior.
     const opensAt = LIVE_SCHEDULE[pathId]?.[index];
     if (opensAt) return clock < Date.parse(opensAt);
+    // Cursos en cierre: todas las sesiones abiertas, sin esperar el quiz de la anterior.
+    if (OPEN_ORDER_PATHS.includes(pathId)) return false;
     const checkInteractive = (m: Module) =>
       m.content.some(
         c => INTERACTIVE_TYPES.includes(c.type),
