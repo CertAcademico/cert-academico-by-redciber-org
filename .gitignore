@@ -25,3 +25,7 @@ dist-ssr
 .vercel
 .env*
 credenciales/
+
+# Insumos de trabajo con datos sensibles (capturas de foros, fichas de inteligencia): nunca al repositorio público
+courses/*.docx
+/logo-inif.png
