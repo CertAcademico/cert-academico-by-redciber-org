@@ -43,14 +43,15 @@ import ExamView from './components/ExamView';
 import LibraryView from './components/LibraryView';
 import WallView from './components/WallView';
 import { WALL_COURSES } from './wallService';
+import HashLabView from './components/HashLabView';
 import ChangePasswordModal from './components/ChangePasswordModal';
-import { FREE_ROUTE } from './platform';
+import { FREE_ROUTE, PARTNER_LOGOS } from './platform';
 import { EXPERTISE_TRACKS, LEVEL_PATHS } from './expertise';
 import ExpertiseMapView from './components/ExpertiseMapView';
 import CampaignRankCard from './components/CampaignRankCard';
 import { getMyCertificates, issueCertificate, ROUTE_CERTIFICATE_ID, ROUTE_CERTIFICATE_TITLE } from './certificateService';
 import type { Certificate } from './certificateService';
-import { CredentialModal, cleanCourseTitle } from './components/Credential';
+import { CredentialModal, cleanCourseTitle, BADGE_TITLES } from './components/Credential';
 import VerifyView from './components/VerifyView';
 import { PrivacyPolicyContent } from './components/PrivacyPolicyView';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -125,6 +126,8 @@ const renderContentBlock = (
       return <ChallengeLabView data={block} onComplete={onComplete} />;
     case 'exam':
       return <ExamView data={block} onPassed={onExamPassed ?? onH5PComplete} />;
+    case 'hash_lab':
+      return <HashLabView data={block} />;
     case 'resource':
       return (
         <div className="my-6 flex flex-col md:flex-row md:items-center justify-between gap-4 bg-violet-500/10 border border-violet-500/40 rounded-2xl p-5 text-left">
@@ -165,8 +168,8 @@ interface LearningPathViewProps {
   canSubmit: boolean;
 }
 
-// Cursos en cierre (CERTs y CSIRTs, CTI · UEAN): se puede entrar a cualquier sesión en cualquier orden.
-const OPEN_ORDER_PATHS = ['cert_csirt', 'cti_basico'];
+// Cursos de sesiones libres (CERTs y CSIRTs, CTI · UEAN, conferencia con INIF): se puede entrar a cualquier sesión en cualquier orden.
+const OPEN_ORDER_PATHS = ['cert_csirt', 'cti_basico', 'antisuplantacion_seguros'];
 
 const LearningPathView: React.FC<LearningPathViewProps> = ({ path, pathId, onExit, userId, unlockAll, isAdmin, isStaff, canSubmit }) => {
   const [currentModuleIndex, setCurrentModuleIndex] = useState(0);
@@ -341,7 +344,15 @@ const LearningPathView: React.FC<LearningPathViewProps> = ({ path, pathId, onExi
           >
             ← Volver al Panel
           </button>
-          <h1 className="text-2xl md:text-3xl font-bold text-center">{path.title}</h1>
+          <div className="flex flex-col items-center gap-1.5">
+            <h1 className="text-2xl md:text-3xl font-bold text-center">{path.title}</h1>
+            {PARTNER_LOGOS[pathId] && (
+              <span className="inline-flex items-center gap-2 bg-white rounded-lg px-2.5 py-1">
+                <span className="text-[10px] font-semibold text-slate-500 uppercase tracking-wider">{PARTNER_LOGOS[pathId].label}</span>
+                <img src={PARTNER_LOGOS[pathId].src} alt={PARTNER_LOGOS[pathId].alt} className="h-5 w-auto" />
+              </span>
+            )}
+          </div>
           <div className="w-36 md:w-auto flex justify-end gap-2">
             {hasWall && (
               <button
@@ -572,6 +583,11 @@ const pathThemes: Record<string, { card: string; title: string; bar: string }> =
     title: 'text-sky-300',
     bar: 'from-sky-500 to-indigo-400',
   },
+  antisuplantacion_seguros: {
+    card: 'from-cyan-900/50 to-slate-900/50 ring-cyan-700 hover:ring-cyan-400 hover:shadow-cyan-500/30',
+    title: 'text-cyan-300',
+    bar: 'from-cyan-500 to-sky-400',
+  },
   ia_ofensiva_insider: {
     card: 'from-orange-900/50 to-slate-900/50 ring-orange-700 hover:ring-orange-500 hover:shadow-orange-500/30',
     title: 'text-orange-400',
@@ -620,6 +636,7 @@ const EXCLUSIVE_PATHS: Record<string, UserRole> = {
   auditoria_ciberriesgo: 'auditor', // Comités de riesgo de cooperativas financieras de Antioquia
   cti_basico: 'cti_student', // Grupo de estudiantes EAN del curso de CTI
   prueba_digital: 'law_student', // Abogados, Universidad Libre (jornada del 7 de noviembre)
+  antisuplantacion_seguros: 'insurance_student', // Gremio asegurador, conferencia con INIF
 };
 
 // Calendario por rol: cada curso se abre solo dentro de su ventana (hora de Colombia, UTC-5);
@@ -640,6 +657,10 @@ const COURSE_WINDOWS_BY_ROLE: Partial<Record<UserRole, Record<string, { opensAt:
   // Abierto hasta el 30 de noviembre para repasar y terminar (el registro con el código cierra el 7).
   law_student: {
     prueba_digital: { opensAt: '2026-11-06T00:00:00-05:00', closesAt: '2026-11-30T23:59:59-05:00' },
+  },
+  // Gremio asegurador: conferencia-taller de antisuplantación con INIF.
+  insurance_student: {
+    antisuplantacion_seguros: { opensAt: '2026-11-19T00:00:00-05:00', closesAt: '2026-12-31T23:59:59-05:00' },
   },
   // Grupo de estudiantes EAN del curso de CTI.
   cti_student: {
@@ -738,7 +759,15 @@ const LearningPathSelector: React.FC<LearningPathSelectorProps> = ({
   const routeDone = !!showRouteCertificate && Object.keys(paths).every(id => completedIds.includes(id));
   const achievements: { id: string; title: string }[] = [
     ...completedIds.map(id => ({ id, title: cleanCourseTitle(((paths[id] ?? levelPaths[id]) as LearningPathType).title) })),
-    ...(routeDone ? [{ id: ROUTE_CERTIFICATE_ID, title: ROUTE_CERTIFICATE_TITLE }] : []),
+    // Badges ya emitidos se muestran siempre, aunque el avance local no figure como terminado
+    // (badges emitidos por el docente, cursos a los que luego se les agregaron módulos o que el rol ya no ve).
+    ...certificates
+      .filter(c => !completedIds.includes(c.pathId) && c.pathId !== ROUTE_CERTIFICATE_ID && !MILESTONES[c.pathId])
+      .map(c => {
+        const p = (paths[c.pathId] ?? levelPaths[c.pathId]) as LearningPathType | undefined;
+        return { id: c.pathId, title: p ? cleanCourseTitle(p.title) : BADGE_TITLES[c.pathId] ?? c.pathId };
+      }),
+    ...(routeDone || certificates.some(c => c.pathId === ROUTE_CERTIFICATE_ID) ? [{ id: ROUTE_CERTIFICATE_ID, title: ROUTE_CERTIFICATE_TITLE }] : []),
     // Badges de alcance (p. ej. Fase 1 de CERTs y CSIRTs): se emiten desde la actividad del curso.
     ...certificates.filter(c => MILESTONES[c.pathId]).map(c => ({ id: c.pathId, title: MILESTONES[c.pathId].title })),
   ];
@@ -883,6 +912,12 @@ const LearningPathSelector: React.FC<LearningPathSelectorProps> = ({
                   </span>
                 )}
 
+                {PARTNER_LOGOS[id] && (
+                  <span className="self-start inline-flex items-center gap-2 bg-white rounded-lg px-2.5 py-1 mb-3">
+                    <span className="text-[10px] font-semibold text-slate-500 uppercase tracking-wider">{PARTNER_LOGOS[id].label}</span>
+                    <img src={PARTNER_LOGOS[id].src} alt={PARTNER_LOGOS[id].alt} className="h-5 w-auto" />
+                  </span>
+                )}
                 <h2 className={`text-xl font-bold mb-2 ${isDone ? 'pr-24' : ''} ${theme.title}`}>
                   {typedPath.title}
                 </h2>

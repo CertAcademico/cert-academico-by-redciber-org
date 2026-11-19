@@ -1,0 +1,634 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Antisuplantación en Seguros</title>
+<meta name="description" content="Presentación de la conferencia-taller Antisuplantación de Identidad en el Sector Asegurador, con INIF: cifras de Colombia, deepfakes, datos de póliza, integridad documental y protocolo.">
+<style>
+  :root {
+    color-scheme: dark;
+    --bg: #0b0f1c;
+    --surface-1: #0f1424;
+    --surface-2: #161d33;
+    --line: #26304d;
+    --text-primary: #f1f2f6;
+    --text-secondary: #b9bfd3;
+    --text-muted: #8a91a8;
+    --accent: #22d3ee;
+    --accent-soft: rgba(34, 211, 238, .12);
+    --series-1: #9085e9;
+    --warn: #f5b84b;
+    --good: #4ade80;
+    --bad: #f87171;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; background: var(--bg); color: var(--text-primary);
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif; }
+  body { overflow: hidden; }
+
+  .deck { position: relative; height: 100%; }
+  .slide { position: absolute; inset: 0; display: none; padding: clamp(20px, 5vw, 64px) clamp(16px, 6vw, 88px) 84px;
+    overflow-y: auto; background: radial-gradient(ellipse at top right, rgba(56,189,248,.10), transparent 55%), var(--bg); }
+  .slide.active { display: flex; flex-direction: column; animation: in .35s ease; }
+  @keyframes in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+
+  .kicker { font-size: 13px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--accent); margin-bottom: 10px; }
+  h1 { font-size: clamp(32px, 5.4vw, 60px); line-height: 1.05; font-weight: 800; letter-spacing: -.02em; }
+  h2 { font-size: clamp(26px, 3.6vw, 42px); line-height: 1.12; font-weight: 800; letter-spacing: -.01em; margin-bottom: 18px; }
+  h3 { font-size: 18px; font-weight: 700; margin-bottom: 6px; }
+  p, li { font-size: clamp(15px, 1.5vw, 19px); line-height: 1.55; color: var(--text-secondary); }
+  .lead { font-size: clamp(17px, 1.9vw, 23px); color: var(--text-secondary); max-width: 980px; margin-bottom: 22px; }
+  strong { color: var(--text-primary); }
+  .grow { flex: 1; }
+
+  .grid { display: grid; gap: 14px; }
+  .g2 { grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
+  .g3 { grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); }
+  .g4 { grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); }
+  .card { background: var(--surface-1); border: 1px solid var(--line); border-radius: 16px; padding: 18px 20px; }
+  .card p { font-size: 15px; }
+  .card .tag { display: inline-block; font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase;
+    color: var(--accent); margin-bottom: 6px; }
+
+  .stat { background: var(--surface-1); border: 1px solid var(--line); border-radius: 16px; padding: 20px; }
+  .stat .num { white-space: nowrap; font-size: clamp(30px, 3.8vw, 50px); font-weight: 800; color: var(--text-primary); letter-spacing: -.02em; line-height: 1; }
+  .stat .lbl { margin-top: 8px; font-size: 15px; color: var(--text-secondary); }
+  .stat .src { margin-top: 8px; font-size: 12px; color: var(--text-muted); }
+
+  .src-line { margin-top: auto; padding-top: 18px; font-size: 12px; color: var(--text-muted); }
+  .src-line a { color: var(--text-muted); }
+
+  /* Flujo de pasos (ciclo, kill chain) */
+  .flow { display: grid; gap: 10px; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); counter-reset: s; }
+  .flow .step { position: relative; background: var(--surface-1); border: 1px solid var(--line); border-radius: 14px; padding: 16px 14px 14px; }
+  .flow .step::before { counter-increment: s; content: counter(s); position: absolute; top: -12px; left: 12px; width: 26px; height: 26px;
+    border-radius: 50%; background: var(--accent); color: #0b1a2b; font-weight: 800; font-size: 13px; display: grid; place-items: center; }
+  .flow .step h3 { font-size: 16px; margin-top: 6px; }
+  .flow .step p { font-size: 14px; }
+
+  /* Pirámide del dolor */
+  .pyramid { display: flex; flex-direction: column; align-items: center; gap: 6px; margin: 8px 0; }
+  .pyramid div { height: 44px; display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 0 16px;
+    border-radius: 6px; font-weight: 700; font-size: 15px; color: #0b1a2b; }
+  .pyramid span.pain { font-weight: 600; font-size: 13px; opacity: .85; }
+
+  /* Gráficos de barras: una serie, un tono (validado), etiquetas directas, tooltip por barra */
+  .bars { display: grid; gap: 12px; max-width: 860px; }
+  .bar-row { display: grid; grid-template-columns: minmax(150px, 230px) 1fr; align-items: center; gap: 12px; }
+  .bar-row .name { font-size: 15px; color: var(--text-secondary); text-align: right; }
+  .bar-track { position: relative; height: 26px; }
+  .bar { height: 100%; background: var(--series-1); border-radius: 0 4px 4px 0; min-width: 4px; transition: filter .15s; }
+  .bar:hover { filter: brightness(1.18); }
+  .bar-val { white-space: nowrap; position: absolute; top: 50%; transform: translateY(-50%); margin-left: 8px; font-size: 14px; font-weight: 700; color: var(--text-primary); }
+  .chart-title { font-size: 15px; font-weight: 700; color: var(--text-primary); margin-bottom: 12px; }
+
+  /* Diamante */
+  .diamond { position: relative; width: min(560px, 92vw); aspect-ratio: 700 / 480; margin: 6px auto; }
+  .diamond svg { width: 100%; height: 100%; }
+
+  /* TLP */
+  .tlp { display: grid; grid-template-columns: 170px 1fr; gap: 10px; align-items: center; }
+  .tlp .chip { font-family: ui-monospace, Menlo, monospace; font-weight: 800; font-size: 14px; padding: 8px 10px; border-radius: 8px;
+    background: #000; text-align: center; }
+
+  table { width: 100%; border-collapse: collapse; font-size: 15px; }
+  th, td { text-align: left; padding: 9px 10px; border-bottom: 1px solid var(--line); color: var(--text-secondary); vertical-align: top; }
+  th { color: var(--text-primary); font-size: 13px; letter-spacing: .06em; text-transform: uppercase; }
+  code, .mono { font-family: ui-monospace, Menlo, monospace; font-size: .92em; color: #bae6fd; }
+
+  .callout { border: 1px solid rgba(56,189,248,.45); background: var(--accent-soft); border-radius: 14px; padding: 14px 18px; margin-top: 16px; }
+  .callout p { color: var(--text-primary); }
+  .ex { background: #070a14; border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; font-family: ui-monospace, Menlo, monospace;
+    font-size: 14px; line-height: 1.6; color: #c7f9d4; white-space: pre-wrap; }
+
+  ol.refs { padding-left: 20px; display: grid; gap: 6px; }
+  ol.refs li { font-size: 14px; }
+  ol.refs a { color: var(--accent); }
+
+  /* Barra de navegación */
+  .nav { position: fixed; left: 0; right: 0; bottom: 0; height: 60px; display: flex; align-items: center; gap: 12px; padding: 0 16px;
+    background: rgba(11,15,28,.92); border-top: 1px solid var(--line); backdrop-filter: blur(6px); z-index: 10; }
+  .nav button { background: var(--surface-2); color: var(--text-primary); border: 1px solid var(--line); border-radius: 10px;
+    padding: 8px 14px; font-size: 15px; cursor: pointer; }
+  .nav button:hover:not(:disabled) { border-color: var(--accent); }
+  .nav button:disabled { opacity: .35; cursor: default; }
+  .nav .brand { font-size: 13px; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .nav .count { margin-left: auto; font-size: 14px; color: var(--text-secondary); font-variant-numeric: tabular-nums; }
+  .progress { position: fixed; left: 0; top: 0; height: 3px; background: var(--accent); z-index: 11; transition: width .3s; }
+
+  @media (max-width: 640px) {
+    .bar-row { grid-template-columns: 1fr; gap: 4px; }
+    .bar-row .name { text-align: left; }
+    .tlp { grid-template-columns: 1fr; }
+    .nav .brand { display: none; }
+  }
+  @media print {
+    body { overflow: visible; }
+    .nav, .progress { display: none; }
+    .slide { position: relative; display: flex !important; min-height: 100vh; page-break-after: always; overflow: visible; }
+  }
+
+  /* Letra grande para proyectar */
+  .slide { padding-bottom: 96px; }
+  .kicker { font-size: clamp(15px, min(1.5vw, 2.17vh), 22px); }
+  h1 { font-size: clamp(38px, min(6.4vw, 9.28vh), 88px); }
+  h2 { font-size: clamp(32px, min(4.8vw, 6.96vh), 64px); margin-bottom: 24px; }
+  h3 { font-size: clamp(20px, min(2.2vw, 3.19vh), 30px); }
+  p, li { font-size: clamp(19px, min(2.2vw, 3.19vh), 30px); line-height: 1.45; }
+  .lead { font-size: clamp(21px, min(2.6vw, 3.77vh), 36px); max-width: 1400px; }
+  .card { padding: 22px 26px; }
+  .card p { font-size: clamp(18px, min(2vw, 2.90vh), 27px); margin-top: 6px; }
+  .card .tag { font-size: clamp(14px, min(1.3vw, 1.89vh), 19px); }
+  .stat .num { font-size: clamp(36px, min(5vw, 7.25vh), 72px); }
+  .stat .lbl { font-size: clamp(18px, min(2vw, 2.90vh), 27px); }
+  .groups { grid-template-columns: repeat(3, 1fr); }
+  @media (max-width: 760px) { .groups { grid-template-columns: 1fr; } }
+  .flow { grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 18px; }
+  .flow .step { padding: 22px 18px 18px; }
+  .flow .step::before { width: 34px; height: 34px; font-size: 17px; top: -16px; }
+  .flow .step h3 { font-size: clamp(20px, min(2vw, 2.90vh), 28px); }
+  .flow .step p { font-size: clamp(17px, min(1.7vw, 2.46vh), 24px); }
+  table { font-size: clamp(19px, min(2.1vw, 3.04vh), 28px); }
+  th { font-size: clamp(14px, min(1.3vw, 1.89vh), 19px); }
+  td { padding: 12px 14px; }
+  td.yr { color: var(--accent); font-weight: 800; white-space: nowrap; width: 1%; }
+  .ex { font-size: clamp(13px, min(1.6vw, 2.32vh), 22px); word-break: break-all; }
+  .src-line { font-size: clamp(13px, min(1.2vw, 1.74vh), 17px); }
+  .callout { padding: 18px 24px; margin-top: 22px; }
+  .big { font-size: clamp(22px, min(2.8vw, 4.06vh), 38px); line-height: 1.4; color: var(--text-primary); max-width: 1500px; }
+  .hint { margin-top: 22px; font-size: clamp(18px, min(1.9vw, 2.75vh), 26px); color: var(--text-secondary); }
+  .part { font-size: .5em; color: var(--text-muted); font-weight: 700; }
+  .badge { display: inline-block; background: var(--accent); color: #0b1a2b; border-radius: 14px; padding: 6px 18px; }
+  .meta { display: flex; flex-wrap: wrap; gap: 14px; margin-bottom: 22px; }
+  .meta span { background: var(--surface-2); border: 1px solid var(--line); border-radius: 999px; padding: 8px 18px; font-size: clamp(17px, min(1.8vw, 2.61vh), 24px); color: var(--text-primary); }
+  .divider { background: radial-gradient(ellipse at bottom left, rgba(201,162,39,.16), transparent 60%), var(--bg); }
+  .divider .kicker { color: #facc15; }
+  .reto { background: radial-gradient(ellipse at top right, rgba(74,222,128,.12), transparent 60%), var(--bg); }
+  ol.steps { list-style: none; counter-reset: st; display: grid; gap: 14px; }
+  ol.steps li { counter-increment: st; display: grid; grid-template-columns: auto 1fr; gap: 16px; align-items: start;
+    background: var(--surface-1); border: 1px solid var(--line); border-radius: 16px; padding: 14px 20px; }
+  ol.steps li::before { content: counter(st); width: 44px; height: 44px; border-radius: 50%; background: var(--accent); color: #0b1a2b;
+    font-weight: 800; font-size: 22px; display: grid; place-items: center; }
+  ol.steps p { font-size: clamp(17px, min(1.9vw, 2.75vh), 25px); color: var(--text-secondary); }
+  .timer { margin-left: 10px; font: inherit; font-size: .7em; font-weight: 700; color: var(--accent); background: var(--accent-soft);
+    border: 1px solid rgba(56,189,248,.45); border-radius: 999px; padding: 2px 12px; cursor: pointer; vertical-align: middle; }
+  .timer.on { background: var(--accent); color: #0b1a2b; }
+  .clock { position: fixed; top: 14px; right: 18px; z-index: 12; display: none; font-variant-numeric: tabular-nums;
+    font-size: clamp(30px, min(4vw, 5.80vh), 56px); font-weight: 800; background: rgba(11,15,28,.92); border: 2px solid var(--accent);
+    border-radius: 16px; padding: 4px 18px; color: var(--text-primary); }
+  .clock.show { display: block; }
+  .clock.done { border-color: var(--bad); color: var(--bad); animation: blink 1s steps(2) infinite; }
+  @keyframes blink { 50% { opacity: .35; } }
+  @media print { .clock, .timer { display: none !important; } }
+
+  /* Co-marca y avisos de participación */
+  .logos { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+  .logos .pill { background: #fff; border-radius: 14px; padding: 10px 18px; display: inline-flex; }
+  .logos .pill img { height: clamp(34px, 5vh, 56px); width: auto; display: block; }
+  .logos .x { font-size: 28px; color: var(--text-muted); }
+  .logos .brandname { font-size: clamp(20px, 2.4vw, 30px); font-weight: 800; color: var(--text-primary); }
+  .logos .brandname small { display: block; font-size: .55em; font-weight: 600; color: var(--text-muted); }
+  .plat { margin-top: 22px; display: inline-block; background: var(--accent-soft); border: 1px solid rgba(34,211,238,.45);
+    border-radius: 14px; padding: 12px 20px; color: var(--text-primary); font-size: clamp(19px, min(2.2vw, 3.19vh), 30px); }
+  .tight .card { padding: 14px 20px; }
+  .tight .card h3 { font-size: clamp(18px, min(1.8vw, 2.6vh), 26px); }
+  .tight .card p { font-size: clamp(16px, min(1.6vw, 2.35vh), 23px); margin-top: 2px; }
+  .tight .card .tag { margin-bottom: 2px; }
+  .tight h2 { margin-bottom: 16px; }
+  .tight .callout { margin-top: 14px; padding: 12px 20px; }
+  @media (min-width: 900px) { .cols4 { grid-template-columns: repeat(4, 1fr); } .cols3 { grid-template-columns: repeat(3, 1fr); } }
+  .hash-in { width: 100%; max-width: 1100px; background: #070a14; color: var(--text-primary); border: 1px solid var(--line); border-radius: 12px;
+    padding: 14px 16px; font-family: ui-monospace, Menlo, monospace; font-size: clamp(16px, min(2vw, 2.9vh), 26px); }
+</style>
+</head>
+<body>
+<div class="progress" id="progress"></div>
+<main class="deck" id="deck">
+
+<section class="slide cover" aria-label="Portada">
+  <div class="logos"><span class="pill"><img src="logo-inif.png" alt="INIF"></span><span class="x">×</span><span class="brandname">CERT Académico <small>by RedCiber.org</small></span></div>
+  <div class="grow"></div>
+  <p class="kicker">Conferencia-taller · Gremio asegurador · 19 de noviembre de 2026</p>
+  <h1>Antisuplantación de identidad en el sector asegurador</h1>
+  <p class="lead" style="margin-top:18px">Deepfakes, datos de póliza e integridad de documentos digitales: cómo detectar, verificar y prevenir el fraude por suplantación.</p>
+  <div class="grow"></div>
+  <p class="src-line">Use las flechas ← → o deslice para avanzar.</p>
+</section>
+
+<section class="slide" aria-label="Participe desde su celular">
+  <p class="kicker">Antes de empezar</p>
+  <h2>Participe desde su celular</h2>
+  <ol class="steps">
+    <li><div><h3>Entre a la plataforma</h3><p><span class="mono">cert-academico-by-redciber-org.vercel.app/app</span></p></div></li>
+    <li><div><h3>Regístrese con el código del evento</h3><p>Pestaña «Registrarse» · código <span class="badge">INIF-ANTIFRAUDE</span></p></div></li>
+    <li><div><h3>Abra el curso y siga la charla</h3><p>Cada parte de esta presentación tiene su módulo. Cuando vea 📱, responda en la plataforma.</p></div></li>
+  </ol>
+  <div class="callout"><p>🎓 Al aprobar la evaluación final recibe su <strong>certificado verificable</strong>, en alianza con INIF.</p></div>
+</section>
+
+<section class="slide" aria-label="La agenda">
+  <p class="kicker">La agenda</p>
+  <h2>Seis momentos y un cierre</h2>
+  <div class="flow">
+    <div class="step"><h3>El fraude en cifras</h3><p>Colombia, 2024–2025</p></div>
+    <div class="step"><h3>Anatomía de la suplantación</h3><p>8 tipologías</p></div>
+    <div class="step"><h3>Deepfakes</h3><p>Ver ya no es creer</p></div>
+    <div class="step"><h3>Datos de póliza</h3><p>El blanco crítico</p></div>
+    <div class="step"><h3>Documentos digitales</h3><p>Integridad y fuente</p></div>
+    <div class="step"><h3>Protocolo</h3><p>Verificar, contener, reportar</p></div>
+    <div class="step"><h3>Evaluación</h3><p>Certificado</p></div>
+  </div>
+</section>
+
+<!-- ─────────────── 1 · CIFRAS ─────────────── -->
+<section class="slide divider" aria-label="Parte 1">
+  <div class="grow"></div>
+  <p class="kicker">Parte 1</p>
+  <h1>El fraude por suplantación en cifras</h1>
+  <p class="plat">📱 Plataforma · Módulo 1 · Responda «¿cuánto cree que es?» <strong>antes</strong> de ver cada cifra.</p>
+  <div class="grow"></div>
+</section>
+
+<section class="slide" aria-label="El fraude en seguros">
+  <p class="kicker">Sector asegurador</p>
+  <h2>El fraude crece, y lo que vemos es solo una parte</h2>
+  <div class="grid g3">
+    <div class="stat"><div class="num">49.645</div><div class="lbl">casos de fraude identificados en 2025</div><div class="src">Fasecolda · compañías con el 78 % de las primas</div></div>
+    <div class="stat"><div class="num">$256.000 M</div><div class="lbl">valor de esos casos en 2025</div><div class="src">Fasecolda</div></div>
+    <div class="stat"><div class="num">30.739</div><div class="lbl">casos en 2024, por más de $272.000 M</div><div class="src">Fasecolda</div></div>
+  </div>
+  <div class="callout"><p>Las ramas más expuestas: <strong>SOAT, automóviles y riesgos laborales</strong>. Mucho volumen, pagos rápidos y documentos fáciles de falsificar.</p></div>
+  <p class="src-line">Fuentes: Fasecolda, comunicado de cifras 2025 (febrero de 2026); La República.</p>
+</section>
+
+<section class="slide" aria-label="Lo que investiga INIF">
+  <p class="kicker">Lo que investiga INIF</p>
+  <h2>Uno de cada cinco casos tenía algo que ocultar</h2>
+  <div class="grid g3">
+    <div class="stat"><div class="num">32.136</div><div class="lbl">solicitudes atendidas en 2025</div><div class="src">INIF</div></div>
+    <div class="stat"><div class="num">19,1 %</div><div class="lbl">con fraude o indicios de fraude (6.137 casos)</div><div class="src">INIF</div></div>
+    <div class="stat"><div class="num">+$10.056 M</div><div class="lbl">ahorro estimado para clientes en autos y SOAT</div><div class="src">INIF</div></div>
+  </div>
+  <p class="src-line">Fuente: INIF, cifras 2025 (inif.com.co).</p>
+</section>
+
+<section class="slide" aria-label="La suplantación en Colombia">
+  <p class="kicker">Más allá de los seguros</p>
+  <h2>El mismo delincuente, distintas víctimas</h2>
+  <div class="grid g3">
+    <div class="stat"><div class="num">40.316</div><div class="lbl">denuncias por suplantación de identidad desde 2020</div><div class="src">Superintendencia de Industria y Comercio</div></div>
+    <div class="stat"><div class="num">765.000</div><div class="lbl">reclamaciones por fraude en la banca en 2025 (más de $967.000 M)</div><div class="src">Asobancaria</div></div>
+    <div class="stat"><div class="num">2.870</div><div class="lbl">casos de fraude en la compra virtual del SOAT, 2022–2025</div><div class="src">Superintendencia Financiera</div></div>
+  </div>
+  <div class="callout"><p>Quien abre un crédito con una cédula ajena reclama un siniestro con ella. <strong>La suplantación es un problema de todo el sistema.</strong></p></div>
+  <p class="src-line">Fuentes: SIC (Portafolio); Asobancaria (CiberLATAM); Superfinanciera (Publimetro, oct. 2026).</p>
+</section>
+
+<!-- ─────────────── 2 · TIPOLOGÍAS ─────────────── -->
+<section class="slide divider" aria-label="Parte 2">
+  <div class="grow"></div>
+  <p class="kicker">Parte 2</p>
+  <h1>Anatomía de la suplantación en seguros</h1>
+  <p class="plat">📱 Plataforma · Módulo 2 · Juego de memoria: una señal para cada tipología.</p>
+  <div class="grow"></div>
+</section>
+
+<section class="slide tight" aria-label="Tipologías">
+  <p class="kicker">Las 8 tipologías que más vemos</p>
+  <h2>¿Quién se hace pasar por quién?</h2>
+  <div class="grid g4 cols4">
+    <div class="card"><span class="tag">1</span><h3>Siniestro ficticio</h3><p>Un evento que nunca ocurrió.</p></div>
+    <div class="card"><span class="tag">2</span><h3>Falso asegurado o beneficiario</h3><p>Reclama con la cédula, la firma o la voz de otro.</p></div>
+    <div class="card"><span class="tag">3</span><h3>Cambio de cuenta de pago</h3><p>«Consígneme a esta cuenta nueva».</p></div>
+    <div class="card"><span class="tag">4</span><h3>Toma de la cuenta digital</h3><p>Entra al portal y cambia los datos.</p></div>
+    <div class="card"><span class="tag">5</span><h3>Póliza o SOAT falso</h3><p>Páginas clonadas y redes sociales.</p></div>
+    <div class="card"><span class="tag">6</span><h3>Falso intermediario</h3><p>Cobra primas que nunca llegan.</p></div>
+    <div class="card"><span class="tag">7</span><h3>Documento alterado</h3><p>Facturas, historias clínicas, incapacidades.</p></div>
+    <div class="card"><span class="tag">8</span><h3>Identidad sintética</h3><p>Datos reales de varios y una cara generada con IA.</p></div>
+  </div>
+</section>
+
+<section class="slide reto" aria-label="Pregunta rápida">
+  <p class="kicker">📱 Pregunta rápida · Módulo 2</p>
+  <h2>«Mi cuenta está embargada, consígneme a otra»</h2>
+  <p class="big">El asegurado da su cédula y su placa. ¿Hace el cambio?</p>
+  <div class="callout"><p><strong>No por esa llamada.</strong> La cédula y la placa se consiguen fácilmente. Se confirma por un canal registrado previamente y la cuenta nueva debe estar a nombre del titular.</p></div>
+</section>
+
+<!-- ─────────────── 3 · DEEPFAKES ─────────────── -->
+<section class="slide divider" aria-label="Parte 3">
+  <div class="grow"></div>
+  <p class="kicker">Parte 3</p>
+  <h1>Deepfakes: cuando ver ya no es creer</h1>
+  <p class="plat">📱 Plataforma · Módulo 3 · Simulación: la videollamada del asegurado.</p>
+  <div class="grow"></div>
+</section>
+
+<section class="slide" aria-label="Qué es un deepfake">
+  <p class="kicker">Qué es</p>
+  <h2>Una cara o una voz que no es de quien parece</h2>
+  <p class="lead">Video, imagen o audio generado o alterado con inteligencia artificial. Hoy basta una foto de perfil y unos segundos de una nota de voz.</p>
+  <div class="grid g4">
+    <div class="card"><span class="tag">Vinculación</span><p>Una póliza abierta con un rostro falso que pasa la prueba de vida.</p></div>
+    <div class="card"><span class="tag">Reclamación</span><p>Fotos de daños o lesiones generadas con IA.</p></div>
+    <div class="card"><span class="tag">Llamada</span><p>Voz clonada del asegurado o de un directivo que ordena un pago.</p></div>
+    <div class="card"><span class="tag">Evidencia</span><p>Videos de un accidente que nunca ocurrió.</p></div>
+  </div>
+  <p class="src-line">Un estudio de la industria de verificación de identidad (Signicat, 2025) reportó que los intentos de fraude con deepfakes crecieron más de 2.000 % en tres años.</p>
+</section>
+
+<section class="slide tight" aria-label="Señales de un deepfake">
+  <p class="kicker">Cómo detectarlo</p>
+  <h2>Seis señales y una prueba</h2>
+  <div class="grid g3 cols3">
+    <div class="card"><h3>👁️ Ojos</h3><p>Parpadeo escaso, reflejos distintos en cada ojo.</p></div>
+    <div class="card"><h3>🧑 Bordes</h3><p>Pelo, orejas o mandíbula borrosos al girar.</p></div>
+    <div class="card"><h3>👄 Boca y voz</h3><p>Labios desfasados, voz sin respiración.</p></div>
+    <div class="card"><h3>💡 Luz</h3><p>La luz de la cara no coincide con la del fondo.</p></div>
+    <div class="card"><h3>🖐️ Pida un gesto</h3><p>Girar de perfil, pasar la mano frente a la cara.</p></div>
+    <div class="card"><h3>🧬 Prueba de vida</h3><p>Activa (gestos al azar) más pasiva (textura, profundidad).</p></div>
+  </div>
+  <div class="callout"><p><strong>Regla de oro:</strong> ninguna imagen ni voz autoriza sola un pago o un cambio de datos. Confirme por un segundo canal que ya tenía registrado.</p></div>
+</section>
+
+<section class="slide reto" aria-label="Dinámica: la videollamada">
+  <p class="kicker">📱 Dinámica · Módulo 3 <button class="timer" data-min="5">⏱ 5 min</button></p>
+  <h2>La videollamada del asegurado</h2>
+  <p class="big">Viernes, 5:40 p. m. Pérdida total aprobada por <strong>$86.000.000</strong>. «Me robaron el celular, págueme hoy a otra cuenta». La imagen se ve pixelada y casi no mueve la cabeza.</p>
+  <div class="ex">Número: +57 3XX XXX 4417 (no registrado)
+Cuenta registrada: ahorros ****2201 (titular: Andrés Ríos)
+Cuenta nueva:      billetera 31X XXX 9086 (titular: «Ríos A.»)</div>
+  <p class="hint">Decidan en la plataforma. ¿Qué haría usted en cada paso?</p>
+</section>
+
+<!-- ─────────────── 4 · DATOS DE PÓLIZA ─────────────── -->
+<section class="slide divider" aria-label="Parte 4">
+  <div class="grow"></div>
+  <p class="kicker">Parte 4</p>
+  <h1>Datos de póliza: el blanco crítico</h1>
+  <p class="plat">📱 Plataforma · Módulo 4 · Reto: ¿quién entró a la póliza?</p>
+  <div class="grow"></div>
+</section>
+
+<section class="slide" aria-label="Los cambios críticos">
+  <p class="kicker">El momento de mayor riesgo</p>
+  <h2>Cinco cambios que siempre se verifican</h2>
+  <div class="grid g4">
+    <div class="card"><h3>📱 Celular y correo</h3><p>Por ahí llegan los avisos.</p></div>
+    <div class="card"><h3>🏦 Cuenta de pago</h3><p>Por ahí sale el dinero.</p></div>
+    <div class="card"><h3>👥 Beneficiarios</h3><p>Quién cobra.</p></div>
+    <div class="card"><h3>🏠 Dirección</h3><p>Dónde se notifica.</p></div>
+    <div class="card"><h3>🔑 Contraseña</h3><p>Quién entra.</p></div>
+  </div>
+  <div class="callout"><p>Si el celular o el correo cambiaron hace poco, toda solicitud de dinero se verifica dos veces y <strong>se avisa al canal anterior</strong>.</p></div>
+</section>
+
+<section class="slide reto" aria-label="Reto: quién entró a la póliza">
+  <p class="kicker">📱 Reto · Módulo 4 <button class="timer" data-min="6">⏱ 6 min</button></p>
+  <h2>¿Quién entró a la póliza?</h2>
+  <div class="ex">2026-11-08 18:20  Reposición de SIM de la línea ***4521 (punto de venta de un tercero)
+2026-11-09 02:48  reset_password   canal=SMS
+2026-11-09 02:49  login OK         ip=45.150.108.7 (Países Bajos, VPN)
+2026-11-09 02:51  cambio_celular   ***4521 → ***9930
+2026-11-09 02:52  cambio_correo
+2026-11-09 02:55  cambio_cuenta    póliza VID-77812
+2026-11-09 03:01  solicitud_pago   $64.000.000</div>
+  <p class="hint">Encuentre la IP, el canal del código, el primer cambio y el control que habría frenado el pago.</p>
+</section>
+
+<section class="slide" aria-label="Controles">
+  <p class="kicker">Lo que habría frenado el pago</p>
+  <h2>Seis controles para los datos de póliza</h2>
+  <div class="grid g3">
+    <div class="card"><h3>Aviso al canal anterior</h3><p>La víctima se entera a tiempo.</p></div>
+    <div class="card"><h3>Periodo de enfriamiento</h3><p>Sin pagos a cuentas nuevas durante 24 a 72 horas.</p></div>
+    <div class="card"><h3>Doble factor robusto</h3><p>App autenticadora o llave: el SMS cae con la reposición de SIM.</p></div>
+    <div class="card"><h3>Titularidad de la cuenta</h3><p>A nombre del asegurado, verificada con el banco.</p></div>
+    <div class="card"><h3>Mínimo privilegio</h3><p>Talleres y aliados ven solo lo necesario.</p></div>
+    <div class="card"><h3>Alertas por comportamiento</h3><p>Madrugada, VPN, cambios seguidos: revisión manual.</p></div>
+  </div>
+</section>
+
+<!-- ─────────────── 5 · DOCUMENTOS ─────────────── -->
+<section class="slide divider" aria-label="Parte 5">
+  <div class="grow"></div>
+  <p class="kicker">Parte 5</p>
+  <h1>Integridad de documentos digitales</h1>
+  <p class="plat">📱 Plataforma · Módulo 5 · Laboratorio de huella digital y reto de la factura alterada.</p>
+  <div class="grow"></div>
+</section>
+
+<section class="slide" aria-label="Tres preguntas">
+  <p class="kicker">Editar un PDF toma dos minutos</p>
+  <h2>Tres preguntas para cada documento</h2>
+  <div class="flow">
+    <div class="step"><h3>¿Quién lo emitió?</h3><p>Firma digital, certificado, canal de origen.</p></div>
+    <div class="step"><h3>¿Cambió desde que se emitió?</h3><p>Huella digital (hash) y metadatos.</p></div>
+    <div class="step"><h3>¿Coincide con la fuente?</h3><p>DIAN, RUNT, IPS, Registraduría, Fiscalía.</p></div>
+  </div>
+  <div class="callout"><p>La <strong>Ley 527 de 1999</strong> da valor a los mensajes de datos y a la firma digital: garantiza quién firmó y que el contenido no cambió.</p></div>
+</section>
+
+<section class="slide reto" aria-label="Laboratorio de huella">
+  <p class="kicker">📱 Laboratorio · Módulo 5</p>
+  <h2>Cambie una letra, cambie todo</h2>
+  <p class="lead">Escriba aquí y vea la huella SHA-256. Cambie un solo carácter.</p>
+  <textarea id="hash-in" rows="2" class="hash-in">Factura FE-10234 · Total: $4.850.000</textarea>
+  <div class="ex" id="hash-out" style="margin-top:12px"></div>
+  <p class="hint">Si la fuente publica o firma la huella del original, cualquiera puede comprobar que no fue alterado.</p>
+</section>
+
+<section class="slide reto" aria-label="Reto: la factura alterada">
+  <p class="kicker">📱 Reto · Módulo 5 <button class="timer" data-min="5">⏱ 5 min</button></p>
+  <h2>¿Cuál factura fue alterada?</h2>
+  <table>
+    <tr><th></th><th>Copia del taller</th><th>Copia del reclamante</th></tr>
+    <tr><td>Productor</td><td>Sistema de facturación</td><td>Editor de PDF en línea</td></tr>
+    <tr><td>Creación</td><td>03/11 10:12</td><td>03/11 10:12</td></tr>
+    <tr><td>Modificación</td><td>03/11 10:12</td><td>12/11 23:41</td></tr>
+    <tr><td>Firma digital</td><td>✅ válida</td><td>❌ inválida</td></tr>
+    <tr><td>Total</td><td>$4.850.000</td><td>$14.850.000</td></tr>
+  </table>
+  <p class="hint">Y la DIAN, consultada por CUFE, dice: <strong>$4.850.000</strong>.</p>
+</section>
+
+<section class="slide" aria-label="Validar en la fuente">
+  <p class="kicker">Siempre que exista, se consulta la fuente</p>
+  <h2>Cómo validar cada documento</h2>
+  <table>
+    <tr><th>Documento</th><th>Dónde se valida</th></tr>
+    <tr><td>SOAT</td><td>RUNT, por placa</td></tr>
+    <tr><td>Factura electrónica</td><td>DIAN, por CUFE</td></tr>
+    <tr><td>Cédula</td><td>Registraduría (servicios autorizados) y cotejo biométrico</td></tr>
+    <tr><td>Historia clínica o incapacidad</td><td>La IPS o la EPS que la expide</td></tr>
+    <tr><td>Denuncia penal</td><td>Fiscalía, por número de noticia criminal</td></tr>
+    <tr><td>Documento firmado</td><td>Certificado válido y sin cambios después de firmado</td></tr>
+  </table>
+</section>
+
+<!-- ─────────────── 6 · PROTOCOLO ─────────────── -->
+<section class="slide divider" aria-label="Parte 6">
+  <div class="grow"></div>
+  <p class="kicker">Parte 6</p>
+  <h1>Protocolo antisuplantación: verificar, contener, reportar</h1>
+  <p class="plat">📱 Plataforma · Módulo 6 · Juego de normas y taller en mesas.</p>
+  <div class="grow"></div>
+</section>
+
+<section class="slide" aria-label="Ley 2573 de 2026">
+  <p class="kicker">Rige desde el 20 de noviembre de 2026</p>
+  <h2>Ley Estatutaria 2573 de 2026: suplantación de identidad</h2>
+  <div class="grid g2">
+    <div class="card"><h3>Verificar</h3><p>Medidas suficientes para verificar la identidad de los clientes.</p></div>
+    <div class="card"><h3>Suspender</h3><p>Cobro y reporte negativo, de inmediato, cuando la persona alega suplantación.</p></div>
+    <div class="card"><h3>Responder</h3><p>En máximo diez días hábiles, con los soportes con que se aprobó el producto.</p></div>
+    <div class="card"><h3>Probar</h3><p>Carga dinámica de la prueba en los procesos que no son penales.</p></div>
+  </div>
+  <p class="src-line">Ley 2573 de 2026 (Diario Oficial 53.496); Sentencia C-413 de 2025.</p>
+</section>
+
+<section class="slide" aria-label="El marco legal">
+  <p class="kicker">El resto del marco</p>
+  <h2>Normas que respaldan la respuesta</h2>
+  <table>
+    <tr><td class="yr">Código Penal</td><td>Falsedad personal (art. 296), estafa (art. 246), falsedad en documento privado (art. 289)</td></tr>
+    <tr><td class="yr">Ley 1273 de 2009</td><td>Acceso abusivo (269A), violación de datos personales (269F), suplantación de sitios web (269G)</td></tr>
+    <tr><td class="yr">Ley 1581 de 2012</td><td>Protección de datos personales</td></tr>
+    <tr><td class="yr">Ley 527 de 1999</td><td>Mensajes de datos y firma digital</td></tr>
+    <tr><td class="yr">Código de Comercio</td><td>La mala fe en la reclamación hace perder el derecho al pago (art. 1078)</td></tr>
+  </table>
+</section>
+
+<section class="slide reto" aria-label="Taller en mesas">
+  <p class="kicker">📱 Taller en mesas · Módulo 6 <button class="timer" data-min="10">⏱ 10 min</button> <button class="timer" data-min="5">⏱ 5 min plenaria</button></p>
+  <h2>El protocolo de mi compañía</h2>
+  <div class="grid g3 groups">
+    <div class="card"><span class="tag">Mesa 1</span><p>Voz clonada de un «gerente» ordena un pago urgente.</p></div>
+    <div class="card"><span class="tag">Mesa 2</span><p>Póliza de vida emitida con una selfie que pasó la prueba de vida.</p></div>
+    <div class="card"><span class="tag">Mesa 3</span><p>Cambio de beneficiario tras una reposición de SIM.</p></div>
+    <div class="card"><span class="tag">Mesa 4</span><p>Historia clínica con el diagnóstico cambiado.</p></div>
+    <div class="card"><span class="tag">Mesa 5</span><p>SOAT comprado en una página clonada, y luego un accidente.</p></div>
+    <div class="card"><span class="tag">Mesa 6</span><p>Un «asesor» cobra primas en efectivo a nombre de la compañía.</p></div>
+  </div>
+  <p class="hint">Cinco pasos: verificar · contener · preservar evidencia · reportar · avisar al cliente. Vocero: 1 minuto. La mejor idea, al 💬 Muro.</p>
+</section>
+
+<!-- ─────────────── CIERRE ─────────────── -->
+<section class="slide divider" aria-label="Cierre">
+  <div class="grow"></div>
+  <p class="kicker">Para llevarse</p>
+  <h2>Tres ideas</h2>
+  <ol class="steps">
+    <li><div><h3>Ninguna imagen ni voz autoriza sola un pago</h3><p>Segundo canal, siempre.</p></div></li>
+    <li><div><h3>Todo cambio crítico se verifica y se enfría</h3><p>Aviso al canal anterior y pausa antes de pagar.</p></div></li>
+    <li><div><h3>Todo documento se valida en su fuente</h3><p>Huella, firma, metadatos y consulta oficial.</p></div></li>
+  </ol>
+  <div class="grow"></div>
+</section>
+
+<section class="slide reto" aria-label="Evaluación final">
+  <div class="grow"></div>
+  <p class="kicker">📱 Plataforma · Módulo 7</p>
+  <h1>Evaluación final y certificado</h1>
+  <p class="big" style="margin-top:18px">8 preguntas · se aprueba con 70 % · puede reintentar con preguntas distintas. Al aprobar, su certificado verificable queda en «Mis badges y certificados».</p>
+  <div class="grow"></div>
+  <div class="logos"><span class="pill"><img src="logo-inif.png" alt="INIF"></span><span class="x">×</span><span class="brandname">CERT Académico <small>by RedCiber.org</small></span></div>
+</section>
+
+<section class="slide" aria-label="Fuentes">
+  <p class="kicker">Fuentes</p>
+  <h2>Referencias</h2>
+  <ol class="refs">
+    <li><a href="https://www.fasecolda.com/wp-content/uploads/COMUNICADO-2026-CIFRAS-FINAL.pdf" target="_blank" rel="noopener">Fasecolda, comunicado de cifras 2025 (febrero de 2026)</a></li>
+    <li><a href="https://inif.com.co/" target="_blank" rel="noopener">INIF, cifras 2025</a></li>
+    <li><a href="https://www.larepublica.co/finanzas/soat-automoviles-y-riesgos-laborales-las-ramas-mas-expuestas-los-fraudes-en-seguros-4286185" target="_blank" rel="noopener">La República: SOAT, automóviles y riesgos laborales, las ramas más expuestas</a></li>
+    <li><a href="https://www.portafolio.co/tecnologia/sic-alerta-por-suplantacion-de-identidad-van-40-316-denuncias-desde-2020-en-colombia-por-este-delito-496748" target="_blank" rel="noopener">Portafolio: SIC, 40.316 denuncias por suplantación desde 2020</a></li>
+    <li><a href="https://ciberlatam.com/noticias/colombia-ia-deepfakes-fraude-bancario" target="_blank" rel="noopener">CiberLATAM: IA, deepfakes y fraude bancario (Asobancaria)</a></li>
+    <li><a href="https://www.publimetro.co/noticias/2026/10/07/ojo-al-comprar-el-soat-por-internet-tribunal-ordeno-nuevas-medidas-tras-reportes-de-fraude-en-colombia/" target="_blank" rel="noopener">Publimetro: fraude en la compra virtual del SOAT (Superfinanciera)</a></li>
+    <li><a href="https://sidn.ramajudicial.gov.co/SIDN//NORMATIVA/TEXTOS_COMPLETOS/7_LEYES/LEYES%202026/Ley%202573%20de%202026.pdf" target="_blank" rel="noopener">Ley Estatutaria 2573 de 2026</a></li>
+    <li>Signicat (2025), estudio sobre fraude de identidad con IA, citado por Río Negro y Mercado.</li>
+  </ol>
+  <p class="src-line">Todos los casos de las dinámicas son ficticios.</p>
+</section>
+
+</main>
+
+<nav class="nav" aria-label="Navegación de diapositivas">
+  <button id="prev" aria-label="Diapositiva anterior">←</button>
+  <button id="next" aria-label="Diapositiva siguiente">→</button>
+  <span class="brand">Antisuplantación en el Sector Asegurador · INIF × CERT Académico by RedCiber.org</span>
+  <span class="count" id="count" aria-live="polite"></span>
+</nav>
+
+<script>
+  (function () {
+    var slides = Array.prototype.slice.call(document.querySelectorAll('.slide'));
+    var prev = document.getElementById('prev'), next = document.getElementById('next');
+    var count = document.getElementById('count'), progress = document.getElementById('progress');
+    var i = 0;
+    function fromHash() { var n = parseInt((location.hash || '').replace('#', ''), 10); return n >= 1 && n <= slides.length ? n - 1 : 0; }
+    function show(n) {
+      i = Math.max(0, Math.min(slides.length - 1, n));
+      slides.forEach(function (s, k) { s.classList.toggle('active', k === i); });
+      count.textContent = (i + 1) + ' / ' + slides.length;
+      progress.style.width = ((i + 1) / slides.length * 100) + '%';
+      prev.disabled = i === 0; next.disabled = i === slides.length - 1;
+      if (location.hash !== '#' + (i + 1)) history.replaceState(null, '', '#' + (i + 1));
+      slides[i].scrollTop = 0;
+    }
+    prev.addEventListener('click', function () { show(i - 1); });
+    next.addEventListener('click', function () { show(i + 1); });
+    document.addEventListener('keydown', function (e) {
+      var tg = e.target && e.target.tagName;
+      if (tg === 'TEXTAREA' || tg === 'INPUT') return;
+      if (e.key === 'ArrowRight' || e.key === 'PageDown' || e.key === ' ') { e.preventDefault(); show(i + 1); }
+      if (e.key === 'ArrowLeft' || e.key === 'PageUp') { e.preventDefault(); show(i - 1); }
+      if (e.key === 'Home') show(0);
+      if (e.key === 'End') show(slides.length - 1);
+    });
+    var x0 = null;
+    document.addEventListener('touchstart', function (e) { x0 = e.touches[0].clientX; }, { passive: true });
+    document.addEventListener('touchend', function (e) {
+      if (x0 === null) return; var dx = e.changedTouches[0].clientX - x0;
+      if (Math.abs(dx) > 50) show(i + (dx < 0 ? 1 : -1)); x0 = null;
+    });
+    window.addEventListener('hashchange', function () { show(fromHash()); });
+    show(fromHash());
+  })();
+</script>
+<div class="clock" id="clock" aria-live="polite" title="Clic para detener"></div>
+<script>
+  (function () {
+    var clock = document.getElementById('clock'), t = null, end = 0, active = null;
+    function stop() { clearInterval(t); t = null; clock.className = 'clock'; if (active) active.classList.remove('on'); active = null; }
+    function tick() {
+      var s = Math.max(0, Math.round((end - Date.now()) / 1000));
+      clock.textContent = Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0');
+      if (s === 0) { clearInterval(t); clock.className = 'clock show done'; }
+    }
+    document.addEventListener('click', function (e) {
+      var b = e.target.closest('.timer');
+      if (!b) return;
+      if (active === b) { stop(); return; }
+      stop(); active = b; b.classList.add('on');
+      end = Date.now() + Number(b.dataset.min || 0) * 60000;
+      clock.className = 'clock show'; tick(); t = setInterval(tick, 500);
+    });
+    clock.addEventListener('click', stop);
+  })();
+</script>
+<script>
+  (function () {
+    var input = document.getElementById('hash-in'), out = document.getElementById('hash-out');
+    if (!input) return;
+    function hex(buf) { return Array.prototype.map.call(new Uint8Array(buf), function (b) { return ('0' + b.toString(16)).slice(-2); }).join(''); }
+    function run() {
+      if (!(window.crypto && crypto.subtle)) { out.textContent = 'Este navegador no calcula la huella aquí: ábralo desde la plataforma (https).'; return; }
+      crypto.subtle.digest('SHA-256', new TextEncoder().encode(input.value)).then(function (h) { out.textContent = 'SHA-256: ' + hex(h); });
+    }
+    input.addEventListener('input', run); run();
+  })();
+</script>
+</body>
+</html>

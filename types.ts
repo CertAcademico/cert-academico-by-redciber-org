@@ -157,6 +157,14 @@ export interface ResourceContent {
   cta: string;
 }
 
+/** Laboratorio de huella digital: calcula el SHA-256 de un texto o archivo en el dispositivo. */
+export interface HashLabContent {
+  type: 'hash_lab';
+  title: string;
+  description: string;
+  sample: string; // texto inicial para comparar
+}
+
 export type ContentBlock = 
   | TextContent 
   | VideoContent 
@@ -169,7 +177,8 @@ export type ContentBlock =
   | ScenarioContent
   | ChallengeContent
   | ExamContent
-  | ResourceContent;
+  | ResourceContent
+  | HashLabContent;
 
 export interface Module {
   id: string;
@@ -200,7 +209,7 @@ export type LearningPaths = Record<string, LearningPath>;
 
 // --- Auth & Progress ---
 
-export type UserRole = 'student' | 'teacher' | 'tutor' | 'admin' | 'cert_student' | 'auditor' | 'cti_student' | 'free_student' | 'law_student';
+export type UserRole = 'student' | 'teacher' | 'tutor' | 'admin' | 'cert_student' | 'auditor' | 'cti_student' | 'free_student' | 'law_student' | 'insurance_student';
 
 export interface UserProfile {
   id: string;

@@ -1,5 +1,6 @@
 import React, { forwardRef, useRef, useState } from 'react';
-import { BRAND, FREE_ROUTE, appUrl } from '../platform';
+import { createPortal } from 'react-dom';
+import { BRAND, FREE_ROUTE, PARTNER_LOGOS, appUrl } from '../platform';
 import { LEVEL_NAMES, LEVEL_PATHS } from '../expertise';
 import { ROUTE_CERTIFICATE_ID } from '../certificateService';
 import type { Certificate } from '../certificateService';
@@ -18,6 +19,7 @@ const BADGE_COLORS: Record<string, [string, string]> = {
   auditoria_ciberriesgo: ['#e11d48', '#881337'],
   cti_basico: ['#8b5cf6', '#2e1065'],
   prueba_digital: ['#0284c7', '#1e1b4b'],
+  antisuplantacion_seguros: ['#0891b2', '#0c2340'],
   cybercrime_intermedio: ['#b91c1c', '#431407'],
   cybercrime_avanzado: ['#7f1d1d', '#0c0a09'],
   forensic_intermedio: ['#15803d', '#052e16'],
@@ -55,7 +57,7 @@ const formatDate = (iso: string) =>
   new Date(iso).toLocaleDateString('es-CO', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'America/Bogota' });
 
 // Título corto que cabe en el badge (el certificado usa el título completo).
-const BADGE_TITLES: Record<string, string> = {
+export const BADGE_TITLES: Record<string, string> = {
   cybersecurity: 'Fundamentos de Ciberseguridad',
   cybercrime: 'Investigación del Cibercrimen',
   cybercriminology: 'Principios de Cibercriminología',
@@ -67,6 +69,7 @@ const BADGE_TITLES: Record<string, string> = {
   auditoria_ciberriesgo: 'Auditoría del Riesgo Cibernético',
   cti_basico: 'Cyber Threat Intelligence',
   prueba_digital: 'Prueba Digital para Abogados',
+  antisuplantacion_seguros: 'Antisuplantación en Seguros',
   cybercrime_intermedio: 'Investigador Cibercriminal',
   cybercrime_avanzado: 'Investigador Cibercriminal',
   forensic_intermedio: 'Perito Forense Digital',
@@ -107,6 +110,8 @@ const BadgeIcon: React.FC<{ pathId: string; color: string }> = ({ pathId: rawId,
       return (<g {...s}><path d="M4 32 C14 15 50 15 60 32 C50 49 14 49 4 32 Z" /><circle cx="32" cy="32" r="10" /><circle cx="32" cy="32" r="3.5" fill={color} /></g>);
     case 'prueba_digital': // balanza de la justicia
       return (<g {...s}><path d="M32 8 V56 M20 56 H44 M12 18 H52" /><path d="M12 18 L4 36 H20 Z M52 18 L44 36 H60 Z" /><circle cx="32" cy="8" r="2.5" fill={color} /></g>);
+    case 'antisuplantacion_seguros': // escudo con documento de identidad
+      return (<g {...s}><path d="M32 5 L54 13 V31 C54 45 44 54 32 59 C20 54 10 45 10 31 V13 Z" /><rect x="20" y="24" width="24" height="16" rx="2.5" /><circle cx="27" cy="31" r="3" /><path d="M33 29 H40 M33 34 H38" /></g>);
     case ROUTE_CERTIFICATE_ID: // trofeo
       return (<g {...s}><path d="M20 8 H44 V22 C44 32 39 39 32 39 C25 39 20 32 20 22 Z" /><path d="M20 13 H11 C11 23 15 28 21 28 M44 13 H53 C53 23 49 28 43 28" /><path d="M32 39 V49 M23 57 H41 M26 49 H38" /></g>);
     default: // visto bueno genérico
@@ -182,11 +187,17 @@ export const BadgeSvg = forwardRef<SVGSVGElement, { pathId: string; title: strin
 export const CertificateSheet: React.FC<{ cert: Certificate; title: string }> = ({ cert, title }) => {
   const isRoute = cert.pathId === ROUTE_CERTIFICATE_ID;
   return (
-    <div id="certificate-sheet" className="bg-white text-slate-900 rounded-xl p-8 md:p-12 border-[10px] border-double border-slate-800 aspect-[1.414/1] w-full flex flex-col justify-between">
+    <div className="certificate-sheet bg-white text-slate-900 rounded-xl p-8 md:p-12 border-[10px] border-double border-slate-800 aspect-[1.414/1] w-full flex flex-col justify-between">
       <div className="flex justify-between items-start gap-6">
         <div>
           <p className="text-xl md:text-2xl font-extrabold tracking-wide">CERT Académico</p>
           <p className="text-sm text-slate-500">by RedCiber.org</p>
+          {PARTNER_LOGOS[cert.pathId] && (
+            <div className="flex items-center gap-2 mt-3">
+              <span className="text-[10px] uppercase tracking-wider text-slate-500">{PARTNER_LOGOS[cert.pathId].label}</span>
+              <img src={PARTNER_LOGOS[cert.pathId].src} alt={PARTNER_LOGOS[cert.pathId].alt} className="h-7 w-auto" />
+            </div>
+          )}
         </div>
         <BadgeSvg pathId={cert.pathId} title={title} year={new Date(cert.issuedAt).getFullYear().toString()} size={90} />
       </div>
@@ -246,13 +257,22 @@ const linkedInUrl = (cert: Certificate, title: string) => {
   return `https://www.linkedin.com/profile/add?${params.toString()}`;
 };
 
-// Al imprimir, solo se muestra la hoja del certificado, en horizontal.
+// Al imprimir sale UNA sola hoja A4 horizontal: el resto de la página se quita del flujo (display:none,
+// no solo se oculta) y se imprime una copia del certificado puesta al final de <body>, sin posición
+// fija (un elemento fijo se repite en cada página impresa).
 const PRINT_CSS = `
+#certificate-print-root { display: none; }
 @media print {
   @page { size: A4 landscape; margin: 0; }
-  body * { visibility: hidden !important; }
-  #certificate-sheet, #certificate-sheet * { visibility: visible !important; }
-  #certificate-sheet { position: fixed; inset: 0; margin: 0; border-radius: 0; width: 100%; height: 100%; }
+  html, body { height: auto !important; overflow: visible !important; background: #fff !important; margin: 0 !important; padding: 0 !important; }
+  body > *:not(#certificate-print-root) { display: none !important; }
+  #certificate-print-root { display: block !important; }
+  #certificate-print-root .certificate-sheet {
+    width: 296mm; height: 208mm; overflow: hidden; box-sizing: border-box;
+    aspect-ratio: auto; border-radius: 0; margin: 0; padding: 14mm 18mm;
+    break-inside: avoid; break-after: avoid;
+    -webkit-print-color-adjust: exact; print-color-adjust: exact;
+  }
 }`;
 
 /** Vista del titular: badge, certificado, compartir, descargar e imprimir. */
@@ -325,6 +345,10 @@ export const CredentialModal: React.FC<{ cert: Certificate; title: string; onClo
 
         <CertificateSheet cert={cert} title={title} />
       </div>
+      {createPortal(
+        <div id="certificate-print-root" aria-hidden="true"><CertificateSheet cert={cert} title={title} /></div>,
+        document.body,
+      )}
     </div>
   );
 };

@@ -79,12 +79,11 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLogin }) => {
     if (!regName || !regEmail || !regPassword || !regConfirm) { setError('Completa todos los campos.'); return; }
     if (regPassword.length < 8) { setError('La contraseña debe tener al menos 8 caracteres.'); return; }
     if (regPassword !== regConfirm) { setError('Las contraseñas no coinciden.'); return; }
-    if (eventOpen && !regCode.trim()) { setError('Escribe el código del evento que te dio el docente.'); return; }
     if (!regConsent) { setError('Debes aceptar la Política de Tratamiento de Datos Personales para registrarte.'); return; }
     if (captchaMissing) { setError('Completa la verificación de seguridad.'); return; }
     setIsLoading(true);
     try {
-      const result = await registerUser(regName, regEmail, regPassword, captchaToken ?? undefined, eventOpen ? regCode : undefined);
+      const result = await registerUser(regName, regEmail, regPassword, captchaToken ?? undefined, eventOpen && regCode.trim() ? regCode : undefined);
       if ('user' in result) {
         onLogin(result.user);
       } else {
@@ -265,20 +264,19 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLogin }) => {
                 ) : eventOpen ? (
                   <>
                     <p className="text-xs text-sky-200 bg-sky-500/10 border border-sky-500/30 rounded-lg px-3 py-2 -mt-1">
-                      ⚖️ ¿Vienes al curso Prueba Digital para Abogados? Regístrate con el código que te da el docente hasta el sábado 7 de noviembre. El curso queda abierto hasta el 30 de noviembre para repasar.
+                      🛡️ ¿Vienes a la conferencia de Antisuplantación de Identidad en el Sector Asegurador, con INIF? Regístrate con el código que te da el conferencista. Si tu correo ya fue autorizado, deja el código en blanco.
                     </p>
                     <div>
                       <label className="text-[11px] font-bold text-slate-400 uppercase tracking-widest block mb-1.5">
-                        Código del evento
+                        Código del evento <span className="normal-case tracking-normal font-normal text-slate-500">(si te lo dieron)</span>
                       </label>
                       <input
                         type="text"
                         value={regCode}
                         onChange={e => setRegCode(e.target.value)}
                         className={`${inputCls} uppercase`}
-                        placeholder="Te lo da el docente"
+                        placeholder="Te lo da el conferencista"
                         autoComplete="off"
-                        required
                       />
                     </div>
                   </>
