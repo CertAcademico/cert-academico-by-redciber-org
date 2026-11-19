@@ -1130,6 +1130,10 @@ const App: React.FC = () => {
 
   const isAdmin = currentUser.role === 'admin';
   const hasExclusivePaths = Object.values(EXCLUSIVE_PATHS).includes(currentUser.role);
+  // Permisos individuales (course_grants): 'general' abre todos los cursos no exclusivos, y un id
+  // exclusivo (p. ej. cert_csirt) abre ese curso. Los cursos habilitados así no tienen calendario.
+  const grants = currentUser.grants ?? [];
+  const isGranted = (id: string) => grants.includes(id) || (grants.includes('general') && !(id in EXCLUSIVE_PATHS));
   // Se filtra acá (no solo en el grid) para que tampoco se pueda entrar por URL directa (?topic=...).
   // Admin ve todo; un rol con cursos exclusivos ve solo esos; el resto ve todo menos los exclusivos.
   // Registro gratuito: solo la ruta FREE_ROUTE, en su orden (CERTs/CSIRTs al final).
@@ -1139,7 +1143,7 @@ const App: React.FC = () => {
     : Object.fromEntries(
         (Object.entries(learningPaths) as [string, LearningPathType][]).filter(([id]) =>
           !(id in LEVEL_PATHS) &&
-          (isAdmin || (hasExclusivePaths ? EXCLUSIVE_PATHS[id] === currentUser.role : !(id in EXCLUSIVE_PATHS))),
+          (isAdmin || isGranted(id) || (hasExclusivePaths ? EXCLUSIVE_PATHS[id] === currentUser.role : !(id in EXCLUSIVE_PATHS))),
         ),
       );
 
@@ -1173,7 +1177,7 @@ const App: React.FC = () => {
   // Roles con calendario (ver COURSE_WINDOWS_BY_ROLE): fuera de su ventana el curso se ve con 🔒.
   const lockedPaths: Record<string, string> = {};
   for (const id of Object.keys(visiblePaths)) {
-    const label = getCourseLockLabel(currentUser.role, id, now, currentUser.email);
+    const label = isGranted(id) ? null : getCourseLockLabel(currentUser.role, id, now, currentUser.email);
     if (label) lockedPaths[id] = label;
   }
   // Ruta secuencial: cada curso se desbloquea al terminar el anterior.

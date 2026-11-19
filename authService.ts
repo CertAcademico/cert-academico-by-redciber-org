@@ -7,9 +7,11 @@ export interface SessionUser {
   name: string;
   email: string;
   role: UserRole;
+  /** Cursos habilitados individualmente además de los de su rol ('general' = todos los cursos abiertos). */
+  grants: string[];
 }
 
-async function fetchProfile(userId: string): Promise<{ name: string; email: string; role: UserRole }> {
+async function fetchProfile(userId: string): Promise<{ name: string; email: string; role: UserRole; grants: string[] }> {
   const { data, error } = await supabase
     .from('profiles')
     .select('name, email, role')
@@ -22,7 +24,10 @@ async function fetchProfile(userId: string): Promise<{ name: string; email: stri
   if (profile.role === 'cert_student' && profile.email.toLowerCase().endsWith('@universidadean.edu.co')) {
     profile.role = 'student';
   }
-  return profile;
+  // Permisos individuales (tabla course_grants). Si la consulta falla, el usuario queda solo con su rol.
+  const { data: grantRows } = await supabase.from('course_grants').select('path_id').eq('user_id', userId);
+  const grants = ((grantRows ?? []) as { path_id: string }[]).map(g => g.path_id);
+  return { ...profile, grants };
 }
 
 /** Si el proyecto exige confirmar el correo, el registro no inicia sesión: hay que abrir el enlace enviado. */
