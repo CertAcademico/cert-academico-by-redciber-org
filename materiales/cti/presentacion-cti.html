@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Fundamentos de CTI · CERT Académico</title>
-<meta name="description" content="Presentación de apoyo del curso Fundamentos de Cyber Threat Intelligence (CTI) de CERT Académico by RedCiber.org: conceptos, cifras 2025–2026 y referencias.">
+<meta name="description" content="Presentación de apoyo del curso Fundamentos de Cyber Threat Intelligence (CTI) de CERT Académico by RedCiber.org: conceptos, cifras actualizadas a noviembre de 2026 y referencias.">
 <style>
   :root {
     color-scheme: dark;
@@ -104,6 +104,7 @@
 
   ol.refs { padding-left: 20px; display: grid; gap: 6px; }
   ol.refs li { font-size: 14px; }
+  @media (min-width: 900px) { ol.refs { grid-template-columns: 1fr 1fr; column-gap: 32px; padding-left: 0; list-style-position: inside; } ol.refs li { font-size: 13px; line-height: 1.45; } }
   ol.refs a { color: var(--accent); }
 
   /* Barra de navegación */
@@ -128,6 +129,73 @@
     .nav, .progress { display: none; }
     .slide { position: relative; display: flex !important; min-height: 100vh; page-break-after: always; overflow: visible; }
   }
+
+  /* ===== Mejora visual y tipografía más grande (nov. 2026) ===== */
+  :root { --text-secondary: #d3d7e6; --text-muted: #9ea5bd; --line: #2c3758; --surface-1: #121a30; --surface-2: #1a2340; }
+  .slide { padding: clamp(22px, 4.2vh, 56px) clamp(18px, 5vw, 96px) 86px; justify-content: flex-start;
+    background:
+      radial-gradient(ellipse 70% 60% at 100% 0%, rgba(144,133,233,.16), transparent 60%),
+      radial-gradient(ellipse 50% 50% at 0% 100%, rgba(56,189,248,.07), transparent 60%),
+      linear-gradient(rgba(255,255,255,.018) 1px, transparent 1px) 0 0 / 100% 48px,
+      var(--bg); }
+  .kicker { display: inline-flex; align-self: flex-start; align-items: center; gap: 8px; font-size: clamp(13px, .55vw + 7px, 18px);
+    padding: 6px 12px; border-radius: 999px; background: var(--accent-soft); border: 1px solid rgba(167,139,250,.35); margin-bottom: 14px; }
+  h1 { font-size: clamp(36px, 5.6vw, 92px); background: linear-gradient(90deg, #fff 0%, #d9d2ff 60%, #a78bfa 100%);
+    -webkit-background-clip: text; background-clip: text; color: transparent; }
+  h2 { font-size: clamp(28px, 3.4vw, 58px); margin-bottom: clamp(12px, 2vh, 24px); }
+  h3 { font-size: clamp(17px, 1.05vw + 6px, 26px); }
+  p, li { font-size: clamp(17px, 1.2vw + 4px, 27px); line-height: 1.5; }
+  .lead { font-size: clamp(19px, 1.45vw + 5px, 31px); max-width: 1200px; margin-bottom: clamp(14px, 2.2vh, 26px); }
+  .grid { gap: clamp(12px, 1.2vw, 22px); }
+  .card { padding: clamp(16px, 1.4vw, 26px) clamp(16px, 1.5vw, 28px); border-radius: 18px;
+    background: linear-gradient(180deg, rgba(255,255,255,.035), rgba(255,255,255,0)), var(--surface-1);
+    box-shadow: 0 10px 30px -18px rgba(0,0,0,.8); transition: border-color .2s, transform .2s; }
+  .card:hover { border-color: rgba(167,139,250,.55); transform: translateY(-2px); }
+  .card p { font-size: clamp(16px, 1vw + 5px, 25px); }
+  .card .tag { font-size: clamp(12px, .5vw + 7px, 17px); margin-bottom: 8px; }
+  .stat { position: relative; overflow: hidden; padding: clamp(18px, 1.5vw, 28px); border-radius: 18px;
+    background: linear-gradient(160deg, rgba(167,139,250,.12), rgba(167,139,250,0) 55%), var(--surface-1);
+    box-shadow: 0 10px 30px -18px rgba(0,0,0,.8); }
+  .stat::before { content: ""; position: absolute; left: 0; top: 0; right: 0; height: 3px; background: linear-gradient(90deg, #a78bfa, #38bdf8); }
+  .stat .num { font-size: clamp(34px, 4vw, 76px); background: linear-gradient(180deg, #fff, #cbc3ff); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .stat .lbl { font-size: clamp(15px, .9vw + 5px, 23px); line-height: 1.4; margin-top: 10px; }
+  .stat .src { font-size: clamp(12px, .45vw + 7px, 16px); }
+  .src-line { font-size: clamp(12px, .45vw + 7px, 16px); }
+  .callout { padding: clamp(14px, 1.3vw, 24px) clamp(16px, 1.6vw, 28px); border-radius: 16px; border-left: 4px solid var(--accent); margin-top: clamp(14px, 2vh, 24px); }
+  .callout p { font-size: clamp(17px, 1.15vw + 4px, 27px); }
+  .flow { gap: clamp(10px, 1vw, 18px); grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); }
+  .flow .step { padding: 20px 16px 16px; border-radius: 16px; background: linear-gradient(180deg, rgba(255,255,255,.035), rgba(255,255,255,0)), var(--surface-1); }
+  .flow .step::before { width: 30px; height: 30px; font-size: 15px; top: -14px; }
+  .flow .step h3 { font-size: clamp(16px, .9vw + 6px, 25px); }
+  .flow .step p { font-size: clamp(14px, .75vw + 6px, 21px); }
+  .pyramid div { height: clamp(42px, 6vh, 64px); font-size: clamp(16px, .9vw + 6px, 24px); }
+  .pyramid span.pain { font-size: clamp(13px, .6vw + 6px, 18px); }
+  .bars { max-width: 1100px; gap: 16px; }
+  .bar-row { grid-template-columns: minmax(160px, 300px) 1fr; }
+  .bar-row .name, .chart-title { font-size: clamp(15px, .8vw + 6px, 22px); }
+  .bar-track { height: clamp(26px, 4vh, 40px); }
+  .bar { background: linear-gradient(90deg, #7c6ee6, #a78bfa); }
+  .bar-val { font-size: clamp(14px, .8vw + 6px, 22px); }
+  table { font-size: clamp(15px, .95vw + 5px, 24px); border-radius: 14px; overflow: hidden; }
+  thead th { background: var(--surface-2); }
+  tbody tr:nth-child(even) td { background: rgba(255,255,255,.02); }
+  th, td { padding: clamp(8px, 1.1vh, 14px) 14px; }
+  th { font-size: clamp(12px, .55vw + 7px, 17px); }
+  .tlp { grid-template-columns: clamp(170px, 16vw, 280px) 1fr; }
+  .tlp .chip { font-size: clamp(14px, .7vw + 6px, 20px); padding: 10px 12px; }
+  .ex { font-size: clamp(14px, .85vw + 5px, 22px); padding: 18px 20px; }
+  ol.refs li { font-size: clamp(14px, .6vw + 8px, 20px); }
+  .diamond { width: min(620px, 92vw, calc(54vh * 1.458)); }
+  .nav { height: 62px; }
+  .nav button { font-size: 18px; padding: 8px 18px; }
+  .nav .brand, .nav .count { font-size: 15px; }
+  @media (max-width: 640px) { .tlp { grid-template-columns: 1fr; } }
+  @media (min-width: 900px) and (min-height: 600px) {
+    .slide.active { justify-content: center; }
+    .src-line { margin-top: clamp(16px, 3vh, 36px); }
+    ol.refs { display: block; columns: 2; column-gap: 40px; }
+    ol.refs li { break-inside: avoid; margin-bottom: 10px; }
+  }
 </style>
 </head>
 <body>
@@ -138,13 +206,13 @@
 <section class="slide" aria-label="Portada">
   <p class="kicker">CERT Académico by RedCiber.org · Material de apoyo</p>
   <h1>Fundamentos de<br>Cyber Threat Intelligence</h1>
-  <p class="lead" style="margin-top:18px">Cómo convertir datos sobre amenazas en decisiones: conceptos, modelos y cifras del panorama 2025–2026.</p>
+  <p class="lead" style="margin-top:18px">Cómo convertir datos sobre amenazas en decisiones: conceptos, modelos y cifras actualizadas a noviembre de 2026.</p>
   <div class="grid g4" style="max-width:900px;margin-top:10px">
-    <div class="card"><span class="tag">Duración</span><p>25 diapositivas · 45–60 min</p></div>
+    <div class="card"><span class="tag">Duración</span><p>26 diapositivas · 45–60 min</p></div>
     <div class="card"><span class="tag">Curso</span><p>11 módulos en la plataforma</p></div>
     <div class="card"><span class="tag">Navegación</span><p>Flechas ← → o los botones de abajo</p></div>
   </div>
-  <p class="src-line">Versión octubre de 2026. Las cifras citan su fuente en cada diapositiva; ver referencias completas en la diapositiva 25.</p>
+  <p class="src-line">Versión actualizada al 21 de noviembre de 2026. Las cifras citan su fuente en cada diapositiva; ver referencias completas en la diapositiva 26.</p>
 </section>
 
 <!-- 2 -->
@@ -179,13 +247,13 @@
 <section class="slide" aria-label="Colombia">
   <p class="kicker">1 · Contexto</p>
   <h2>Colombia, en la mira</h2>
-  <p class="lead">Ninguna organización es "demasiado pequeña" para ser atacada: el volumen es industrial y automatizado.</p>
-  <div class="grid g3">
-    <div class="stat"><div class="num">2.º</div><div class="lbl">país más atacado de Latinoamérica, con 4.090 ataques semanales por organización</div><div class="src">Check Point Research, vía Noticias RCN (sep. 2026)</div></div>
-    <div class="stat"><div class="num">10,9 billones</div><div class="lbl">de intentos de ciberataque registrados en 2025 (billón = millón de millones)</div><div class="src">FortiGuard Labs (Fortinet)</div></div>
-    <div class="stat"><div class="num">77.866</div><div class="lbl">denuncias por delitos informáticos en 2024, un 23 % más que el año anterior</div><div class="src">CCIT y Centro Cibernético Policial</div></div>
-  </div>
-  <div class="callout"><p><strong>Pregunta para el aula:</strong> si su organización recibe miles de ataques por semana, ¿cómo decide cuáles le importan? Esa es exactamente la pregunta que responde la CTI.</p></div>
+<p class="lead">Ninguna organización es "demasiado pequeña" para ser atacada: el volumen es industrial y automatizado.</p>
+<div class="grid g3">
+<div class="stat"><div class="num">4.151</div><div class="lbl">ataques semanales por organización en octubre de 2026 (+9 % en un año): 2.º país más atacado de Latinoamérica, después de México</div><div class="src">Check Point Research (nov. 2026)</div></div>
+<div class="stat"><div class="num">+40 %</div><div class="lbl">delitos informáticos entre enero y septiembre de 2026: 75.186 casos frente a 53.619 en el mismo periodo de 2025</div><div class="src">Ministerio de Defensa, vía El Tiempo</div></div>
+<div class="stat"><div class="num">5.934</div><div class="lbl">ataques semanales por organización contra la educación, el sector más atacado del mundo (promedio global: 2.550)</div><div class="src">Check Point Research (oct. 2026)</div></div>
+</div>
+<div class="callout"><p><strong>Pregunta para el aula:</strong> si su universidad recibe casi 6.000 ataques por semana, ¿cómo decide cuáles le importan? Esa es exactamente la pregunta que responde la CTI.</p></div>
 </section>
 
 <!-- 5 -->
@@ -331,6 +399,20 @@
   <p class="src-line">CrowdStrike, 2026 Global Threat Report (datos de 2025) y ediciones anteriores para 2021 y 2024.</p>
 </section>
 
+<!-- 12b -->
+<section class="slide" aria-label="Lo más reciente">
+<p class="kicker">4 · Modelos · Lo más reciente</p>
+<h2>Lo que dicen los informes de septiembre y octubre de 2026</h2>
+<div class="grid g4">
+<div class="stat"><div class="num">&lt; 24 h</div><div class="lbl">mediana entre que una vulnerabilidad se ve explotada y existe un arma lista para usarla</div><div class="src">Microsoft Digital Defense Report 2026</div></div>
+<div class="stat"><div class="num">27 %</div><div class="lbl">de la actividad observada fue contra gobiernos, el sector más atacado (17 % un año antes)</div><div class="src">Microsoft Digital Defense Report 2026</div></div>
+<div class="stat"><div class="num">8.257</div><div class="lbl">incidentes analizados en la UE durante 2025; la administración pública, el sector más afectado</div><div class="src">ENISA Threat Landscape 2026</div></div>
+<div class="stat"><div class="num">60,4 %</div><div class="lbl">de los accesos no autorizados empezaron explotando una vulnerabilidad, conocida o de día cero</div><div class="src">ENISA Threat Landscape 2026</div></div>
+</div>
+<div class="callout"><p>Tres mensajes para el analista: la IA ya <strong>dirige</strong> partes del ataque y no solo lo asiste; el tiempo para parchar se mide en <strong>horas</strong>; y cibercriminales, hacktivistas y grupos estatales usan cada vez <strong>las mismas herramientas</strong>, lo que complica la atribución.</p></div>
+<p class="src-line">Microsoft, Digital Defense Report 2026 (oct. 2026; datos de julio de 2025 a junio de 2026). ENISA, Threat Landscape 2026 (sep. 2026; incidentes de 2025).</p>
+</section>
+
 <!-- 13 -->
 <section class="slide" aria-label="Cyber Kill Chain">
   <p class="kicker">4 · Modelos</p>
@@ -382,12 +464,12 @@
   <p class="lead">Base de conocimiento pública de tácticas y técnicas reales, construida a partir de incidentes observados.</p>
   <div class="grid g4">
     <div class="stat"><div class="num">15</div><div class="lbl">tácticas en la matriz Enterprise (el "porqué" de cada paso)</div></div>
-    <div class="stat"><div class="num">222</div><div class="lbl">técnicas (el "cómo")</div></div>
-    <div class="stat"><div class="num">475</div><div class="lbl">subtécnicas</div></div>
-    <div class="stat"><div class="num">v20</div><div class="lbl">octubre de 2026: suma técnicas de adversarios que usan IA</div></div>
-  </div>
-  <div class="callout"><p><strong>Novedad 2026:</strong> desde la versión 19, la táctica "Evasión de defensas" se dividió en dos, <strong>Sigilo</strong> y <strong>Debilitamiento de las defensas</strong>; por eso hoy son 15 tácticas y no 14.</p></div>
-  <p class="src-line">MITRE ATT&amp;CK, Updates – April 2026 (v19: 15 tácticas, 222 técnicas, 475 subtécnicas). La v20 (oct. 2026) agrega técnicas asociadas a IA; consulte attack.mitre.org para las cifras vigentes.</p>
+<div class="stat"><div class="num">227</div><div class="lbl">técnicas (el "cómo")</div></div>
+<div class="stat"><div class="num">479</div><div class="lbl">subtécnicas</div></div>
+<div class="stat"><div class="num">178</div><div class="lbl">grupos de adversarios documentados</div></div>
+</div>
+<div class="callout"><p><strong>Novedad v20 (13 de octubre de 2026):</strong> suma técnicas de abuso de agentes de IA, como la inyección de instrucciones (prompt injection), y campañas contra servicios de agua. Desde la v19, "Evasión de defensas" se dividió en <strong>Sigilo</strong> y <strong>Debilitamiento de las defensas</strong>: por eso son 15 tácticas y no 14.</p></div>
+<p class="src-line">MITRE ATT&amp;CK v20 (oct. 2026), Enterprise: 15 tácticas, 227 técnicas, 479 subtécnicas, 178 grupos. Verifique las cifras vigentes en attack.mitre.org/resources/updates.</p>
 </section>
 
 <!-- 16 -->
@@ -507,7 +589,7 @@
   <p class="kicker">6 · Acción</p>
   <h2>Un informe que se use: BLUF</h2>
   <p class="lead">Bottom Line Up Front: la conclusión primero. Si el lector solo lee 5 líneas, ya sabe qué hacer.</p>
-  <div class="ex">TLP:AMBER · Confianza: MODERADA · 24-oct-2026
+  <div class="ex">TLP:AMBER · Confianza: MODERADA · 21-nov-2026
 CONCLUSIÓN: Campaña de phishing con suplantación de Rectoría dirigida a
 funcionarios de nómina; 2 cuentas comprometidas y reenvío de correo hacia afuera.
 IMPACTO: posible fuga de datos personales de empleados.
@@ -546,20 +628,23 @@ DETALLE: línea de tiempo, indicadores (anexo) y técnicas: T1566, T1114.</div>
   <p class="kicker">Referencias</p>
   <h2>Fuentes</h2>
   <ol class="refs">
-    <li>IBM Security (2026). <em>Cost of a Data Breach Report 2026</em>. ibm.com/reports/data-breach</li>
-    <li>Verizon (2026). <em>2026 Data Breach Investigations Report</em>, 19.ª ed. verizon.com/business/resources/reports/dbir/</li>
-    <li>CrowdStrike (2026). <em>2026 Global Threat Report</em>; ediciones 2022 y 2025 para las cifras de 2021 y 2024. crowdstrike.com</li>
-    <li>Google Cloud / Mandiant (2026). <em>M-Trends 2026</em>. cloud.google.com/security/resources/m-trends</li>
-    <li>MITRE (2026). <em>ATT&amp;CK Updates – April 2026</em> (v19) y v20 (octubre de 2026). attack.mitre.org</li>
-    <li>CISA. <em>Known Exploited Vulnerabilities Catalog</em>. cisa.gov/known-exploited-vulnerabilities-catalog</li>
-    <li>FIRST (2022). <em>Traffic Light Protocol (TLP) 2.0</em>. first.org/tlp</li>
-    <li>OASIS. <em>STIX 2.1 y TAXII 2.1</em>. oasis-open.github.io/cti-documentation</li>
-    <li>Bianco, D. J. (2013). <em>The Pyramid of Pain</em>.</li>
-    <li>Hutchins, E., Cloppert, M. y Amin, R. (2011). <em>Intelligence-Driven Computer Network Defense Informed by Analysis of Adversary Campaigns and Intrusion Kill Chains</em>. Lockheed Martin.</li>
-    <li>Caltagirone, S., Pendergast, A. y Betz, C. (2013). <em>The Diamond Model of Intrusion Analysis</em>.</li>
-    <li>Check Point Research y FortiGuard Labs, vía Noticias RCN (sep. 2026); CCIT y Centro Cibernético Policial (denuncias 2024).</li>
-  </ol>
-  <p class="src-line">CERT Académico by RedCiber.org · Material educativo. Los casos y datos de ejemplo son ficticios.</p>
+<li>Check Point Research (2026). <em>Estadísticas de ciberataques de octubre de 2026</em> (Colombia: 4.151 ataques semanales por organización; educación: 5.934). Comunicado del 13 de noviembre de 2026. blog.checkpoint.com</li>
+<li>Ministerio de Defensa de Colombia, vía El Tiempo (2026). <em>Delitos informáticos aumentaron 40 % en Colombia: ya superan los 75.000 registros en este año</em>. eltiempo.com</li>
+<li>Microsoft (2026). <em>Microsoft Digital Defense Report 2026</em>, octubre de 2026. microsoft.com/security/security-insider</li>
+<li>ENISA (2026). <em>ENISA Threat Landscape 2026</em>, septiembre de 2026. enisa.europa.eu/publications/enisa-threat-landscape-2026</li>
+<li>MITRE (2026). <em>ATT&amp;CK v20</em>, 13 de octubre de 2026, y <em>v19</em>, abril de 2026. attack.mitre.org/resources/updates</li>
+<li>IBM Security (2026). <em>Cost of a Data Breach Report 2026</em>, julio de 2026. ibm.com/reports/data-breach</li>
+<li>Verizon (2026). <em>2026 Data Breach Investigations Report</em>, 19.ª ed., mayo de 2026. verizon.com/business/resources/reports/dbir/</li>
+<li>CrowdStrike (2026). <em>2026 Global Threat Report</em>; ediciones 2022 y 2025 para las cifras de 2021 y 2024. crowdstrike.com</li>
+<li>Google Cloud / Mandiant (2026). <em>M-Trends 2026</em>. cloud.google.com/security/resources/m-trends</li>
+<li>CISA. <em>Known Exploited Vulnerabilities Catalog</em> (actualización continua). cisa.gov/known-exploited-vulnerabilities-catalog</li>
+<li>FIRST (2022). <em>Traffic Light Protocol (TLP) 2.0</em>. first.org/tlp</li>
+<li>OASIS. <em>STIX 2.1 y TAXII 2.1</em>. oasis-open.github.io/cti-documentation</li>
+<li>Bianco, D. J. (2013). <em>The Pyramid of Pain</em>.</li>
+<li>Hutchins, E., Cloppert, M. y Amin, R. (2011). <em>Intelligence-Driven Computer Network Defense Informed by Analysis of Adversary Campaigns and Intrusion Kill Chains</em>. Lockheed Martin.</li>
+<li>Caltagirone, S., Pendergast, A. y Betz, C. (2013). <em>The Diamond Model of Intrusion Analysis</em>.</li>
+</ol>
+  <p class="src-line">Referencias consultadas el 21 de noviembre de 2026. CERT Académico by RedCiber.org · Material educativo. Los casos y datos de ejemplo son ficticios.</p>
 </section>
 
 </main>
