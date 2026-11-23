@@ -4,7 +4,7 @@ import { supabase } from './supabaseClient';
 // y solo deja leer/publicar a quien tiene acceso al curso.
 
 /** Cursos con muro activado. Para habilitarlo en otro curso, agregar su id. */
-export const WALL_COURSES = ['cti_basico', 'antisuplantacion_seguros'];
+export const WALL_COURSES = ['cti_basico', 'antisuplantacion_seguros', 'ia_farmacias'];
 
 export const WALL_MAX_CHARS = 1200;
 

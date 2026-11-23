@@ -1,6 +1,7 @@
 import type { LearningPaths } from './types';
 import { PRUEBA_DIGITAL } from './courses/pruebaDigital';
 import { ANTISUPLANTACION_SEGUROS } from './courses/antisuplantacionSeguros';
+import { IA_FARMACIAS } from './courses/iaFarmacias';
 
 // This is our mock database. In a real application, this data would come from a server.
 const LEARNING_PATHS_DATA: LearningPaths = {
@@ -2846,6 +2847,7 @@ const LEARNING_PATHS_DATA: LearningPaths = {
   },
   prueba_digital: PRUEBA_DIGITAL,
   antisuplantacion_seguros: ANTISUPLANTACION_SEGUROS,
+  ia_farmacias: IA_FARMACIAS,
   cybercrime_intermedio: {
     title: "Investigador Cibercriminal · Nivel Intermedio",
     description: "De la teoría al caso: triage y preservación, análisis de correos fraudulentos, OSINT, registros de acceso y el rastro del dinero. Laboratorios prácticos y examen con nota mínima del 70%.",

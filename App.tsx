@@ -44,6 +44,7 @@ import LibraryView from './components/LibraryView';
 import WallView from './components/WallView';
 import { WALL_COURSES } from './wallService';
 import HashLabView from './components/HashLabView';
+import PromptLabView from './components/PromptLabView';
 import ChangePasswordModal from './components/ChangePasswordModal';
 import { FREE_ROUTE, PARTNER_LOGOS } from './platform';
 import { EXPERTISE_TRACKS, LEVEL_PATHS } from './expertise';
@@ -128,6 +129,8 @@ const renderContentBlock = (
       return <ExamView data={block} onPassed={onExamPassed ?? onH5PComplete} />;
     case 'hash_lab':
       return <HashLabView data={block} />;
+    case 'prompt_lab':
+      return <PromptLabView data={block} />;
     case 'resource':
       return (
         <div className="my-6 flex flex-col md:flex-row md:items-center justify-between gap-4 bg-violet-500/10 border border-violet-500/40 rounded-2xl p-5 text-left">
@@ -169,7 +172,7 @@ interface LearningPathViewProps {
 }
 
 // Cursos de sesiones libres (CERTs y CSIRTs, CTI · UEAN, conferencia con INIF): se puede entrar a cualquier sesión en cualquier orden.
-const OPEN_ORDER_PATHS = ['cert_csirt', 'cti_basico', 'antisuplantacion_seguros'];
+const OPEN_ORDER_PATHS = ['cert_csirt', 'cti_basico', 'antisuplantacion_seguros', 'ia_farmacias'];
 
 const LearningPathView: React.FC<LearningPathViewProps> = ({ path, pathId, onExit, userId, unlockAll, isAdmin, isStaff, canSubmit }) => {
   const [currentModuleIndex, setCurrentModuleIndex] = useState(0);
@@ -588,6 +591,11 @@ const pathThemes: Record<string, { card: string; title: string; bar: string }> =
     title: 'text-cyan-300',
     bar: 'from-cyan-500 to-sky-400',
   },
+  ia_farmacias: {
+    card: 'from-emerald-900/50 to-slate-900/50 ring-emerald-700 hover:ring-emerald-400 hover:shadow-emerald-500/30',
+    title: 'text-emerald-300',
+    bar: 'from-emerald-500 to-sky-400',
+  },
   ia_ofensiva_insider: {
     card: 'from-orange-900/50 to-slate-900/50 ring-orange-700 hover:ring-orange-500 hover:shadow-orange-500/30',
     title: 'text-orange-400',
@@ -641,6 +649,7 @@ const EXCLUSIVE_PATHS: Record<string, UserRole> = {
   cti_basico: 'cti_student', // Grupo de estudiantes EAN del curso de CTI
   prueba_digital: 'law_student', // Abogados, Universidad Libre (jornada del 7 de noviembre)
   antisuplantacion_seguros: 'insurance_student', // Gremio asegurador, conferencia con INIF
+  ia_farmacias: 'pharmacy_student', // Droguistas y farmacéuticos: taller de IA y ciberseguridad (3 h)
 };
 
 // Calendario por rol: cada curso se abre solo dentro de su ventana (hora de Colombia, UTC-5);
@@ -665,6 +674,10 @@ const COURSE_WINDOWS_BY_ROLE: Partial<Record<UserRole, Record<string, { opensAt:
   // Gremio asegurador: conferencia-taller de antisuplantación con INIF.
   insurance_student: {
     antisuplantacion_seguros: { opensAt: '2026-11-19T00:00:00-05:00', closesAt: '2026-12-31T23:59:59-05:00' },
+  },
+  // Droguistas y farmacéuticos: taller presencial de IA y ciberseguridad.
+  pharmacy_student: {
+    ia_farmacias: { opensAt: '2026-11-23T00:00:00-05:00', closesAt: '2027-01-31T23:59:59-05:00' },
   },
   // Grupo de estudiantes EAN del curso de CTI.
   cti_student: {

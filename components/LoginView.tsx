@@ -269,7 +269,7 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLogin }) => {
                 ) : eventOpen ? (
                   <>
                     <p className="text-xs text-sky-200 bg-sky-500/10 border border-sky-500/30 rounded-lg px-3 py-2 -mt-1">
-                      🛡️ ¿Vienes a la conferencia de Antisuplantación de Identidad en el Sector Asegurador, con INIF? Regístrate con el código que te da el conferencista. Si tu correo ya fue autorizado, deja el código en blanco.
+                      🎟️ ¿Vienes a un taller o conferencia (IA y Ciberseguridad para Droguerías, o Antisuplantación de Identidad con INIF)? Regístrate con el código que te da el facilitador. Si tu correo ya fue autorizado, deja el código en blanco.
                     </p>
                     <div>
                       <label className="text-[11px] font-bold text-slate-400 uppercase tracking-widest block mb-1.5">

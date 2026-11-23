@@ -165,6 +165,16 @@ export interface HashLabContent {
   sample: string; // texto inicial para comparar
 }
 
+/** Laboratorio de prompts: arma una instrucción con la fórmula R-T-C-F, la evalúa y la abre en la IA. */
+export interface PromptLabContent {
+  type: 'prompt_lab';
+  title: string;
+  description: string;
+  scenario?: string;
+  weakPrompt?: string; // prompt débil para mejorar
+  suggestions: { rol: string[]; tarea: string[]; contexto: string[]; formato: string[]; limites?: string[] };
+}
+
 export type ContentBlock = 
   | TextContent 
   | VideoContent 
@@ -178,7 +188,8 @@ export type ContentBlock =
   | ChallengeContent
   | ExamContent
   | ResourceContent
-  | HashLabContent;
+  | HashLabContent
+  | PromptLabContent;
 
 export interface Module {
   id: string;
@@ -209,7 +220,7 @@ export type LearningPaths = Record<string, LearningPath>;
 
 // --- Auth & Progress ---
 
-export type UserRole = 'student' | 'teacher' | 'tutor' | 'admin' | 'cert_student' | 'auditor' | 'cti_student' | 'free_student' | 'law_student' | 'insurance_student';
+export type UserRole = 'student' | 'teacher' | 'tutor' | 'admin' | 'cert_student' | 'auditor' | 'cti_student' | 'free_student' | 'law_student' | 'insurance_student' | 'pharmacy_student';
 
 export interface UserProfile {
   id: string;

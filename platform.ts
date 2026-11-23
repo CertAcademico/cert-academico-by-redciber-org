@@ -21,10 +21,11 @@ export const REGISTRATION_DEADLINE = '2026-11-03T23:59:59-05:00';
 export const isRegistrationOpen = (now = Date.now()) => now <= Date.parse(REGISTRATION_DEADLINE);
 
 /**
- * Registro con código de un evento (hoy: conferencia de antisuplantación con INIF). El código se valida
- * en handle_new_user() (supabase/migrations/2026-11-19_curso_antisuplantacion_seguros.sql); acá solo la fecha.
+ * Registro con código de un evento (conferencia de antisuplantación con INIF y taller de IA para droguistas).
+ * Cada código y su fecha límite se validan en handle_new_user()
+ * (supabase/migrations/2026-11-23_curso_ia_farmacias.sql); acá solo la fecha más lejana, para mostrar el campo.
  */
-export const EVENT_REGISTRATION_DEADLINE = '2026-12-15T23:59:59-05:00';
+export const EVENT_REGISTRATION_DEADLINE = '2027-01-31T23:59:59-05:00';
 export const isEventRegistrationOpen = (now = Date.now()) => now <= Date.parse(EVENT_REGISTRATION_DEADLINE);
 
 /** Logos de aliados por curso (co-marca en la tarjeta, el encabezado y el certificado). */

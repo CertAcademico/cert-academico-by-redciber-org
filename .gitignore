@@ -28,4 +28,5 @@ credenciales/
 
 # Insumos de trabajo con datos sensibles (capturas de foros, fichas de inteligencia): nunca al repositorio público
 courses/*.docx
+courses/*.pptx
 /logo-inif.png
