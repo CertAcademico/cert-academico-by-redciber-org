@@ -189,6 +189,11 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLogin }) => {
                 onSubmit={handleLogin}
                 className="space-y-4"
               >
+                {Date.now() <= Date.parse('2026-11-21T23:59:59-05:00') && (
+                  <p className="text-xs text-violet-200 bg-violet-500/10 border border-violet-500/30 rounded-lg px-3 py-2 -mt-1">
+                    🔐 Estudiantes del curso Fundamentos de Cyber Threat Intelligence (CTI) · Universidad EAN: entre con su correo institucional y su contraseña. Si ya tenía la sesión abierta y no ve el curso, salga, vuelva a entrar y recargue la página (Ctrl + F5 en Windows o Cmd + Shift + R en Mac).
+                  </p>
+                )}
                 <div>
                   <label className="text-[11px] font-bold text-slate-400 uppercase tracking-widest block mb-1.5">
                     Correo Electrónico

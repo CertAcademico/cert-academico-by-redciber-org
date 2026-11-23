@@ -629,6 +629,10 @@ interface LearningPathSelectorProps {
   showStars?: boolean;
 }
 
+// Aviso de un día para los estudiantes de CTI (Universidad EAN) a quienes se les habilitó el curso.
+const CTI_ACCESS_NOTICE_UNTIL = '2026-11-21T23:59:59-05:00';
+const CTI_ACCESS_NOTICE = '🔐 Curso Fundamentos de Cyber Threat Intelligence (CTI): si no lo ve en su lista de cursos, 1) toque «Salir», 2) vuelva a entrar con su correo y contraseña y 3) recargue la página (Ctrl + F5 en Windows o Cmd + Shift + R en Mac). El curso está abierto hasta el lunes 30 de noviembre a las 23:59.';
+
 // Cursos exclusivos de un público: solo los ve ese rol (y admin). Los demás roles no los ven,
 // y quien tiene uno de estos roles ve únicamente su(s) curso(s).
 const EXCLUSIVE_PATHS: Record<string, UserRole> = {
@@ -1129,6 +1133,9 @@ const App: React.FC = () => {
   }
 
   const isAdmin = currentUser.role === 'admin';
+  // Aviso de hoy para el curso CTI: quien recibió el permiso debe salir y volver a entrar para verlo.
+  const showCtiNotice = Date.now() <= Date.parse(CTI_ACCESS_NOTICE_UNTIL) &&
+    (currentUser.role === 'cti_student' || (currentUser.grants ?? []).includes('cti_basico'));
   const hasExclusivePaths = Object.values(EXCLUSIVE_PATHS).includes(currentUser.role);
   // Permisos individuales (course_grants): 'general' abre todos los cursos no exclusivos, y un id
   // exclusivo (p. ej. cert_csirt) abre ese curso. Los cursos habilitados así no tienen calendario.
@@ -1229,7 +1236,7 @@ const App: React.FC = () => {
         showCampaign={isFreeStudent}
         showStars={!isFreeStudent}
         mapNote={isFreeStudent ? 'Tus 7 cursos gratuitos son el Nivel Básico de cada ruta. Mira el camino completo: los niveles Intermedio y Avanzado no están incluidos en el registro gratuito.' : undefined}
-        banner={isFreeStudent ? '🎁 Registro gratuito (22 de octubre – 3 de noviembre): completa los 7 cursos iniciales en orden, desde Fundamentos de Ciberseguridad hasta CERTs y CSIRTs. Cada curso terminado te da un badge verificable, y al completar los 7 obtienes tu certificado final. Los 50 mejores puntajes al 3 de noviembre acceden gratis al curso de creación de agentes defensivos y ofensivos en ciberseguridad.' : undefined}
+        banner={isFreeStudent ? '🎁 Registro gratuito (22 de octubre – 3 de noviembre): completa los 7 cursos iniciales en orden, desde Fundamentos de Ciberseguridad hasta CERTs y CSIRTs. Cada curso terminado te da un badge verificable, y al completar los 7 obtienes tu certificado final. Los 50 mejores puntajes al 3 de noviembre acceden gratis al curso de creación de agentes defensivos y ofensivos en ciberseguridad.' : showCtiNotice ? CTI_ACCESS_NOTICE : undefined}
       />
     );
   }

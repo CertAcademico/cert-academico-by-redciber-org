@@ -196,6 +196,42 @@
     ol.refs { display: block; columns: 2; column-gap: 40px; }
     ol.refs li { break-inside: avoid; margin-bottom: 10px; }
   }
+
+  /* ===== Letra aún más grande (21 nov. 2026) ===== */
+  h2 { font-size: clamp(30px, 3.9vw, 66px); }
+  h3 { font-size: clamp(19px, 1.25vw + 7px, 30px); }
+  p, li { font-size: clamp(19px, 1.45vw + 5px, 32px); }
+  .lead { font-size: clamp(21px, 1.75vw + 5px, 36px); }
+  .card p { font-size: clamp(18px, 1.25vw + 6px, 30px); }
+  .card .tag { font-size: clamp(13px, .65vw + 8px, 20px); }
+  .stat .num { font-size: clamp(38px, 4.6vw, 88px); }
+  .stat .lbl { font-size: clamp(17px, 1.15vw + 6px, 28px); }
+  .stat .src, .src-line { font-size: clamp(13px, .55vw + 8px, 19px); }
+  .callout p { font-size: clamp(19px, 1.4vw + 5px, 32px); }
+  .flow .step h3 { font-size: clamp(17px, 1.1vw + 7px, 29px); }
+  .flow .step p { font-size: clamp(15px, .95vw + 7px, 25px); }
+  .pyramid div { font-size: clamp(18px, 1.1vw + 7px, 28px); }
+  .pyramid span.pain { font-size: clamp(14px, .75vw + 7px, 21px); }
+  .bar-row .name, .chart-title { font-size: clamp(16px, 1vw + 7px, 26px); }
+  .bar-val { font-size: clamp(16px, 1vw + 7px, 26px); }
+  table { font-size: clamp(17px, 1.15vw + 6px, 28px); }
+  th { font-size: clamp(13px, .7vw + 8px, 20px); }
+  .tlp .chip { font-size: clamp(15px, .85vw + 7px, 24px); }
+  .ex { font-size: clamp(15px, 1vw + 6px, 26px); }
+  ol.refs li { font-size: clamp(15px, .75vw + 8px, 23px); }
+
+  @media (max-height: 820px) and (min-width: 900px) {
+    .slide { padding-top: 14px; padding-bottom: 70px; }
+    .kicker { margin-bottom: 8px; padding: 4px 12px; }
+    h2 { margin-bottom: 10px; }
+    .lead { margin-bottom: 12px; }
+    .callout { margin-top: 12px; padding-top: 12px; padding-bottom: 12px; }
+    .src-line { margin-top: 12px; padding-top: 6px; }
+    .stat { padding-top: 14px; padding-bottom: 14px; }
+    .stat .lbl { margin-top: 6px; }
+    .card { padding-top: 12px; padding-bottom: 12px; }
+    ol.refs li { margin-bottom: 6px; line-height: 1.35; }
+  }
 </style>
 </head>
 <body>
@@ -402,7 +438,7 @@
 <!-- 12b -->
 <section class="slide" aria-label="Lo más reciente">
 <p class="kicker">4 · Modelos · Lo más reciente</p>
-<h2>Lo que dicen los informes de septiembre y octubre de 2026</h2>
+<h2>Lo más reciente: informes de sep.–oct. 2026</h2>
 <div class="grid g4">
 <div class="stat"><div class="num">&lt; 24 h</div><div class="lbl">mediana entre que una vulnerabilidad se ve explotada y existe un arma lista para usarla</div><div class="src">Microsoft Digital Defense Report 2026</div></div>
 <div class="stat"><div class="num">27 %</div><div class="lbl">de la actividad observada fue contra gobiernos, el sector más atacado (17 % un año antes)</div><div class="src">Microsoft Digital Defense Report 2026</div></div>
