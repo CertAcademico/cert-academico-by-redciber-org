@@ -7,6 +7,17 @@ import type { LearningPath } from '../types';
 // El número de módulos debe coincidir con course_module_counts() en
 // supabase/migrations/2026-11-23_curso_ia_farmacias.sql.
 
+// Presentación del taller (plantilla FCE), incrustada como imágenes: cada módulo abre en su sección.
+const deck = (start: number, title = '📊 Presentación del taller') => ({
+  type: 'slides' as const,
+  title,
+  description: 'Siga aquí las diapositivas del taller. Use las flechas, deslice en el celular o ábrala en pantalla completa.',
+  base: '/materiales/ia-farmacias/diapositivas',
+  count: 30,
+  start,
+  download: { label: 'Descargar PDF', href: '/materiales/ia-farmacias/presentacion-ia-ciberseguridad-droguerias.pdf' },
+});
+
 export const IA_FARMACIAS: LearningPath = {
   title: 'IA y Ciberseguridad para Droguerías',
   description: 'Taller práctico de 3 horas para droguistas, farmacéuticos y personal de establecimientos farmacéuticos: qué es la inteligencia artificial, cómo escribir buenas instrucciones (prompts) desde cero, usos reales en el mostrador y la trastienda, y cómo proteger la droguería y los datos de los clientes. Practique con ejercicios guiados y obtenga su certificado.',
@@ -18,6 +29,7 @@ export const IA_FARMACIAS: LearningPath = {
       title: '1. La droguería en la era de la IA (30 min)',
       content: [
         { type: 'text', icon: 'HappyUsersIcon', text: 'Bienvenido. Este taller es para hacer, no solo para escuchar: en cada módulo va a practicar desde su celular. No necesita saber de tecnología. Al final, con la evaluación aprobada, recibe su certificado.' },
+        deck(1),
         { type: 'text', icon: 'PointerIcon', text: 'El cliente cambió: compara precios en el celular, pregunta por WhatsApp antes de ir, espera domicilio y quiere respuesta rápida, también a las 9 de la noche. Las cadenas grandes ya usan tecnología para atender, vender y controlar el inventario. La buena noticia: hoy una droguería de barrio puede usar las mismas herramientas de inteligencia artificial, muchas de ellas gratis, desde un celular.' },
         { type: 'text', icon: 'BrainCircuitIcon', text: 'La inteligencia artificial (IA) es tecnología que aprende de muchos ejemplos para hacer tareas que antes solo hacía una persona: entender un texto, responder una pregunta, resumir, redactar, reconocer una imagen o encontrar patrones en las ventas. La IA generativa, como ChatGPT, Gemini o Copilot, además CREA contenido nuevo: textos, imágenes, tablas, ideas.' },
         {
@@ -94,6 +106,7 @@ export const IA_FARMACIAS: LearningPath = {
       title: '2. El ABC del prompt: hablarle bien a la IA (40 min)',
       content: [
         { type: 'text', icon: 'PointerIcon', text: 'Un prompt es la instrucción que le da a la IA. Si le habla como a un desconocido, le responde como un desconocido. Si le explica quién debe ser, qué necesita, para quién y cómo lo quiere, le responde como un buen asistente. La fórmula de hoy tiene 4 partes y una regla de oro.' },
+        deck(10),
         {
           type: 'interactive',
           title: '🧪 La fórmula R-T-C-F (y una regla de oro)',
@@ -200,6 +213,7 @@ export const IA_FARMACIAS: LearningPath = {
       title: '3. La IA en el mostrador y en la trastienda (35 min)',
       content: [
         { type: 'text', icon: 'HappyUsersIcon', text: 'Ahora, a lo práctico: cinco frentes donde la IA ahorra tiempo en una droguería. En el mostrador, atención al cliente y redes sociales. En la trastienda, inventario, indicadores y capacitación del equipo.' },
+        deck(16),
         {
           type: 'interactive',
           title: '🏪 Cinco usos reales en la droguería',
@@ -301,6 +315,7 @@ export const IA_FARMACIAS: LearningPath = {
       title: '4. Ciberseguridad: proteger la droguería (35 min)',
       content: [
         { type: 'text', icon: 'LockIcon', text: 'Una droguería maneja información valiosa: ventas, cuentas bancarias, proveedores, la facturación electrónica y datos de clientes, incluidos datos de salud. Para un delincuente, eso vale dinero. Un ataque puede dejarla sin sistema de facturación varios días, vaciar una cuenta con un pago falso o exponer a sus clientes. Y la mayoría de ataques no entran por la tecnología: entran por una persona apurada.' },
+        deck(21),
         {
           type: 'interactive',
           title: '🚨 Las amenazas más frecuentes',
@@ -393,6 +408,7 @@ export const IA_FARMACIAS: LearningPath = {
       title: '5. IA segura, ética y evaluación final (25 min)',
       content: [
         { type: 'text', icon: 'ShieldCheckIcon', text: 'Usar IA también tiene riesgos: lo que usted escribe en una herramienta pública puede quedar guardado y usarse para entrenarla; la IA puede inventar datos con total seguridad; y los delincuentes también la usan para clonar voces, escribir correos sin errores y crear perfiles falsos. La regla: la IA ayuda, usted decide y verifica.' },
+        deck(26),
         { type: 'text', icon: 'LockIcon', text: 'En Colombia, la Ley 1581 de 2012 protege los datos personales, y los datos de salud son datos sensibles: requieren autorización y cuidado especial. Una droguería que pega en una IA pública la lista de clientes con sus medicamentos está exponiendo datos sensibles. La solución es fácil: anonimizar. Cambie «María Gómez, cédula 52…, toma losartán» por «Cliente A, adulta mayor, tratamiento crónico».' },
         {
           type: 'interactive',

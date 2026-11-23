@@ -165,6 +165,17 @@ export interface HashLabContent {
   sample: string; // texto inicial para comparar
 }
 
+/** Presentación incrustada: diapositivas como imágenes (base/01.jpg … base/NN.jpg), con visor y descarga. */
+export interface SlidesContent {
+  type: 'slides';
+  title: string;
+  description?: string;
+  base: string; // carpeta pública, p. ej. /materiales/ia-farmacias/diapositivas
+  count: number;
+  start?: number; // diapositiva inicial (1 = la primera)
+  download?: { label: string; href: string };
+}
+
 /** Laboratorio de prompts: arma una instrucción con la fórmula R-T-C-F, la evalúa y la abre en la IA. */
 export interface PromptLabContent {
   type: 'prompt_lab';
@@ -189,7 +200,8 @@ export type ContentBlock =
   | ExamContent
   | ResourceContent
   | HashLabContent
-  | PromptLabContent;
+  | PromptLabContent
+  | SlidesContent;
 
 export interface Module {
   id: string;

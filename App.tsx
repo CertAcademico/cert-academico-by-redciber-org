@@ -45,6 +45,7 @@ import WallView from './components/WallView';
 import { WALL_COURSES } from './wallService';
 import HashLabView from './components/HashLabView';
 import PromptLabView from './components/PromptLabView';
+import SlideDeckView from './components/SlideDeckView';
 import ChangePasswordModal from './components/ChangePasswordModal';
 import { FREE_ROUTE, PARTNER_LOGOS } from './platform';
 import { EXPERTISE_TRACKS, LEVEL_PATHS } from './expertise';
@@ -131,6 +132,8 @@ const renderContentBlock = (
       return <HashLabView data={block} />;
     case 'prompt_lab':
       return <PromptLabView data={block} />;
+    case 'slides':
+      return <SlideDeckView data={block} />;
     case 'resource':
       return (
         <div className="my-6 flex flex-col md:flex-row md:items-center justify-between gap-4 bg-violet-500/10 border border-violet-500/40 rounded-2xl p-5 text-left">
