@@ -37,8 +37,9 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLogin }) => {
   const [regConsent, setRegConsent] = useState(false);
   const [showPolicy, setShowPolicy] = useState(false);
   const registrationOpen = isRegistrationOpen();
-  // Tras el cierre del registro gratuito, solo se registra quien tiene el código de un evento.
-  const eventOpen = !registrationOpen && isEventRegistrationOpen();
+  // El código de un evento (taller, conferencia) se puede escribir mientras su registro esté abierto,
+  // también durante la campaña de registro gratuito: es lo que le asigna el curso del evento.
+  const eventOpen = isEventRegistrationOpen();
   const [regCode, setRegCode] = useState('');
 
   // CAPTCHA: cada token sirve una vez, así que tras cada intento se monta un widget nuevo.
@@ -262,14 +263,15 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLogin }) => {
                 onSubmit={handleRegister}
                 className="space-y-4"
               >
-                {registrationOpen ? (
-                  <p className="text-xs text-emerald-300 bg-emerald-500/10 border border-emerald-500/30 rounded-lg px-3 py-2 -mt-1">
-                    🎁 Registro gratuito del 22 de octubre al 3 de noviembre: accede a los 7 cursos iniciales, desde Fundamentos de Ciberseguridad hasta CERTs y CSIRTs. Gana un badge verificable por cada curso y tu certificado al completar la ruta. 🏆 Los 50 mejores puntajes al 3 de noviembre acceden gratis al curso de creación de agentes defensivos y ofensivos en ciberseguridad.
+                {registrationOpen && (
+                  <p className="text-xs text-amber-200 bg-amber-500/10 border border-amber-500/30 rounded-lg px-3 py-2 -mt-1">
+                    🖤 <strong>Black Friday… pero gratis:</strong> descuento del 100 % hasta el 31 de enero. Regístrate y estudia todas las rutas, incluidos los niveles Intermedio y Avanzado, la nueva IA para ciberseguridad y CTI. Sin tarjeta, sin cupones y sin letra pequeña. Gana badges verificables y participa en el Reto Pionero.
                   </p>
-                ) : eventOpen ? (
+                )}
+                {eventOpen ? (
                   <>
                     <p className="text-xs text-sky-200 bg-sky-500/10 border border-sky-500/30 rounded-lg px-3 py-2 -mt-1">
-                      🎟️ ¿Vienes a un taller o conferencia (IA y Ciberseguridad para Droguerías, o Antisuplantación de Identidad con INIF)? Regístrate con el código que te da el facilitador. Si tu correo ya fue autorizado, deja el código en blanco.
+                      🎟️ ¿Vienes a un taller o conferencia (IA y Ciberseguridad para Droguerías, o Antisuplantación de Identidad con INIF)? Escribe el código que te da el facilitador.{registrationOpen ? ' Si no tienes código, déjalo en blanco: igual quedas con la campaña.' : ' Si tu correo ya fue autorizado, deja el código en blanco.'}
                     </p>
                     <div>
                       <label className="text-[11px] font-bold text-slate-400 uppercase tracking-widest block mb-1.5">
@@ -285,7 +287,7 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLogin }) => {
                       />
                     </div>
                   </>
-                ) : (
+                ) : !registrationOpen && (
                   <p className="text-xs text-sky-200 bg-sky-500/10 border border-sky-500/30 rounded-lg px-3 py-2 -mt-1">
                     Regístrate con el correo que te autorizó el docente (por ejemplo, tu correo institucional). Si ya tienes una cuenta, inicia sesión.
                   </p>

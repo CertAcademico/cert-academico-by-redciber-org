@@ -15,8 +15,24 @@ export const FREE_ROUTE = [
   'cert_csirt',
 ];
 
+/**
+ * Campaña «Black Friday… pero gratis» (25 nov 2026 – 31 ene 2027). Mientras dure:
+ * registro gratuito abierto y todos los cursos abiertos, incluidos los niveles Intermedio y Avanzado
+ * del mapa (cada nivel exige el anterior). Debe coincidir con campaign_open() en
+ * supabase/migrations/2026-11-25_campana_black_friday.sql.
+ */
+export const CAMPAIGN_UNTIL = '2027-01-31T23:59:59-05:00';
+export const isCampaignOpen = (now = Date.now()) => now <= Date.parse(CAMPAIGN_UNTIL);
+
+/** Cursos de eventos que la campaña no abre: siguen solo para su público. */
+export const CAMPAIGN_EXCLUDED = ['auditoria_ciberriesgo', 'prueba_digital', 'antisuplantacion_seguros', 'ia_farmacias'];
+
+/** Reto Pionero: badge especial para quien publique primero su badge (lo otorga el administrador). */
+export const PIONEER_BADGE_ID = 'pionero_2026';
+export const PIONEER_HASHTAG = '#CERTAcadémico';
+
 /** Último momento para registrarse gratis (hora de Colombia). Debe coincidir con handle_new_user(). */
-export const REGISTRATION_DEADLINE = '2026-11-03T23:59:59-05:00';
+export const REGISTRATION_DEADLINE = CAMPAIGN_UNTIL;
 
 export const isRegistrationOpen = (now = Date.now()) => now <= Date.parse(REGISTRATION_DEADLINE);
 

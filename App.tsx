@@ -45,12 +45,16 @@ import WallView from './components/WallView';
 import { WALL_COURSES } from './wallService';
 import HashLabView from './components/HashLabView';
 import PromptLabView from './components/PromptLabView';
+import QuickVoteView from './components/QuickVoteView';
+import TeacherGuideView from './components/TeacherGuideView';
+import DeliverableView from './components/DeliverableView';
 import SlideDeckView from './components/SlideDeckView';
 import ChangePasswordModal from './components/ChangePasswordModal';
-import { FREE_ROUTE, PARTNER_LOGOS } from './platform';
+import { FREE_ROUTE, PARTNER_LOGOS, isCampaignOpen, CAMPAIGN_EXCLUDED } from './platform';
 import { EXPERTISE_TRACKS, LEVEL_PATHS } from './expertise';
 import ExpertiseMapView from './components/ExpertiseMapView';
 import CampaignRankCard from './components/CampaignRankCard';
+import BlackFridayCard from './components/BlackFridayCard';
 import { getMyCertificates, issueCertificate, ROUTE_CERTIFICATE_ID, ROUTE_CERTIFICATE_TITLE } from './certificateService';
 import type { Certificate } from './certificateService';
 import { CredentialModal, cleanCourseTitle, BADGE_TITLES } from './components/Credential';
@@ -78,7 +82,7 @@ import { formatRelativeTime } from './utils';
 
 
 // Bloques que el estudiante debe completar (o aprobar) antes de avanzar al siguiente módulo.
-const INTERACTIVE_TYPES: ContentBlock['type'][] = ['quiz', 'flashcards', 'memory', 'h5p_check', 'scenario', 'challenge', 'exam'];
+const INTERACTIVE_TYPES: ContentBlock['type'][] = ['quiz', 'flashcards', 'memory', 'h5p_check', 'scenario', 'challenge', 'exam', 'quick_vote', 'deliverable'];
 
 const renderContentBlock = (
   block: ContentBlock,
@@ -134,6 +138,13 @@ const renderContentBlock = (
       return <PromptLabView data={block} />;
     case 'slides':
       return <SlideDeckView data={block} />;
+    case 'quick_vote':
+      return <QuickVoteView data={block} onComplete={onH5PComplete} />;
+    case 'deliverable':
+      return submission ? <DeliverableView data={block} pathId={submission.pathId} moduleId={submission.moduleId} onComplete={onComplete} /> : null;
+    case 'teacher_guide':
+      // Solo docentes, tutores y admin: trae las respuestas de las dinámicas.
+      return submission?.isStaff ? <TeacherGuideView data={block} /> : null;
     case 'resource':
       return (
         <div className="my-6 flex flex-col md:flex-row md:items-center justify-between gap-4 bg-violet-500/10 border border-violet-500/40 rounded-2xl p-5 text-left">
@@ -172,16 +183,18 @@ interface LearningPathViewProps {
   isStaff: boolean;
   /** Puede subir entregables (el registro gratuito no). */
   canSubmit: boolean;
+  /** Pertenece a la cohorte del curso (ve el muro). La campaña abre el curso, no el muro. */
+  inCohort?: boolean;
 }
 
 // Cursos de sesiones libres (CERTs y CSIRTs, CTI · UEAN, conferencia con INIF): se puede entrar a cualquier sesión en cualquier orden.
 const OPEN_ORDER_PATHS = ['cert_csirt', 'cti_basico', 'antisuplantacion_seguros', 'ia_farmacias'];
 
-const LearningPathView: React.FC<LearningPathViewProps> = ({ path, pathId, onExit, userId, unlockAll, isAdmin, isStaff, canSubmit }) => {
+const LearningPathView: React.FC<LearningPathViewProps> = ({ path, pathId, onExit, userId, unlockAll, isAdmin, isStaff, canSubmit, inCohort = true }) => {
   const [currentModuleIndex, setCurrentModuleIndex] = useState(0);
   const [showLibrary, setShowLibrary] = useState(false);
   const [showWall, setShowWall] = useState(false);
-  const hasWall = WALL_COURSES.includes(pathId);
+  const hasWall = WALL_COURSES.includes(pathId) && inCohort;
   // Estrellas por sesión (cursos con entregas en grupo).
   const hasStars = STAR_COURSES.includes(pathId);
   const [groupProgress, setGroupProgress] = useState<GroupProgress | null>(null);
@@ -882,7 +895,7 @@ const LearningPathSelector: React.FC<LearningPathSelectorProps> = ({
           <p className="mb-6 text-sm text-emerald-200 bg-emerald-500/10 border border-emerald-500/30 rounded-xl px-4 py-3">{banner}</p>
         )}
 
-        {showCampaign && <CampaignRankCard />}
+        {isCampaignOpen() ? <BlackFridayCard userId={userId} hasBadge={certificates.length > 0} onOpenMap={onOpenMap} /> : showCampaign && <CampaignRankCard />}
 
         {onOpenMap && (
           <button
@@ -1161,7 +1174,8 @@ const App: React.FC = () => {
   // Admin ve todo; un rol con cursos exclusivos ve solo esos; el resto ve todo menos los exclusivos.
   // Registro gratuito: solo la ruta FREE_ROUTE, en su orden (CERTs/CSIRTs al final).
   // Los niveles Intermedio/Avanzado del mapa de expertise no van en el grid: se abren desde el mapa.
-  const visiblePaths: LearningPaths = isFreeStudent
+  // Cursos de la cohorte del usuario (regla de siempre): ahí funcionan el muro, los grupos y las entregas.
+  const cohortPaths: LearningPaths = isFreeStudent
     ? Object.fromEntries(FREE_ROUTE.filter(id => id in learningPaths).map(id => [id, learningPaths[id]]))
     : Object.fromEntries(
         (Object.entries(learningPaths) as [string, LearningPathType][]).filter(([id]) =>
@@ -1169,6 +1183,18 @@ const App: React.FC = () => {
           (isAdmin || isGranted(id) || (hasExclusivePaths ? EXCLUSIVE_PATHS[id] === currentUser.role : !(id in EXCLUSIVE_PATHS))),
         ),
       );
+  // Campaña Black Friday: además, todos los cursos abiertos (sin orden obligatorio), hasta el 31 de enero.
+  const campaign = isCampaignOpen(now);
+  const visiblePaths: LearningPaths = campaign
+    ? {
+        ...cohortPaths,
+        ...Object.fromEntries(
+          (Object.entries(learningPaths) as [string, LearningPathType][]).filter(([id]) =>
+            !(id in LEVEL_PATHS) && !CAMPAIGN_EXCLUDED.includes(id)),
+        ),
+      }
+    : cohortPaths;
+  const isCampaignExtra = (id: string) => campaign && !(id in cohortPaths);
 
   const isPathComplete = (id: string) => {
     const cp = routeProgress[id];
@@ -1181,8 +1207,8 @@ const App: React.FC = () => {
       .filter(([id, lv]) => id in learningPaths && lv.track.levels[0] in visiblePaths)
       .map(([id]) => [id, learningPaths[id]]),
   );
-  // El registro gratuito incluye solo los 7 Básicos: los niveles se ven en el mapa, pero bloqueados.
-  const isLevelUnlocked = (id: string) => isAdmin || (!isFreeStudent && isPathComplete(LEVEL_PATHS[id].prerequisite));
+  // Cada nivel se abre al terminar el anterior. Fuera de la campaña, el registro gratuito solo incluye los Básicos.
+  const isLevelUnlocked = (id: string) => isAdmin || ((campaign || !isFreeStudent) && isPathComplete(LEVEL_PATHS[id].prerequisite));
   // El mapa se ofrece solo si el usuario tiene al menos una ruta con niveles ya publicados.
   const hasMap = EXPERTISE_TRACKS.some(t => t.levels[0] in visiblePaths && t.levels.slice(1).some(l => l && l in levelPaths));
 
@@ -1200,11 +1226,14 @@ const App: React.FC = () => {
   // Roles con calendario (ver COURSE_WINDOWS_BY_ROLE): fuera de su ventana el curso se ve con 🔒.
   const lockedPaths: Record<string, string> = {};
   for (const id of Object.keys(visiblePaths)) {
-    const label = isGranted(id) ? null : getCourseLockLabel(currentUser.role, id, now, currentUser.email);
+    // Los cursos que abre la campaña no tienen calendario de cohorte.
+    const label = isGranted(id) || (campaign && !(id in EXCLUSIVE_PATHS)) || isCampaignExtra(id)
+      ? null
+      : getCourseLockLabel(currentUser.role, id, now, currentUser.email);
     if (label) lockedPaths[id] = label;
   }
-  // Ruta secuencial: cada curso se desbloquea al terminar el anterior.
-  if (isFreeStudent) {
+  // Ruta secuencial (fuera de la campaña): cada curso se desbloquea al terminar el anterior.
+  if (isFreeStudent && !campaign) {
     const routeIds = Object.keys(visiblePaths);
     routeIds.forEach((id, i) => {
       if (i === 0) return;
@@ -1228,7 +1257,7 @@ const App: React.FC = () => {
         baseLocks={lockedPaths}
         progress={routeProgress}
         isAdmin={isAdmin}
-        levelLockReason={isFreeStudent ? 'No incluido en el registro gratuito' : undefined}
+        levelLockReason={isFreeStudent && !campaign ? 'No incluido en el registro gratuito' : undefined}
         onSelect={setSelectedPathId}
         onClose={() => setShowMap(false)}
       />
@@ -1251,7 +1280,7 @@ const App: React.FC = () => {
         onOpenMap={hasMap ? () => setShowMap(true) : undefined}
         showCampaign={isFreeStudent}
         showStars={!isFreeStudent}
-        mapNote={isFreeStudent ? 'Tus 7 cursos gratuitos son el Nivel Básico de cada ruta. Mira el camino completo: los niveles Intermedio y Avanzado no están incluidos en el registro gratuito.' : undefined}
+        mapNote={campaign ? 'Hasta el 31 de enero todas las rutas están abiertas: termine el Básico de una ruta y se le abre el Intermedio; termine el Intermedio y va por el Avanzado. Los niveles piden entregables: es donde se nota la diferencia.' : isFreeStudent ? 'Tus 7 cursos gratuitos son el Nivel Básico de cada ruta. Mira el camino completo: los niveles Intermedio y Avanzado no están incluidos en el registro gratuito.' : undefined}
         banner={isFreeStudent ? '🎁 Registro gratuito (22 de octubre – 3 de noviembre): completa los 7 cursos iniciales en orden, desde Fundamentos de Ciberseguridad hasta CERTs y CSIRTs. Cada curso terminado te da un badge verificable, y al completar los 7 obtienes tu certificado final. Los 50 mejores puntajes al 3 de noviembre acceden gratis al curso de creación de agentes defensivos y ofensivos en ciberseguridad.' : showCtiNotice ? CTI_ACCESS_NOTICE : undefined}
       />
     );
@@ -1267,7 +1296,9 @@ const App: React.FC = () => {
       unlockAll={isAdmin || isFreeStudent}
       isAdmin={isAdmin}
       isStaff={isAdmin || currentUser.role === 'teacher' || currentUser.role === 'tutor'}
-      canSubmit={!isFreeStudent}
+      // Muro, grupos y archivos: solo la cohorte del curso (la campaña abre el estudio, no los grupos).
+      canSubmit={!isFreeStudent && selectedPathId! in cohortPaths}
+      inCohort={isAdmin || selectedPathId! in cohortPaths}
     />
   );
 };

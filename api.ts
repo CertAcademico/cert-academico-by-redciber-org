@@ -2,6 +2,8 @@ import type { LearningPaths } from './types';
 import { PRUEBA_DIGITAL } from './courses/pruebaDigital';
 import { ANTISUPLANTACION_SEGUROS } from './courses/antisuplantacionSeguros';
 import { IA_FARMACIAS } from './courses/iaFarmacias';
+import { CTI_INTERMEDIO, CTI_AVANZADO } from './courses/ctiNiveles';
+import { IA_INTERMEDIO, IA_AVANZADO } from './courses/iaNiveles';
 
 // This is our mock database. In a real application, this data would come from a server.
 const LEARNING_PATHS_DATA: LearningPaths = {
@@ -2848,6 +2850,10 @@ const LEARNING_PATHS_DATA: LearningPaths = {
   prueba_digital: PRUEBA_DIGITAL,
   antisuplantacion_seguros: ANTISUPLANTACION_SEGUROS,
   ia_farmacias: IA_FARMACIAS,
+  cti_intermedio: CTI_INTERMEDIO,
+  cti_avanzado: CTI_AVANZADO,
+  ia_intermedio: IA_INTERMEDIO,
+  ia_avanzado: IA_AVANZADO,
   cybercrime_intermedio: {
     title: "Investigador Cibercriminal · Nivel Intermedio",
     description: "De la teoría al caso: triage y preservación, análisis de correos fraudulentos, OSINT, registros de acceso y el rastro del dinero. Laboratorios prácticos y examen con nota mínima del 70%.",
@@ -3928,7 +3934,7 @@ TCPv4  10.0.0.15:49855       203.0.113.200:8443   ESTABLISHED   5112  svchost.ex
         title: "1. 🗺️ Bienvenida al Nivel Intermedio",
         content: [
           { type: 'text', icon: 'AlarmIcon', text: "En el Nivel Básico diseñó un CSIRT: mandato, servicios, madurez y marcos. Ahora lo va a operar: le llegarán reportes simultáneos, tendrá que decidir qué atender primero, contener un incidente con un playbook, comunicarlo y compartir lo aprendido." },
-          { type: 'text', icon: 'CheckCircleIcon', text: "Este nivel incluye laboratorios de decisión, retos tipo CTF y un examen que se aprueba con 70%. Todos los casos, organizaciones y datos son ficticios." },
+          { type: 'text', icon: 'CheckCircleIcon', text: "Este nivel incluye laboratorios de decisión, retos tipo CTF, tres entregables obligatorios (su matriz de priorización, un playbook de phishing y un tablero de métricas) y un examen que se aprueba con 70%. El badge se emite cuando el servidor verifica los entregables y el examen. Todos los casos, organizaciones y datos son ficticios." },
           {
             type: 'interactive',
             title: 'Vocabulario operativo',
@@ -3977,6 +3983,25 @@ Urgencia alta = el daño crece en minutos u horas`,
               { prompt: '¿Qué prioridad tiene el #101, el escaneo bloqueado sin impacto? (P1 a P5)', answers: ['P5', 'p5'], explanation: 'Impacto bajo y urgencia baja: P5. Se registra (clase Recolección de información) pero no consume tiempo del equipo.' },
             ],
           },
+          {
+            type: 'deliverable',
+            id: 'gri_d1',
+            title: 'Entregable 1 · Matriz de priorización y taxonomía de su CSIRT',
+            description: 'Adapte la matriz y la taxonomía del laboratorio al CSIRT que diseñó en el Nivel Básico (o a uno ficticio).',
+            fields: [
+              { key: 'constituencia', label: 'Constituencia y servicios críticos', hint: 'A quién sirve su CSIRT y cuáles son los 3 a 5 servicios o datos cuya afectación sería más grave.', min: 150 },
+              { key: 'impacto', label: 'Criterios de impacto (alto, medio, bajo)', hint: 'Definiciones medibles: personas afectadas, servicios caídos, datos expuestos, dinero.', min: 200, rows: 5 },
+              { key: 'urgencia', label: 'Criterios de urgencia', hint: 'Qué hace que un incidente empeore rápido (propagación, explotación activa, plazos regulatorios).', min: 150 },
+              { key: 'matriz', label: 'Matriz P1 a P5 con tiempos objetivo', hint: 'Para cada prioridad: tiempo de primera respuesta, de contención y a quién se escala.', min: 250, rows: 6 },
+              { key: 'taxonomia', label: 'Taxonomía que usará y ejemplos', hint: 'Clases (p. ej. basadas en RSIT) con un ejemplo real o ficticio de su constituencia para cada una.', min: 250, rows: 6 },
+            ],
+            rubric: [
+              'Los criterios de impacto y urgencia son medibles, no subjetivos.',
+              'Cada prioridad tiene tiempos objetivo y ruta de escalamiento.',
+              'La taxonomía cubre al menos código malicioso, intrusión, disponibilidad, fraude y fuga de información.',
+              'Los ejemplos corresponden a mi constituencia.',
+            ],
+          },
         ]
       },
       {
@@ -4022,6 +4047,25 @@ Urgencia alta = el daño crece en minutos u horas`,
               },
               fin: { text: "Fin del caso. Revise su puntaje y la retroalimentación." },
             }
+          },
+          {
+            type: 'deliverable',
+            id: 'gri_d2',
+            title: 'Entregable 2 · Playbook de respuesta a phishing',
+            description: 'Escriba el playbook que usaría su CSIRT ante una campaña de phishing contra su constituencia.',
+            fields: [
+              { key: 'disparadores', label: 'Disparadores, roles y herramientas', hint: 'Qué activa el playbook (reportes de usuarios, alerta del filtro), quién participa y con qué herramientas.', min: 200 },
+              { key: 'analisis', label: 'Detección y análisis', hint: 'Pasos para confirmar, determinar alcance (cuántos lo recibieron, quién hizo clic o entregó credenciales) y clasificar.', min: 250, rows: 6 },
+              { key: 'contencion', label: 'Contención', hint: 'Bloqueos, retiro de correos, cierre de sesiones, cambio de credenciales, verificación del doble factor y de reglas de reenvío.', min: 250, rows: 6 },
+              { key: 'recuperacion', label: 'Erradicación, recuperación y comunicación', hint: 'Cómo se cierra, qué se comunica a quién y con qué TLP, y qué indicadores se comparten.', min: 200, rows: 5 },
+              { key: 'cierre', label: 'Cierre, métricas y mejora', hint: 'Criterios de cierre, qué se registra y cómo se alimentan las lecciones aprendidas.', min: 150 },
+            ],
+            rubric: [
+              'Cada paso dice quién lo hace y en qué orden.',
+              'La contención cubre buzones, credenciales y accesos persistentes.',
+              'La comunicación usa el TLP adecuado para cada audiencia.',
+              'El playbook termina con métricas y mejora continua.',
+            ],
           },
         ]
       },
@@ -4117,6 +4161,24 @@ Servicio legítimo visto en logs: login.microsoftonline.com (autenticación norm
               }
             }
           },
+          {
+            type: 'deliverable',
+            id: 'gri_d3',
+            title: 'Entregable 3 · Tablero de métricas para la dirección',
+            description: 'Diseñe el tablero trimestral que el CSIRT presentará a la dirección.',
+            fields: [
+              { key: 'metricas', label: 'Cinco métricas con su cálculo y fuente', hint: 'Para cada una: definición, cómo se calcula y de dónde salen los datos (p. ej. MTTD desde el registro de incidentes).', min: 300, rows: 7 },
+              { key: 'metas', label: 'Metas y umbrales', hint: 'Valor objetivo de cada métrica y qué valor dispara una alerta a la dirección.', min: 150 },
+              { key: 'formato', label: 'Formato del reporte', hint: 'Cómo lo presentará: una página, gráficos, tendencia frente al trimestre anterior, mensaje principal.', min: 150 },
+              { key: 'decisiones', label: 'Decisiones que apoya', hint: 'Qué decisiones puede tomar la dirección con el tablero (inversiones, prioridades, capacitación).', min: 150 },
+            ],
+            rubric: [
+              'Las métricas miden desempeño y mejora, no solo volumen.',
+              'Cada métrica tiene cálculo y fuente de datos verificables.',
+              'Hay metas y umbrales de alerta.',
+              'El tablero apoya decisiones concretas de la dirección.',
+            ],
+          },
         ]
       },
       {
@@ -4161,7 +4223,7 @@ Servicio legítimo visto en logs: login.microsoftonline.com (autenticación norm
         title: "1. 🎯 Nivel Avanzado: Liderar la Respuesta",
         content: [
           { type: 'text', icon: 'HappyUsersIcon', text: "En este nivel usted ya no atiende un ticket: lidera. Coordinará equipos y organizaciones bajo presión, tomará decisiones con información incompleta, rendirá cuentas a la dirección y a las autoridades, y convertirá cada incidente en mejoras." },
-          { type: 'text', icon: 'AlarmIcon', text: "El examen final toma 12 preguntas al azar de un banco de 16 y exige 80%. Al aprobarlo obtendrá el badge de Gestor de Respuesta a Incidentes · Nivel Avanzado." },
+          { type: 'text', icon: 'AlarmIcon', text: "Este nivel exige tres entregables (el guion de un ejercicio de mesa, una matriz de notificación y escalamiento y un informe post-incidente) y el examen final, que toma 12 preguntas al azar de un banco de 16 y exige 80%. Con ambos obtendrá el badge de Gestor de Respuesta a Incidentes · Nivel Avanzado." },
         ]
       },
       {
@@ -4249,6 +4311,25 @@ Servicio legítimo visto en logs: login.microsoftonline.com (autenticación norm
               }
             }
           },
+          {
+            type: 'deliverable',
+            id: 'gra_d1',
+            title: 'Entregable 1 · Guion de un ejercicio de mesa',
+            description: 'Diseñe un ejercicio de mesa de 90 minutos para la dirección de una organización (real anonimizada o ficticia).',
+            fields: [
+              { key: 'objetivo', label: 'Objetivo, participantes y roles', hint: 'Qué capacidad se pone a prueba, quiénes participan, quién facilita y quién observa.', min: 200 },
+              { key: 'escenario', label: 'Escenario', hint: 'Situación inicial realista y relevante para el sector.', min: 200, rows: 5 },
+              { key: 'inyecciones', label: 'Inyecciones (mínimo cinco) con tiempos', hint: 'Qué información llega, en qué minuto y qué decisión obliga a tomar.', min: 350, rows: 8 },
+              { key: 'evaluacion', label: 'Preguntas de discusión y criterios de evaluación', hint: 'Qué se espera que decidan y cómo se evalúa el desempeño.', min: 200, rows: 5 },
+              { key: 'mejora', label: 'Informe posterior y plan de mejora', hint: 'Cómo se documentan las brechas y se convierten en acciones con responsable y fecha.', min: 150 },
+            ],
+            rubric: [
+              'El objetivo es concreto y medible.',
+              'Las inyecciones escalan y obligan a decisiones de la dirección.',
+              'Hay criterios de evaluación definidos antes del ejercicio.',
+              'El ejercicio termina en un plan de mejora con responsables.',
+            ],
+          },
         ]
       },
       {
@@ -4266,6 +4347,24 @@ Servicio legítimo visto en logs: login.microsoftonline.com (autenticación norm
               { term: 'Fraude o acceso abusivo con víctimas', definition: 'Denuncia ante la Fiscalía General de la Nación.' },
               { term: 'Indicadores útiles para otras entidades', definition: 'CSIRT sectorial o nacional, con el TLP adecuado.' },
             ]
+          },
+          {
+            type: 'deliverable',
+            id: 'gra_d2',
+            title: 'Entregable 2 · Matriz de notificación y escalamiento',
+            description: 'Construya la matriz que su organización (o una ficticia de un sector vigilado) usaría para reportar incidentes.',
+            fields: [
+              { key: 'umbrales', label: 'Tipos de incidente y umbrales', hint: 'Qué incidentes obligan a escalar internamente y a reportar externamente.', min: 200, rows: 5 },
+              { key: 'autoridades', label: 'Autoridades y destinatarios por caso', hint: 'SIC (datos personales), superintendencia del sector, ColCERT o CSIRT sectorial, Fiscalía o CAI Virtual, aliados y proveedores.', min: 250, rows: 6 },
+              { key: 'responsables', label: 'Quién decide, quién firma y plazos', hint: 'Roles internos y plazos de cada reporte (verificados con el área jurídica y la regulación vigente).', min: 200, rows: 5 },
+              { key: 'plantilla', label: 'Plantilla del primer reporte', hint: 'Campos mínimos del aviso inicial: qué pasó, cuándo, impacto preliminar, medidas, contacto.', min: 200, rows: 5 },
+            ],
+            rubric: [
+              'Cubre datos personales, el regulador del sector y la denuncia penal cuando aplica.',
+              'Cada reporte tiene responsable y plazo.',
+              'Advierte que los plazos se verifican con jurídica y la regulación vigente.',
+              'La plantilla permite reportar rápido con información preliminar.',
+            ],
           },
         ]
       },
@@ -4335,6 +4434,25 @@ Reporte del investigador: 2026-08-01 · inyección SQL en el módulo de citas ·
               },
               fin: { text: "Fin del caso. Revise su puntaje y la retroalimentación." },
             }
+          },
+          {
+            type: 'deliverable',
+            id: 'gra_d3',
+            title: 'Entregable 3 · Informe post-incidente',
+            description: 'Escriba el informe de lecciones aprendidas de un incidente (el caso hospitalario del curso o uno real anonimizado).',
+            fields: [
+              { key: 'resumen', label: 'Resumen ejecutivo', hint: 'Qué pasó, impacto y estado actual en un párrafo para la dirección.', min: 200 },
+              { key: 'cronologia', label: 'Cronología', hint: 'Hitos con fecha y hora: ocurrencia, detección, contención, erradicación, recuperación, cierre.', min: 200, rows: 6 },
+              { key: 'causa', label: 'Causa raíz (cinco porqués)', hint: 'Del síntoma a la causa de fondo, sin buscar culpables.', min: 250, rows: 6 },
+              { key: 'funciono', label: 'Qué funcionó y qué no', hint: 'Decisiones, procedimientos, herramientas y coordinación.', min: 200, rows: 5 },
+              { key: 'plan', label: 'Plan de mejora', hint: 'Acciones con responsable, fecha e indicador para verificar el cumplimiento.', min: 250, rows: 6 },
+            ],
+            rubric: [
+              'El análisis llega a una causa raíz y no se queda en el síntoma.',
+              'No asigna culpas a personas: analiza el sistema.',
+              'Cada acción de mejora tiene responsable, fecha e indicador.',
+              'Lo entendería la dirección sin conocimientos técnicos.',
+            ],
           },
         ]
       },

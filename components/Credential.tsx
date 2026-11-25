@@ -31,6 +31,10 @@ const BADGE_COLORS: Record<string, [string, string]> = {
   cybersecurity_avanzado: ['#1e3a8a', '#0c0a09'],
   cybercriminology_intermedio: ['#6d28d9', '#2e1065'],
   cybercriminology_avanzado: ['#4c1d95', '#0c0a09'],
+  cti_intermedio: ['#7c3aed', '#1e1b4b'],
+  cti_avanzado: ['#4c1d95', '#0c0a09'],
+  ia_intermedio: ['#f59e0b', '#7c2d12'],
+  ia_avanzado: ['#b45309', '#0c0a09'],
   [ROUTE_CERTIFICATE_ID]: ['#eab308', '#713f12'],
 };
 
@@ -82,6 +86,11 @@ export const BADGE_TITLES: Record<string, string> = {
   cybersecurity_avanzado: 'Analista de Ciberseguridad',
   cybercriminology_intermedio: 'Analista en Cibercriminología',
   cybercriminology_avanzado: 'Analista en Cibercriminología',
+  cti_intermedio: 'Inteligencia de Amenazas (CTI)',
+  cti_avanzado: 'Inteligencia de Amenazas (CTI)',
+  ia_intermedio: 'IA Aplicada a la Ciberseguridad',
+  ia_avanzado: 'IA Aplicada a la Ciberseguridad',
+  pionero: 'Pionero 2026',
   [ROUTE_CERTIFICATE_ID]: 'Ruta de Ciberseguridad',
 };
 
@@ -116,6 +125,8 @@ const BadgeIcon: React.FC<{ pathId: string; color: string }> = ({ pathId: rawId,
       return (<g {...s}><path d="M32 5 L54 13 V31 C54 45 44 54 32 59 C20 54 10 45 10 31 V13 Z" /><rect x="20" y="24" width="24" height="16" rx="2.5" /><circle cx="27" cy="31" r="3" /><path d="M33 29 H40 M33 34 H38" /></g>);
     case 'ia_farmacias': // cruz de farmacia con chispa de IA
       return (<g {...s}><path d="M24 8 H40 V24 H56 V40 H40 V56 H24 V40 H8 V24 H24 Z" /><path d="M32 26 L34 30 L38 32 L34 34 L32 38 L30 34 L26 32 L30 30 Z" fill={color} /></g>);
+    case 'pionero': // cohete del Reto Pionero
+      return (<g {...s}><path d="M32 5 C43 13 46 27 42 41 H22 C18 27 21 13 32 5 Z" /><circle cx="32" cy="22" r="5" /><path d="M22 33 L13 43 L22 43 M42 33 L51 43 L42 43" /><path d="M27 47 L25 57 M32 47 V59 M37 47 L39 57" /></g>);
     case ROUTE_CERTIFICATE_ID: // trofeo
       return (<g {...s}><path d="M20 8 H44 V22 C44 32 39 39 32 39 C25 39 20 32 20 22 Z" /><path d="M20 13 H11 C11 23 15 28 21 28 M44 13 H53 C53 23 49 28 43 28" /><path d="M32 39 V49 M23 57 H41 M26 49 H38" /></g>);
     default: // visto bueno genérico

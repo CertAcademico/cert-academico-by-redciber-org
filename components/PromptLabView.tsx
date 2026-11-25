@@ -42,6 +42,15 @@ const PromptLabView: React.FC<{ data: PromptLabContent }> = ({ data }) => {
   const level = risks.length ? 'risk' : coreDone === 4 ? 'good' : coreDone >= 2 ? 'mid' : 'low';
 
   const set = (k: Key, v: string) => { setValues(s => ({ ...s, [k]: v })); setCopied(false); };
+  // Atajo para quien se bloquea con la hoja en blanco: llena los vacíos con la primera sugerencia.
+  const quickStart = () => {
+    setValues(s => {
+      const next = { ...s };
+      FIELDS.forEach(f => { const first = data.suggestions[f.key]?.[0]; if (!next[f.key].trim() && first) next[f.key] = first; });
+      return next;
+    });
+    setCopied(false);
+  };
   const copy = async () => {
     try { await navigator.clipboard.writeText(prompt); setCopied(true); } catch { setCopied(false); }
   };
@@ -68,6 +77,13 @@ const PromptLabView: React.FC<{ data: PromptLabContent }> = ({ data }) => {
           <p className="font-mono text-rose-100">«{data.weakPrompt}»</p>
         </div>
       )}
+
+      <div className="flex flex-wrap items-center gap-3 bg-violet-500/10 border border-violet-500/30 rounded-xl px-4 py-3">
+        <button type="button" onClick={quickStart} className="px-4 py-2 rounded-lg bg-violet-600 hover:bg-violet-500 text-white text-sm font-bold">
+          ✨ Ayúdeme a empezar
+        </button>
+        <p className="text-xs text-violet-100 flex-1 min-w-[12rem]">Llena los campos vacíos con un ejemplo. Después cambie lo que quiera para que suene a su droguería.</p>
+      </div>
 
       <div className="space-y-3">
         {FIELDS.map(f => {

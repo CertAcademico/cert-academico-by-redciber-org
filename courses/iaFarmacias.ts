@@ -13,7 +13,7 @@ const deck = (start: number, title = '📊 Presentación del taller') => ({
   title,
   description: 'Siga aquí las diapositivas del taller. Use las flechas, deslice en el celular o ábrala en pantalla completa.',
   base: '/materiales/ia-farmacias/diapositivas',
-  count: 30,
+  count: 38,
   start,
   download: { label: 'Descargar PDF', href: '/materiales/ia-farmacias/presentacion-ia-ciberseguridad-droguerias.pdf' },
 });
@@ -30,6 +30,23 @@ export const IA_FARMACIAS: LearningPath = {
       content: [
         { type: 'text', icon: 'HappyUsersIcon', text: 'Bienvenido. Este taller es para hacer, no solo para escuchar: en cada módulo va a practicar desde su celular. No necesita saber de tecnología. Al final, con la evaluación aprobada, recibe su certificado.' },
         deck(1),
+        {
+          type: 'teacher_guide',
+          title: 'Módulo 1 · Bienvenida y la droguería en la era de la IA',
+          minutes: '0:00–0:30 (30 min)',
+          goal: 'Que todos queden registrados, le pierdan el miedo a la IA y sepan qué sí y qué no pedirle.',
+          slides: 'Diapositivas 1 a 10. Cada diapositiva trae en las notas qué decir, qué preguntar y las respuestas.',
+          steps: [
+            { time: '0:00', text: 'Bienvenida (diap. 1–3). Pregunte quién ya usó ChatGPT, Gemini o Copilot y cuente las manos.' },
+            { time: '0:07', text: 'Registro (diap. 4): proyecte la dirección y el código DROGUERIA-IA. Quien no tenga celular trabaja en pareja.' },
+            { time: '0:10', text: 'Datos 2026 (diap. 6): «la IA ya está en su bolsillo». Pida que muestren si tienen una app de IA en el celular.' },
+            { time: '0:13', text: 'Diap. 7–9: explique con ejemplos del mostrador, sin tecnicismos. Insista en «alucinación».' },
+            { time: '0:23', text: 'Ronda «¿Sí o no?» (abajo): lea cada frase en voz alta, que voten con la mano y luego en el celular. Cierre con el juego de memoria.' },
+          ],
+          say: ['La IA redacta, ordena y resume. No diagnostica, no receta y no recibe datos de clientes.', 'La IA es su asistente; la responsabilidad sigue siendo suya.'],
+          answers: ['Redactar avisos, ordenar ventas y resumir: SÍ.', 'Diagnosticar, recetar o dar dosis: NO.', 'Pegar datos de clientes o de salud: NO (Ley 1581 de 2012).'],
+          tip: 'Si la plataforma tarda en el registro, siga con las diapositivas y deje que se registren en paralelo.',
+        },
         { type: 'text', icon: 'PointerIcon', text: 'El cliente cambió: compara precios en el celular, pregunta por WhatsApp antes de ir, espera domicilio y quiere respuesta rápida, también a las 9 de la noche. Las cadenas grandes ya usan tecnología para atender, vender y controlar el inventario. La buena noticia: hoy una droguería de barrio puede usar las mismas herramientas de inteligencia artificial, muchas de ellas gratis, desde un celular.' },
         { type: 'text', icon: 'BrainCircuitIcon', text: 'La inteligencia artificial (IA) es tecnología que aprende de muchos ejemplos para hacer tareas que antes solo hacía una persona: entender un texto, responder una pregunta, resumir, redactar, reconocer una imagen o encontrar patrones en las ventas. La IA generativa, como ChatGPT, Gemini o Copilot, además CREA contenido nuevo: textos, imágenes, tablas, ideas.' },
         {
@@ -59,42 +76,19 @@ export const IA_FARMACIAS: LearningPath = {
           ],
         },
         {
-          type: 'h5p_check',
-          title: '🎯 Dinámica: ¿le pido esto a la IA o no?',
-          description: 'Responda en su celular. Para cada caso, decida si es una buena tarea para la IA.',
-          questions: [
-            {
-              question: 'Redactar un mensaje amable para avisar a los clientes el horario de diciembre.',
-              options: [
-                { id: 'fa1q1a', text: 'Sí: es una tarea ideal para la IA.', isCorrect: true, score: 10 },
-                { id: 'fa1q1b', text: 'No: la IA no sirve para eso.', isCorrect: false, score: 0 },
-              ],
-              feedback: 'Correcto. Redactar textos es lo que mejor hace la IA generativa. Usted solo revisa y ajusta.',
-            },
-            {
-              question: 'Un cliente describe sus síntomas y pide que la IA le diga qué antibiótico tomar.',
-              options: [
-                { id: 'fa1q2a', text: 'Sí: la IA sabe mucho de medicamentos.', isCorrect: false, score: 0 },
-                { id: 'fa1q2b', text: 'No: diagnosticar y recetar no es tarea de la IA ni del mostrador; los antibióticos requieren fórmula médica.', isCorrect: true, score: 10 },
-              ],
-              feedback: 'La IA puede equivocarse con total seguridad y no conoce al paciente. Los antibióticos se venden con fórmula médica. Ante síntomas, se orienta al cliente a consultar.',
-            },
-            {
-              question: 'Ordenar en una tabla las ventas del mes y decir cuáles productos rotan menos.',
-              options: [
-                { id: 'fa1q3a', text: 'Sí: organizar datos y encontrar patrones es una buena tarea.', isCorrect: true, score: 10 },
-                { id: 'fa1q3b', text: 'No: eso solo se puede hacer a mano.', isCorrect: false, score: 0 },
-              ],
-              feedback: 'Correcto. Eso sí: comparta las cifras de ventas, nunca datos personales de clientes.',
-            },
-            {
-              question: 'Pegar en ChatGPT la lista de clientes con su cédula, teléfono y medicamentos para «organizarla».',
-              options: [
-                { id: 'fa1q4a', text: 'Sí: así ahorro tiempo.', isCorrect: false, score: 0 },
-                { id: 'fa1q4b', text: 'No: son datos personales y de salud; no se suben a herramientas públicas de IA.', isCorrect: true, score: 10 },
-              ],
-              feedback: 'Los datos de salud son datos sensibles según la Ley 1581 de 2012. Nunca se pegan en una IA pública. Lo veremos en el módulo 5.',
-            },
+          type: 'quick_vote',
+          title: '⚡ Ronda relámpago: ¿le pido esto a la IA?',
+          description: 'Una frase a la vez. Toque SÍ o NO y mire el porqué. El docente las lee en voz alta: vote primero con la mano.',
+          options: { a: { label: 'Sí, a la IA', emoji: '👍' }, b: { label: 'No, a la IA no', emoji: '✋' } },
+          items: [
+            { text: 'Redactar un mensaje amable con el horario de diciembre.', answer: 'a', why: 'Redactar es lo que mejor hace la IA. Usted revisa y ajusta.' },
+            { text: 'Que le diga a un cliente qué antibiótico tomar según sus síntomas.', answer: 'b', why: 'Diagnosticar y recetar no es tarea de la IA. Los antibióticos requieren fórmula médica.' },
+            { text: 'Ordenar en una tabla las ventas del mes y decir qué rota menos.', answer: 'a', why: 'Organizar cifras del negocio es una gran tarea, siempre sin datos de personas.' },
+            { text: 'Pegar la lista de clientes con cédula y medicamentos para «organizarla».', answer: 'b', why: 'Son datos personales y de salud (datos sensibles, Ley 1581 de 2012). No van en una IA pública.' },
+            { text: 'Proponer 5 ideas de publicaciones para Instagram en temporada de lluvias.', answer: 'a', why: 'Generar ideas es ideal. Usted elige las que encajan con su droguería.' },
+            { text: 'Calcular la dosis de un jarabe para un niño.', answer: 'b', why: 'Las dosis las indica el médico. La IA puede inventarlas con total seguridad (alucinación).' },
+            { text: 'Resumir en una página la circular pública que llegó del proveedor.', answer: 'a', why: 'Resumir documentos largos ahorra tiempo. Lo importante se verifica en el original.' },
+            { text: 'Responder si un medicamento está retirado del mercado, sin revisar nada más.', answer: 'b', why: 'Puede estar desactualizada o equivocarse. Las alertas sanitarias se confirman en invima.gov.co.' },
           ],
         },
       ],
@@ -106,7 +100,25 @@ export const IA_FARMACIAS: LearningPath = {
       title: '2. El ABC del prompt: hablarle bien a la IA (40 min)',
       content: [
         { type: 'text', icon: 'PointerIcon', text: 'Un prompt es la instrucción que le da a la IA. Si le habla como a un desconocido, le responde como un desconocido. Si le explica quién debe ser, qué necesita, para quién y cómo lo quiere, le responde como un buen asistente. La fórmula de hoy tiene 4 partes y una regla de oro.' },
-        deck(10),
+        deck(11),
+        {
+          type: 'teacher_guide',
+          title: 'Módulo 2 · El ABC del prompt (el más importante)',
+          minutes: '0:30–1:10 (40 min)',
+          goal: 'Que cada participante escriba, pruebe y mejore prompts completos con la fórmula R-T-C-F.',
+          slides: 'Diapositivas 11 a 17.',
+          steps: [
+            { time: '0:30', text: 'Diap. 12: compare la IA con un empleado nuevo. Escriba en el tablero: «Si usted no lo dice, la IA lo adivina».' },
+            { time: '0:34', text: 'Diap. 13: escriba R-T-C-F en grande y déjelo visible todo el taller. Pida una frase de ejemplo para cada letra.' },
+            { time: '0:39', text: 'Diap. 14: demostración en vivo. Escriba el prompt débil en ChatGPT o Copilot y luego el fuerte. Que comparen.' },
+            { time: '0:45', text: 'Laboratorios 1 y 2 (abajo). Muestre el botón «✨ Ayúdeme a empezar»: llena los campos y la persona solo ajusta. Camine por el salón.' },
+            { time: '0:57', text: 'Diap. 16: sobre un resultado, pida en vivo «más corto» y «dame 3 versiones».' },
+            { time: '1:00', text: 'Reto del mostrador en parejas (10 min, cronómetro visible). Premie por aplausos el prompt más útil.' },
+          ],
+          say: ['Rol: quién es la IA. Tarea: qué hace. Contexto: para quién y con qué datos. Formato: cómo lo quiere.', 'La primera respuesta es un borrador: pida ajustes.'],
+          answers: ['«¿Qué le falta?» 1: falta el Rol. 2: faltan el Contexto y el Formato. 3: seguir la conversación pidiendo ajustes.'],
+          tip: 'Si no hay internet, use el laboratorio igual: arma el prompt y lo valida sin conexión. Lea en voz alta cómo sería la respuesta.',
+        },
         {
           type: 'interactive',
           title: '🧪 La fórmula R-T-C-F (y una regla de oro)',
@@ -213,7 +225,26 @@ export const IA_FARMACIAS: LearningPath = {
       title: '3. La IA en el mostrador y en la trastienda (35 min)',
       content: [
         { type: 'text', icon: 'HappyUsersIcon', text: 'Ahora, a lo práctico: cinco frentes donde la IA ahorra tiempo en una droguería. En el mostrador, atención al cliente y redes sociales. En la trastienda, inventario, indicadores y capacitación del equipo.' },
-        deck(16),
+        deck(18),
+        {
+          type: 'teacher_guide',
+          title: 'Módulo 3 · La IA en el mostrador y la trastienda',
+          minutes: '1:10–1:45 (35 min) + receso 1:45–2:00',
+          goal: 'Que identifiquen en qué les ahorra tiempo la IA y practiquen redes sociales y ventas.',
+          slides: 'Diapositivas 18 a 23.',
+          steps: [
+            { time: '1:10', text: 'Diap. 19: que voten con la mano cuál de los 5 usos les quita más tiempo hoy. Use el más votado como ejemplo.' },
+            { time: '1:15', text: 'Diap. 20: recomiende empezar con una sola herramienta (ChatGPT o Copilot).' },
+            { time: '1:20', text: 'Laboratorio 3 (promoción para redes). Insista en el límite: no anunciar medicamentos con fórmula.' },
+            { time: '1:28', text: 'Ronda «¿Se puede publicar?» (diap. 22 y abajo). Lea, que voten con la mano y explique.' },
+            { time: '1:33', text: 'Laboratorio 4 (ventas ficticias). Pregunte: «¿la IA acertó? ¿qué verificaría?». Luego, RECESO de 15 minutos.' },
+          ],
+          answers: [
+            '«¿Se puede publicar?» SÍ: protector solar, horario y domicilios. NO: antibióticos, promesas de curas, foto y nombre de un cliente sin autorización, dosis.',
+            'Laboratorio 4: pedir pañales y antigripal; vitamina C y suero oral vencen en diciembre; protector solar y alcohol tienen sobrestock.',
+          ],
+          tip: 'Si va corto de tiempo, recorte ejemplos de las diapositivas 19–20, no los laboratorios.',
+        },
         {
           type: 'interactive',
           title: '🏪 Cinco usos reales en la droguería',
@@ -249,6 +280,20 @@ export const IA_FARMACIAS: LearningPath = {
             formato: ['Máximo 70 palabras, tono alegre, 3 emojis, 3 hashtags y un llamado a la acción.'],
             limites: ['No anuncies medicamentos de venta con fórmula médica. No prometas beneficios para la salud que no sean comprobados.'],
           },
+        },
+        {
+          type: 'quick_vote',
+          title: '⚡ Ronda relámpago: ¿se puede publicar?',
+          description: 'Usted es el community manager de la droguería. ¿Esto se puede publicar? Toque su respuesta y mire el porqué.',
+          options: { a: { label: 'Sí se puede', emoji: '✅' }, b: { label: 'No se puede', emoji: '🚫' } },
+          items: [
+            { tag: 'Facebook', text: '20 % de descuento en protectores solares.', answer: 'a', why: 'Los productos de cuidado personal y de venta libre se pueden promocionar.' },
+            { tag: 'Instagram', text: '2x1 en amoxicilina.', answer: 'b', why: 'Es un antibiótico: requiere fórmula médica y no se promociona al público.' },
+            { tag: 'Volante', text: '«Este suplemento cura la diabetes».', answer: 'b', why: 'No se prometen curas. Es la señal típica de un producto fraudulento (el Invima emite alertas por esto).' },
+            { tag: 'WhatsApp', text: 'Horario de diciembre y domicilio gratis desde $30.000.', answer: 'a', why: 'Horarios y servicios se anuncian libremente.' },
+            { tag: 'Instagram', text: 'Foto y nombre de un cliente feliz con su compra.', answer: 'b', why: 'Son datos personales: sin autorización escrita del cliente, no se publican.' },
+            { tag: 'Video', text: 'La «dosis recomendada» de un jarabe para la tos, escrita por la IA.', answer: 'b', why: 'Las dosis las indica el médico o el químico farmacéutico. La IA puede inventarlas.' },
+          ],
         },
         {
           type: 'prompt_lab',
@@ -315,7 +360,37 @@ export const IA_FARMACIAS: LearningPath = {
       title: '4. Ciberseguridad: proteger la droguería (35 min)',
       content: [
         { type: 'text', icon: 'LockIcon', text: 'Una droguería maneja información valiosa: ventas, cuentas bancarias, proveedores, la facturación electrónica y datos de clientes, incluidos datos de salud. Para un delincuente, eso vale dinero. Un ataque puede dejarla sin sistema de facturación varios días, vaciar una cuenta con un pago falso o exponer a sus clientes. Y la mayoría de ataques no entran por la tecnología: entran por una persona apurada.' },
-        deck(21),
+        deck(24),
+        {
+          type: 'teacher_guide',
+          title: 'Módulo 4 · Ciberseguridad: proteger la droguería',
+          minutes: '2:00–2:35 (35 min)',
+          goal: 'Reconocer las estafas más comunes y saber qué hacer: parar, verificar por un canal conocido y reportar.',
+          slides: 'Diapositivas 24 a 30.',
+          steps: [
+            { time: '2:00', text: 'Diap. 25: lea los 4 titulares reales. Pregunte si a alguien le ha llegado algo así: use su historia.' },
+            { time: '2:05', text: 'Diap. 26–27: por qué la droguería es un blanco. Deténgase en la suplantación de proveedores.' },
+            { time: '2:13', text: 'Ronda «¿Real o trampa?» (diap. 28 y abajo). Lea cada mensaje con voz dramática; que voten con la mano.' },
+            { time: '2:19', text: 'Laboratorio «El correo del proveedor»: lea el correo en voz alta y pida las 5 señales antes de abrirlo.' },
+            { time: '2:29', text: 'Diap. 30: cada quien elige 2 hábitos. Ayude en vivo a activar la verificación en dos pasos de WhatsApp.' },
+          ],
+          say: ['Pare, verifique por un canal conocido y reporte.', 'Todo cambio de cuenta bancaria se confirma por teléfono antes de pagar.'],
+          answers: [
+            '«¿Real o trampa?» Trampas: SMS del banco con enlace, voz clonada del dueño, correo «DIAN» con .zip, producto milagroso sin registro Invima. Real: el recordatorio del proveedor desde su número registrado, sin pagos ni enlaces.',
+            'Correo del proveedor: no pagar, no abrir el adjunto .exe, no responder el mismo correo; llamar al número que ya tenía y denunciar en el CAI Virtual (caivirtual.policia.gov.co).',
+          ],
+          tip: 'Ruta en WhatsApp: Ajustes → Cuenta → Verificación en dos pasos. Para pedidos de dinero por llamada, que el equipo acuerde una palabra clave.',
+        },
+        {
+          type: 'interactive',
+          title: '📰 Lo que dicen las noticias',
+          items: [
+            { term: 'Tiendas en línea falsas: +91 %', definition: 'Las estafas con tiendas falsas crecieron 91 % y el phishing 16 % en el primer semestre de 2026 en Colombia (informe de Gen; Portafolio, 15 de julio de 2026).' },
+            { term: '45 % de las pymes', definition: 'Sufrió al menos un incidente de ciberseguridad en el último año (ESET; Portafolio, 8 de julio de 2026).' },
+            { term: 'Productos fraudulentos en redes', definition: 'Invima, Alerta 405-2025 (18 de diciembre de 2025): productos sin registro sanitario promocionados en redes; se venden por internet, redes y cadenas de WhatsApp.' },
+            { term: 'Voces clonadas con IA', definition: 'La Fiscalía alertó que delincuentes clonan con IA la voz de familiares, amigos y empleados de bancos para sacar claves y códigos (Portafolio, 17 de octubre de 2024).' },
+          ],
+        },
         {
           type: 'interactive',
           title: '🚨 Las amenazas más frecuentes',
@@ -327,6 +402,20 @@ export const IA_FARMACIAS: LearningPath = {
             { term: 'Robo de identidad', definition: 'Usar los datos de la droguería o de su dueño para pedir créditos, facturar o estafar a nombre de otros.' },
             { term: 'Fraude electrónico', definition: 'Comprobantes de pago falsos, transferencias que «se reversan», cobros por domicilios que nunca se pagaron.' },
             { term: 'Suplantación de proveedores', definition: 'Un correo «del laboratorio» o «del distribuidor» informa una cuenta bancaria nueva para pagar las facturas. El dinero va a la cuenta del delincuente.' },
+          ],
+        },
+        {
+          type: 'quick_vote',
+          title: '⚡ Ronda relámpago: ¿real o trampa?',
+          description: 'Le llegan estos mensajes a la droguería. ¿Son reales o son una trampa? Decida rápido, como en la vida real.',
+          options: { a: { label: 'Es real', emoji: '👌' }, b: { label: 'Es trampa', emoji: '🎣' } },
+          items: [
+            { tag: 'SMS', text: '«Su banco: su cuenta será bloqueada hoy. Actualice sus datos en bit.ly/xxxx»', answer: 'b', why: 'Urgencia + enlace acortado. El banco no pide actualizar datos por SMS. Entre usted escribiendo la dirección del banco.' },
+            { tag: 'Llamada', text: 'Voz idéntica a la del dueño: «Transfiera ya $2.000.000 a esta cuenta nueva, estoy en una reunión».', answer: 'b', why: 'Con unos segundos de audio la IA clona una voz. Cuelgue y llame usted al número que conoce. Acuerden una palabra clave.' },
+            { tag: 'WhatsApp', text: 'Del número registrado de su proveedor: «Le recuerdo que su pedido llega el martes».', answer: 'a', why: 'Viene de un número conocido y no pide pagos, enlaces ni datos. Es un mensaje normal.' },
+            { tag: 'Correo', text: '«DIAN: tiene una sanción pendiente. Descargue el archivo Sancion.zip»', answer: 'b', why: 'La DIAN no envía sanciones en archivos .zip. Consulte en dian.gov.co escribiendo usted la dirección.' },
+            { tag: 'WhatsApp', text: 'Cadena: «Producto natural milagroso para las articulaciones, 50 % menos, sin registro Invima».', answer: 'b', why: '«Milagroso» y «sin registro» son señales de producto fraudulento. No se compra ni se vende.' },
+            { tag: 'Correo', text: '«Distribuidora: a partir de hoy pague a esta cuenta nueva a nombre de J. Pérez, o se cae su pedido».', answer: 'b', why: 'Cuenta nueva a nombre de una persona + urgencia: suplantación de proveedor. Se confirma por teléfono antes de pagar.' },
           ],
         },
         {
@@ -408,7 +497,24 @@ export const IA_FARMACIAS: LearningPath = {
       title: '5. IA segura, ética y evaluación final (25 min)',
       content: [
         { type: 'text', icon: 'ShieldCheckIcon', text: 'Usar IA también tiene riesgos: lo que usted escribe en una herramienta pública puede quedar guardado y usarse para entrenarla; la IA puede inventar datos con total seguridad; y los delincuentes también la usan para clonar voces, escribir correos sin errores y crear perfiles falsos. La regla: la IA ayuda, usted decide y verifica.' },
-        deck(26),
+        deck(31),
+        {
+          type: 'teacher_guide',
+          title: 'Módulo 5 · IA segura, ética y evaluación final',
+          minutes: '2:35–3:00 (25 min)',
+          goal: 'Usar la IA sin exponer a los clientes y presentar la evaluación para el certificado.',
+          slides: 'Diapositivas 31 a 38.',
+          steps: [
+            { time: '2:35', text: 'Diap. 32: las normas en 3 frases (Ley 1581, Circular 002 de 2024 de la SIC, CONPES 4144). Sin entrar en detalles jurídicos.' },
+            { time: '2:38', text: 'Laboratorio 5: escriba en vivo un número de 10 dígitos y muestre la alerta de dato personal. Enseñe a anonimizar.' },
+            { time: '2:43', text: 'Ronda «¿Lo pego o no?» (diap. 34 y abajo).' },
+            { time: '2:49', text: 'Evaluación final: 8–9 minutos. Se aprueba con 70 % y se puede repetir. Celebre los certificados.' },
+            { time: '2:58', text: 'Cierre (diap. 38): la plataforma queda abierta hasta el 31 de enero de 2027. Foto de grupo.' },
+          ],
+          say: ['La IA ayuda, usted decide y verifica.', 'Si identifica a una persona o abre una cuenta, no va en un prompt.'],
+          answers: ['«¿Lo pego o no?» SÍ: ventas sin nombres, «Cliente A…» anonimizado, circular pública. NO: fórmula médica de un cliente, claves del banco, lista con cédulas y teléfonos.'],
+          tip: 'Si alguien no aprueba, que repita: las preguntas cambian en cada intento.',
+        },
         { type: 'text', icon: 'LockIcon', text: 'En Colombia, la Ley 1581 de 2012 protege los datos personales, y los datos de salud son datos sensibles: requieren autorización y cuidado especial. Una droguería que pega en una IA pública la lista de clientes con sus medicamentos está exponiendo datos sensibles. La solución es fácil: anonimizar. Cambie «María Gómez, cédula 52…, toma losartán» por «Cliente A, adulta mayor, tratamiento crónico».' },
         {
           type: 'interactive',
@@ -419,6 +525,20 @@ export const IA_FARMACIAS: LearningPath = {
             { term: 'Claves y accesos', definition: 'Contraseñas, códigos de verificación, usuarios del banco o del software de facturación.' },
             { term: 'Datos financieros', definition: 'Números de cuenta, tarjetas, extractos con datos completos.' },
             { term: 'Lo que la IA no debe decidir', definition: 'Diagnósticos, dosis o qué medicamento con fórmula vender. Eso es del médico y del químico farmacéutico o director técnico.' },
+          ],
+        },
+        {
+          type: 'quick_vote',
+          title: '⚡ Ronda relámpago: ¿lo pego en la IA o no?',
+          description: 'Antes de pegar algo en ChatGPT, Gemini o Copilot, piénselo dos segundos. ¿Lo pega o no lo pega?',
+          options: { a: { label: 'Sí lo pego', emoji: '📋' }, b: { label: 'No lo pego', emoji: '🔒' } },
+          items: [
+            { text: 'Las ventas de noviembre por producto, sin nombres de clientes.', answer: 'a', why: 'Son cifras del negocio sin datos de personas.' },
+            { text: 'La foto de la fórmula médica de un cliente.', answer: 'b', why: 'Tiene el nombre del paciente y datos de salud: datos sensibles.' },
+            { text: '«Cliente A, adulta mayor, tratamiento crónico».', answer: 'a', why: 'Está anonimizado: la IA puede ayudar y nadie queda expuesto.' },
+            { text: 'El usuario y la clave del portal del banco.', answer: 'b', why: 'Claves y accesos nunca van en un prompt.' },
+            { text: 'La circular pública del Invima, para que la resuma.', answer: 'a', why: 'Es un documento público. Igual, lo importante se verifica en el original.' },
+            { text: 'La lista de clientes con cédula y teléfono, para «organizarla».', answer: 'b', why: 'Son datos personales. Organícela en Excel, en su computador, no en una IA pública.' },
           ],
         },
         {

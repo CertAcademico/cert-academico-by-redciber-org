@@ -30,3 +30,4 @@ credenciales/
 courses/*.docx
 courses/*.pptx
 /logo-inif.png
+courses/*.pdf

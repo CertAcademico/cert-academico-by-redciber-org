@@ -39,7 +39,7 @@ export async function issueCertificate(pathId: string): Promise<Certificate> {
   if (error || !data) {
     const msg = error?.message ?? '';
     if (msg.includes('COURSE_NOT_COMPLETED') || msg.includes('ROUTE_NOT_COMPLETED')) {
-      throw new Error('Aún no se puede emitir: completa todos los módulos, aprueba el examen del nivel (si lo tiene) y dedica al menos 10 minutos a cada curso.');
+      throw new Error('Aún no se puede emitir: complete todos los módulos, envíe los entregables del nivel (los recuadros «📎 Entregable obligatorio»), apruebe el examen si lo tiene y dedique al menos 10 minutos al curso.');
     }
     if (msg.includes('MILESTONE_NOT_REACHED')) {
       throw new Error('Aún no se puede emitir: complete las sesiones y verifique que su grupo haya entregado en todas.');

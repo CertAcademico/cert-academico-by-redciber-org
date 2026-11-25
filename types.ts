@@ -186,8 +186,45 @@ export interface PromptLabContent {
   suggestions: { rol: string[]; tarea: string[]; contexto: string[]; formato: string[]; limites?: string[] };
 }
 
-export type ContentBlock = 
-  | TextContent 
+/** Ronda relámpago: una frase a la vez y dos botones grandes (sí/no, real/trampa…), con el porqué. */
+export interface QuickVoteContent {
+  type: 'quick_vote';
+  title: string;
+  description: string;
+  options: { a: { label: string; emoji: string }; b: { label: string; emoji: string } };
+  items: { text: string; tag?: string; answer: 'a' | 'b'; why: string }[];
+}
+
+/** Guía para el docente: solo la ven docentes, tutores y admin. Pasos del momento, qué decir y respuestas. */
+export interface TeacherGuideContent {
+  type: 'teacher_guide';
+  title: string;
+  minutes: string; // p. ej. «0:10–0:30 (20 min)»
+  goal: string;
+  slides?: string; // p. ej. «Diapositivas 5 a 10»
+  steps: { time: string; text: string }[];
+  say?: string[]; // frases sugeridas
+  answers?: string[]; // respuestas esperadas de las dinámicas
+  tip?: string;
+}
+
+/**
+ * Entregable escrito de los niveles Intermedio y Avanzado: el estudiante desarrolla un producto
+ * profesional campo por campo y se autoevalúa con una rúbrica. Se guarda en la base de datos
+ * (level_deliverables) y el servidor lo exige para emitir el badge del nivel.
+ */
+export interface DeliverableContent {
+  type: 'deliverable';
+  id: string; // único en todo el curso, p. ej. 'gri_d1'; debe coincidir con course_requirements()
+  title: string;
+  description: string;
+  context?: string;
+  fields: { key: string; label: string; hint: string; min: number; rows?: number; example?: string }[];
+  rubric: string[];
+}
+
+export type ContentBlock =
+  | TextContent
   | VideoContent 
   | QuizContent 
   | InteractiveContent 
@@ -201,7 +238,10 @@ export type ContentBlock =
   | ResourceContent
   | HashLabContent
   | PromptLabContent
-  | SlidesContent;
+  | SlidesContent
+  | QuickVoteContent
+  | TeacherGuideContent
+  | DeliverableContent;
 
 export interface Module {
   id: string;

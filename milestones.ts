@@ -45,6 +45,14 @@ export const MILESTONES: Record<string, Milestone> = {
     colors: ['#14b8a6', '#0f766e'],
     modules: ['cert_s1', 'cert_s2', 'cert_s3'],
   },
+  // Reto Pionero de la campaña Black Friday: lo otorga el administrador (no depende de un curso).
+  pionero_2026: {
+    pathId: 'pionero',
+    title: 'Reto Pionero 2026 — Primer badge publicado',
+    ribbon: 'RETO PIONERO',
+    colors: ['#f59e0b', '#111827'],
+    modules: [],
+  },
   prueba_digital_b1: block(1, 'El caso y la evidencia', ['#0ea5e9', '#0c4a6e']),
   prueba_digital_b2: block(2, 'ABC técnico de la evidencia', ['#6366f1', '#312e81']),
   prueba_digital_b3: block(3, 'Marco internacional', ['#8b5cf6', '#4c1d95']),
