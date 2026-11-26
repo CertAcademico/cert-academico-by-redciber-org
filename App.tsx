@@ -48,6 +48,10 @@ import PromptLabView from './components/PromptLabView';
 import QuickVoteView from './components/QuickVoteView';
 import TeacherGuideView from './components/TeacherGuideView';
 import DeliverableView from './components/DeliverableView';
+import PublishBadgeModal from './components/PublishBadgeModal';
+import AchievementWall from './components/AchievementWall';
+import { getMyPublications } from './publicationService';
+import type { MyPublication } from './publicationService';
 import SlideDeckView from './components/SlideDeckView';
 import ChangePasswordModal from './components/ChangePasswordModal';
 import { FREE_ROUTE, PARTNER_LOGOS, isCampaignOpen, CAMPAIGN_EXCLUDED } from './platform';
@@ -57,7 +61,7 @@ import CampaignRankCard from './components/CampaignRankCard';
 import BlackFridayCard from './components/BlackFridayCard';
 import { getMyCertificates, issueCertificate, ROUTE_CERTIFICATE_ID, ROUTE_CERTIFICATE_TITLE } from './certificateService';
 import type { Certificate } from './certificateService';
-import { CredentialModal, cleanCourseTitle, BADGE_TITLES } from './components/Credential';
+import { CredentialModal, cleanCourseTitle, BADGE_TITLES, BadgeSvg } from './components/Credential';
 import VerifyView from './components/VerifyView';
 import { PrivacyPolicyContent } from './components/PrivacyPolicyView';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -1048,22 +1052,29 @@ const LearningPathSelector: React.FC<LearningPathSelectorProps> = ({
                     key={a.id}
                     onClick={() => openOrIssue(a.id, a.title)}
                     disabled={issuingId !== null}
-                    className={`text-left rounded-xl px-4 py-3 border transition-colors disabled:opacity-60 ${
+                    className={`text-left rounded-xl px-3 py-3 border transition-colors disabled:opacity-60 flex items-center gap-3 ${
                       a.id === ROUTE_CERTIFICATE_ID
                         ? 'bg-amber-500/15 border-amber-500/40 hover:bg-amber-500/25'
                         : 'bg-slate-800/60 border-slate-700 hover:border-slate-500'
                     }`}
                   >
-                    <p className="text-sm font-semibold text-white">{a.id === ROUTE_CERTIFICATE_ID ? '🏆 ' : ''}{a.title}</p>
-                    <p className="text-xs text-slate-400 mt-1">
-                      {issuingId === a.id ? 'Emitiendo…' : issued ? 'Ver badge y certificado →' : '✨ Obtener mi badge →'}
-                    </p>
+                    <span className={`shrink-0 ${issued ? '' : 'opacity-40 grayscale'}`} aria-hidden="true">
+                      <BadgeSvg pathId={a.id} title={a.title} year={new Date().getFullYear().toString()} size={52} />
+                    </span>
+                    <span className="min-w-0">
+                      <span className="block text-sm font-semibold text-white">{a.id === ROUTE_CERTIFICATE_ID ? '🏆 ' : ''}{a.title}</span>
+                      <span className="block text-xs text-slate-400 mt-1">
+                        {issuingId === a.id ? 'Emitiendo…' : issued ? 'Ver badge y certificado →' : '✨ Obtener mi badge →'}
+                      </span>
+                    </span>
                   </button>
                 );
               })}
             </div>
           </section>
         )}
+
+        <AchievementWall />
       </main>
       {openCredential && <CredentialModal cert={openCredential.cert} title={openCredential.title} onClose={() => setOpenCredential(null)} />}
 
@@ -1097,11 +1108,15 @@ const App: React.FC = () => {
   // expertise). Se recarga cada vez que se vuelve al grid o al mapa.
   const [routeProgress, setRouteProgress] = useState<UserProgressMap>({});
   const [showMap, setShowMap] = useState(false);
+  // Badges publicados (LinkedIn o Muro de logros): publicar el de un nivel abre el siguiente.
+  const [publications, setPublications] = useState<Record<string, MyPublication>>({});
+  const [publishTarget, setPublishTarget] = useState<{ pathId: string; nextId: string } | null>(null);
   const isFreeStudent = currentUser?.role === 'free_student';
   useEffect(() => {
     if (!currentUser || selectedPathId) return;
     let cancelled = false;
     getUserProgress(currentUser.id).then(p => { if (!cancelled) setRouteProgress(p); });
+    getMyPublications(currentUser.id).then(p => { if (!cancelled) setPublications(p); });
     return () => { cancelled = true; };
   }, [currentUser, selectedPathId]);
 
@@ -1208,7 +1223,12 @@ const App: React.FC = () => {
       .map(([id]) => [id, learningPaths[id]]),
   );
   // Cada nivel se abre al terminar el anterior. Fuera de la campaña, el registro gratuito solo incluye los Básicos.
-  const isLevelUnlocked = (id: string) => isAdmin || ((campaign || !isFreeStudent) && isPathComplete(LEVEL_PATHS[id].prerequisite));
+  // Además, el badge del nivel anterior debe estar publicado (salvo quien ya había empezado este nivel).
+  const publishedSet = new Set((Object.values(publications) as MyPublication[]).filter(p => !p.revoked).map(p => p.pathId));
+  const isLevelUnlocked = (id: string) => isAdmin || (
+    (campaign || !isFreeStudent) && isPathComplete(LEVEL_PATHS[id].prerequisite) &&
+    (publishedSet.has(LEVEL_PATHS[id].prerequisite) || !!routeProgress[id])
+  );
   // El mapa se ofrece solo si el usuario tiene al menos una ruta con niveles ya publicados.
   const hasMap = EXPERTISE_TRACKS.some(t => t.levels[0] in visiblePaths && t.levels.slice(1).some(l => l && l in levelPaths));
 
@@ -1251,6 +1271,7 @@ const App: React.FC = () => {
 
   if (!canOpenSelected && showMap && hasMap) {
     return (
+      <>
       <ExpertiseMapView
         allPaths={learningPaths}
         visibleBase={new Set(Object.keys(visiblePaths))}
@@ -1258,9 +1279,26 @@ const App: React.FC = () => {
         progress={routeProgress}
         isAdmin={isAdmin}
         levelLockReason={isFreeStudent && !campaign ? 'No incluido en el registro gratuito' : undefined}
+        published={publishedSet}
+        onPublish={(pathId, nextId) => setPublishTarget({ pathId, nextId })}
         onSelect={setSelectedPathId}
         onClose={() => setShowMap(false)}
       />
+      {publishTarget && (
+        <PublishBadgeModal
+          pathId={publishTarget.pathId}
+          title={cleanCourseTitle(learningPaths[publishTarget.pathId]?.title ?? '')}
+          nextTitle={cleanCourseTitle(learningPaths[publishTarget.nextId]?.title ?? '')}
+          onClose={() => setPublishTarget(null)}
+          onPublished={pid => {
+            setPublications(prev => ({ ...prev, [pid]: { pathId: pid, channel: 'linkedin', createdAt: new Date().toISOString(), revoked: false } }));
+            const next = publishTarget.nextId;
+            setPublishTarget(null);
+            setSelectedPathId(next);
+          }}
+        />
+      )}
+      </>
     );
   }
 

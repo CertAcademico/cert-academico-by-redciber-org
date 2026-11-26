@@ -1,7 +1,7 @@
 import React, { forwardRef, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { BRAND, FREE_ROUTE, PARTNER_LOGOS, appUrl } from '../platform';
-import { LEVEL_NAMES, LEVEL_PATHS } from '../expertise';
+import { EXPERTISE_TRACKS, LEVEL_PATHS } from '../expertise';
 import { ROUTE_CERTIFICATE_ID } from '../certificateService';
 import type { Certificate } from '../certificateService';
 import { MILESTONES } from '../milestones';
@@ -134,23 +134,51 @@ const BadgeIcon: React.FC<{ pathId: string; color: string }> = ({ pathId: rawId,
   }
 };
 
-/** Badge digital en SVG (400×460): hexágono con ícono del curso, título y posición en la ruta. */
+/** Metal de cada nivel del mapa de expertise: Básico cobre, Intermedio plata, Avanzado oro. */
+const METALS = [
+  { light: '#ffe2c7', mid: '#c47a45', dark: '#6b3416', ink: '#4a2208', name: 'BÁSICO' },
+  { light: '#ffffff', mid: '#c5ced9', dark: '#566170', ink: '#1f2937', name: 'INTERMEDIO' },
+  { light: '#fff6c4', mid: '#f0bb24', dark: '#8f5c00', ink: '#3d2800', name: 'AVANZADO' },
+] as const;
+const TRACK_BASES = new Set(EXPERTISE_TRACKS.map(t => t.levels[0]));
+
+/** Ramas de laurel alrededor del ícono (badges de nivel Avanzado). */
+const Laurel: React.FC<{ fill: string; stroke: string }> = ({ fill, stroke }) => {
+  const leaves: React.ReactNode[] = [];
+  for (let k = 0; k < 7; k++) {
+    const a = ((145 + k * 13) * Math.PI) / 180;
+    const x = 200 + 78 * Math.cos(a);
+    const y = 158 - 78 * Math.sin(a);
+    const rot = -((145 + k * 13) - 90);
+    leaves.push(
+      <ellipse key={`l${k}`} cx={x} cy={y} rx="12" ry="5.5" transform={`rotate(${rot} ${x} ${y})`} fill={fill} stroke={stroke} strokeWidth="1" />,
+      <ellipse key={`r${k}`} cx={400 - x} cy={y} rx="12" ry="5.5" transform={`rotate(${-rot} ${400 - x} ${y})`} fill={fill} stroke={stroke} strokeWidth="1" />,
+    );
+  }
+  return <g>{leaves}</g>;
+};
+
+/** Badge digital en SVG (400×460): hexágono con ícono del curso, título y posición en la ruta.
+ *  Los cursos del mapa de expertise llevan marco metálico según su nivel (cobre, plata, oro). */
 export const BadgeSvg = forwardRef<SVGSVGElement, { pathId: string; title: string; year: string; size?: number }>(
   ({ pathId, title, year, size = 220 }, ref) => {
     const [c1, c2] = BADGE_COLORS[pathId] ?? MILESTONES[pathId]?.colors ?? ['#2563eb', '#1e3a8a'];
     const isRoute = pathId === ROUTE_CERTIFICATE_ID;
     const routeIndex = FREE_ROUTE.indexOf(pathId);
     const level = LEVEL_PATHS[pathId]?.level;
+    const tier = level ?? (TRACK_BASES.has(pathId) ? 0 : undefined);
+    const metal = tier !== undefined ? METALS[tier] : null;
     const ribbon = isRoute
       ? `RUTA COMPLETA · ${year}`
       : MILESTONES[pathId]
         ? `${MILESTONES[pathId].ribbon} · ${year}`
-      : level
-        ? `NIVEL ${LEVEL_NAMES[level].toUpperCase()} · ${year}`
+      : metal
+        ? `NIVEL ${metal.name} · ${year}`
         : routeIndex >= 0
         ? `CURSO ${routeIndex + 1} DE ${FREE_ROUTE.length} · ${year}`
         : `CURSO COMPLETADO · ${year}`;
     const lines = wrap((BADGE_TITLES[pathId] ?? (MILESTONES[pathId] ? BADGE_TITLES[MILESTONES[pathId].pathId] : undefined) ?? cleanCourseTitle(title)).toUpperCase(), 17).slice(0, 3);
+    const three = lines.length === 3;
     const id = `b-${pathId}`;
     const hex = 'M200 22 L367 118 V310 L200 406 L33 310 V118 Z';
     const font = 'Arial, Helvetica, sans-serif';
@@ -166,31 +194,57 @@ export const BadgeSvg = forwardRef<SVGSVGElement, { pathId: string; title: strin
             <circle cx="14" cy="14" r="1.6" fill="#ffffff" fillOpacity="0.1" />
           </pattern>
           <clipPath id={`${id}-c`}><path d={hex} /></clipPath>
+          {metal && (
+            <>
+              <linearGradient id={`${id}-m`} x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0" stopColor={metal.light} />
+                <stop offset="0.3" stopColor={metal.mid} />
+                <stop offset="0.5" stopColor={metal.light} />
+                <stop offset="0.75" stopColor={metal.mid} />
+                <stop offset="1" stopColor={metal.dark} />
+              </linearGradient>
+              <linearGradient id={`${id}-s`} x1="0" y1="0" x2="1" y2="0">
+                <stop offset="0" stopColor="#ffffff" stopOpacity="0" />
+                <stop offset="0.5" stopColor="#ffffff" stopOpacity="0.16" />
+                <stop offset="1" stopColor="#ffffff" stopOpacity="0" />
+              </linearGradient>
+            </>
+          )}
         </defs>
-        {/* Hexágono con borde y textura de circuito */}
-        <path d={hex} fill={c2} stroke={c2} strokeWidth="18" strokeLinejoin="round" />
+        {/* Marco: metálico para los niveles del mapa; del color del curso para el resto */}
+        {metal ? (
+          <>
+            <path d="M200 4 L383 109 V319 L200 424 L17 319 V109 Z" fill={`url(#${id}-m)`} stroke={metal.dark} strokeWidth="2" strokeLinejoin="round" />
+            <path d="M200 14 L374 114 V314 L200 414 L26 314 V114 Z" fill="none" stroke={metal.dark} strokeOpacity="0.45" strokeWidth="2" strokeLinejoin="round" />
+          </>
+        ) : (
+          <path d={hex} fill={c2} stroke={c2} strokeWidth="18" strokeLinejoin="round" />
+        )}
         <path d={hex} fill={`url(#${id}-g)`} />
         <rect width="400" height="460" fill={`url(#${id}-p)`} clipPath={`url(#${id}-c)`} />
-        <path d="M200 40 L351 127 V301 L200 388 L49 301 V127 Z" fill="none" stroke="#ffffff" strokeOpacity="0.35" strokeWidth="2" strokeLinejoin="round" />
+        {metal && <path d="M40 22 L190 22 L60 420 L-90 420 Z" fill={`url(#${id}-s)`} clipPath={`url(#${id}-c)`} />}
+        <path d="M200 40 L351 127 V301 L200 388 L49 301 V127 Z" fill="none" stroke={metal ? metal.light : '#ffffff'} strokeOpacity={metal ? 0.6 : 0.35} strokeWidth="2" strokeLinejoin="round" />
         {/* Marca */}
         <text x="200" y="88" textAnchor="middle" fill="#ffffff" fontFamily={font} fontWeight="700" fontSize="15" letterSpacing="3">CERT ACADÉMICO</text>
+        {/* Laureles del nivel Avanzado */}
+        {metal && tier === 2 && <Laurel fill={`url(#${id}-m)`} stroke={metal.dark} />}
         {/* Ícono del curso */}
         <circle cx="200" cy="152" r="50" fill="#ffffff" />
-        <circle cx="200" cy="152" r="54" fill="none" stroke="#ffffff" strokeOpacity="0.35" strokeWidth="6" />
+        <circle cx="200" cy="152" r="54" fill="none" stroke={metal ? `url(#${id}-m)` : '#ffffff'} strokeOpacity={metal ? 1 : 0.35} strokeWidth="6" />
         <g transform="translate(161.6 113.6) scale(1.2)"><BadgeIcon pathId={pathId} color={c2} /></g>
         {/* Título del curso */}
         {lines.map((l, i) => (
-          <text key={i} x="200" y={236 + i * 25} textAnchor="middle" fill="#ffffff" fontFamily={font} fontWeight="700" fontSize="20">{l}</text>
+          <text key={i} x="200" y={(three ? 228 : 236) + i * (three ? 22 : 25)} textAnchor="middle" fill="#ffffff" fontFamily={font} fontWeight="700" fontSize={three ? 18 : 20}>{l}</text>
         ))}
-        {/* Estrellas de nivel del mapa de expertise: ★★ Intermedio, ★★★ Avanzado */}
-        {level && (
-          <text x="200" y="304" textAnchor="middle" fill="#fde68a" fontFamily={font} fontSize="20" letterSpacing="6">{'★'.repeat(level + 1)}</text>
+        {/* Estrellas del nivel: ★ Básico, ★★ Intermedio, ★★★ Avanzado */}
+        {metal && (
+          <text x="200" y="306" textAnchor="middle" fill={metal.light} stroke={metal.dark} strokeWidth="1.2" paintOrder="stroke" fontFamily={font} fontSize="24" letterSpacing="8">{'★'.repeat(tier! + 1)}</text>
         )}
         {/* Cinta con extremos plegados */}
-        <path d="M14 326 L44 326 L44 362 L14 362 L26 344 Z" fill={c2} />
-        <path d="M386 326 L356 326 L356 362 L386 362 L374 344 Z" fill={c2} />
-        <rect x="34" y="318" width="332" height="38" rx="4" fill="#ffffff" />
-        <text x="200" y="343" textAnchor="middle" fill={c2} fontFamily={font} fontWeight="700" fontSize="16" letterSpacing="1.5">{ribbon}</text>
+        <path d="M14 326 L44 326 L44 362 L14 362 L26 344 Z" fill={metal ? metal.dark : c2} />
+        <path d="M386 326 L356 326 L356 362 L386 362 L374 344 Z" fill={metal ? metal.dark : c2} />
+        <rect x="34" y="318" width="332" height="38" rx="4" fill={metal ? `url(#${id}-m)` : '#ffffff'} stroke={metal ? metal.dark : 'none'} strokeWidth="1.5" />
+        <text x="200" y="343" textAnchor="middle" fill={metal ? metal.ink : c2} fontFamily={font} fontWeight="700" fontSize="16" letterSpacing="1.5">{ribbon}</text>
         {/* Firma de la marca */}
         <text x="200" y="384" textAnchor="middle" fill="#ffffff" fillOpacity="0.85" fontFamily={font} fontSize="13" letterSpacing="1">by RedCiber.org</text>
       </svg>

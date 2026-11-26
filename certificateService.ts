@@ -44,6 +44,9 @@ export async function issueCertificate(pathId: string): Promise<Certificate> {
     if (msg.includes('MILESTONE_NOT_REACHED')) {
       throw new Error('Aún no se puede emitir: complete las sesiones y verifique que su grupo haya entregado en todas.');
     }
+    if (msg.includes('PREREQUISITE_NOT_PUBLISHED')) {
+      throw new Error('Aún no se puede emitir: publica el badge del nivel anterior (en LinkedIn o en el Muro de logros) desde el mapa de expertise.');
+    }
     if (msg.includes('PREREQUISITE_NOT_COMPLETED')) {
       throw new Error('Aún no se puede emitir: primero debes completar el nivel anterior de esta ruta.');
     }
